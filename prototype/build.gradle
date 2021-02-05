@@ -1,6 +1,7 @@
 
 plugins {
     id 'java-library'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
 repositories {
@@ -11,4 +12,9 @@ repositories {
 dependencies {
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13'
+}
+
+javafx {
+    version = "15.0.1"
+    modules = [ 'javafx.controls' ]
 }
