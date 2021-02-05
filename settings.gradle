@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'air-hockey'
-include('app')
+include('app', 'prototype')
