@@ -1,3 +1,4 @@
-public class Proto1 {
+package air.hockey;
 
+public class Proto1 {
 }
