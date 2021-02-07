@@ -3,12 +3,33 @@
  */
 package air.hockey;
 
+import air.hockey.prototype.model.*;
+
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        Vector v = new Vector(4.2, 1);
+        System.out.println(v);
+        v.setX(10);
+        v.setY(42);
+        System.out.println(v);
+        System.out.println(v.length());
+        System.out.println(v.normalize());
+        System.out.println(v);
+
+        System.out.println(v.add(new Vector(5, 5)));
+        System.out.println(v.multiply(2));
+
+        System.out.println();
+
+        Vector down = new Vector(0, -1);
+        Vector downRight = new Vector(1, -1);
+        Vector up = new Vector(0, 1);
+        Vector right = new Vector(1, 0);
+        Vector upLeft = (new Vector(-1, 1)).normalize();
+        System.out.println("Réflexion R du vecteur V par rapport au vecteur normal N");
+        System.out.println("V: down, N: up, R: "+down.reflection(up));
+        System.out.println("V: downRight, N: up, R: "+downRight.reflection(up));
+        System.out.println("V: right, N: upLeft, R: "+right.reflection(upLeft));
     }
 }
