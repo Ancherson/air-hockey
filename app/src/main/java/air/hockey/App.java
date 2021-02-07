@@ -8,6 +8,7 @@ import air.hockey.prototype.model.*;
 public class App {
 
     public static void main(String[] args) {
+        //Vector test
         Vector v = new Vector(4.2, 1);
         System.out.println(v);
         v.setX(10);
@@ -31,5 +32,23 @@ public class App {
         System.out.println("V: down, N: up, R: "+down.reflection(up));
         System.out.println("V: downRight, N: up, R: "+downRight.reflection(up));
         System.out.println("V: right, N: upLeft, R: "+right.reflection(upLeft));
+
+        //Wall test
+        Wall w1 = new Wall(5,6,1,1);
+        Wall w2 = new Wall(v,up);
+        System.out.println(w1);
+        System.out.println(w1.getNormal());
+        System.out.println(downRight.reflection(w2.getNormal()));
+
+        //Circle test
+        Circle palet = new Palet(new Vector(6,6),2);
+        Circle pusher = new Pusher(new Vector(1,2),1);
+
+        System.out.println(palet.isColliding(pusher));
+        System.out.println(pusher.isColliding(palet));
+        System.out.println(palet.isColliding(w1));
+        palet.resolveCollision(w1);
+        System.out.println(palet);
+
     }
 }

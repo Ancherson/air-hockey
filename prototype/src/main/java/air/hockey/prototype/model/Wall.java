@@ -18,6 +18,14 @@ public class Wall {
         direction = new Vector(dx, dy);
     }
 
+    public Vector getPosition(){
+        return position;
+    }
+
+    public Vector getDirection(){
+        return direction;
+    }
+
     //Return the normal of wall's vector direction
     public Vector getNormal(){
         Vector normal = new Vector(-direction.getY(),direction.getX());
