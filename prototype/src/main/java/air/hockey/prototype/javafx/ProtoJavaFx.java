@@ -2,9 +2,11 @@ package air.hockey.prototype.javafx;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -13,6 +15,8 @@ public class ProtoJavaFx extends Application {
 
 	private final int WIDTH = 800;
 	private final int HEIGHT = 500;
+	private final int NUM_FRAME_PER_SEC = 60;
+	private final long NB_NSEC_PER_FRAME = Math.round(1.0 / NUM_FRAME_PER_SEC * 1e9);
 
 	private Canvas canvas;
 	private GraphicsContext ctx;
@@ -24,6 +28,7 @@ public class ProtoJavaFx extends Application {
 		primaryStage.setWidth(WIDTH);
 
 		canvas = new Canvas(WIDTH,HEIGHT);
+		canvas.setOnMouseClicked(this::handle);
 		ctx = canvas.getGraphicsContext2D();
 
 		Pane root = new Pane();
@@ -38,17 +43,21 @@ public class ProtoJavaFx extends Application {
 	}
 
 	public void setupAnimation() {
-		circle = new Circle(WIDTH / 2, HEIGHT / 2, 50, 1, 1);
+		circle = new Circle(WIDTH / 2, HEIGHT / 2, 50, 5, 5);
 		new Animation().start();
-//		draw();
+		draw();
+	}
+
+	public void handle(MouseEvent event) {
+		
 	}
 
 	public void drawCircle(Circle c) {
 		ctx.setFill(Color.BLUE);
-		ctx.fillOval(c.x - c.r / 2, c.y - c.r / 2, c.r, c.r);
+		ctx.fillOval(c.x - c.r, c.y - c.r, c.r, c.r);
 	}
 
-	public void update(long deltaTime) {
+	public void update(double deltaTime) {
 		circle.update(deltaTime);
 	}
 
@@ -59,13 +68,15 @@ public class ProtoJavaFx extends Application {
 	}
 
 	public class Animation extends AnimationTimer {
-		private long oldTime = System.nanoTime();
+		private long lastUpdate = System.nanoTime();
 		@Override
 		public void handle(long now) {
-//			System.out.println(now - oldTime);
-			update(now - oldTime);
-			draw();
-			oldTime = now;
+			long deltaT = now - lastUpdate;
+			if(deltaT >= NB_NSEC_PER_FRAME) {
+				lastUpdate = now;
+				update(deltaT / 1e9);
+				draw();
+			}
 		}
 	}
 
@@ -77,6 +88,8 @@ public class ProtoJavaFx extends Application {
 		private double vx;
 		private double vy;
 
+		private boolean out = false;
+
 		public Circle(double x, double y, double r, double vx, double vy) {
 			this.x = x;
 			this.y = y;
@@ -85,22 +98,23 @@ public class ProtoJavaFx extends Application {
 			this.vy = vy;
 		}
 
-		public Circle(double x, double y, double r) {
-			this(x,y,r,0,0);
-		}
-
 		public void edges() {
-			if(x < r || x > WIDTH - r){
+			if(!out && (x < r || x > WIDTH - r)){
 				this.vx *= -1;
+				out = true;
 			}
-			if(y < r || y > HEIGHT - r){
+			else if(!out && (y < r || y > HEIGHT - r)){
 				this.vy *= -1;
+				out = true;
+			}else {
+				out = false;
 			}
+
 		}
 
-		public void update(long delta) {
-			this.x += this.vx * delta / 10000000;
-			this.y += this.vy * delta / 10000000;
+		public void update(double delta) {
+			this.x += this.vx * (delta * 10 * 2);
+			this.y += this.vy * (delta * 10 * 2);
 			this.edges();
 		}
 	}
