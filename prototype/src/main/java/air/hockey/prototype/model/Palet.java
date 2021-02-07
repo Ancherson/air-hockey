@@ -20,4 +20,29 @@ public class Palet extends Circle {
     public String toString(){
         return super.toString()+"\nSpeed: "+speed;
     }
+
+    public void wallCollisions(Wall[] walls){
+        for(Wall w : walls){
+            if(isColliding(w)){
+                resolveCollision(w);
+                speed = speed.reflection(w.getNormal());
+            }
+        }
+    }
+
+    public void pusherCollisions(Pusher[] pushers){
+        for(Pusher p : pushers){
+            if(isColliding(p)){
+                resolveCollision(p);
+                Vector normal = position.add(p.position.multiply(-1)).normalize();
+                speed = speed.reflection(normal).add(p.getSpeed());
+            }
+        }
+    }
+
+    public void update(double dt, Wall[] walls, Pusher[] pushers){
+        position = position.add(speed.multiply(dt));
+        wallCollisions(walls);
+        pusherCollisions(pushers);
+    }
 }

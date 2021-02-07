@@ -50,5 +50,16 @@ public class App {
         palet.resolveCollision(w1);
         System.out.println(palet);
 
+        Palet p = new Palet(new Vector(0, 0), 1);
+        p.setSpeed(new Vector(1, 2));
+        Wall[] walls = {new Wall(-5, 5, 0, 5), new Wall(5, 5, 0, 5), new Wall(-5, 5, 5, 0), new Wall(-5, -5, 5, 0)};
+        Pusher[] pushers = {new Pusher(new Vector(-3.5, 0), 1), new Pusher(new Vector(3.5, 0), 1)};
+
+        for(double t = 0.; t < 10.; t += 1./30.){
+            p.update(1./30., walls, pushers);
+            System.out.println(p);
+        }
+
+
     }
 }

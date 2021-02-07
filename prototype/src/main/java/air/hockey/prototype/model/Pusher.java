@@ -25,5 +25,12 @@ public class Pusher extends Circle {
     public String toString(){
         return super.toString()+"\nSpeed: "+speed;
     }
-      
+
+    public void wallCollisions(Wall[] walls){
+        for(Wall w : walls){
+            if(isColliding(w)){
+                resolveCollision(w);
+            }
+        }
+    }
 }

@@ -7,7 +7,7 @@ import air.hockey.prototype.model.Vector;
 
 public class Circle{
 
-    private Vector position;
+    protected Vector position;
     private double radius;
 
     public Circle(Vector position, double radius){
