@@ -1,5 +1,6 @@
 package air.hockey.prototype.javafx;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -37,13 +38,18 @@ public class ProtoJavaFx extends Application {
 	}
 
 	public void setupAnimation() {
-		circle = new Circle(WIDTH / 2 - 25, HEIGHT / 2 - 25, 50);
-		draw();
+		circle = new Circle(WIDTH / 2, HEIGHT / 2, 50, 1, 1);
+		new Animation().start();
+//		draw();
 	}
 
 	public void drawCircle(Circle c) {
 		ctx.setFill(Color.BLUE);
-		ctx.fillOval(c.x, c.y, c.r, c.r);
+		ctx.fillOval(c.x - c.r / 2, c.y - c.r / 2, c.r, c.r);
+	}
+
+	public void update(long deltaTime) {
+		circle.update(deltaTime);
 	}
 
 	public void draw() {
@@ -52,15 +58,50 @@ public class ProtoJavaFx extends Application {
 		drawCircle(circle);
 	}
 
-	public class Circle {
-		private int x;
-		private int y;
-		private int r;
+	public class Animation extends AnimationTimer {
+		private long oldTime = System.nanoTime();
+		@Override
+		public void handle(long now) {
+//			System.out.println(now - oldTime);
+			update(now - oldTime);
+			draw();
+			oldTime = now;
+		}
+	}
 
-		public Circle(int x, int y, int r) {
+	public class Circle {
+		private double x;
+		private double y;
+		private double r;
+
+		private double vx;
+		private double vy;
+
+		public Circle(double x, double y, double r, double vx, double vy) {
 			this.x = x;
 			this.y = y;
 			this.r = r;
+			this.vx = vx;
+			this.vy = vy;
+		}
+
+		public Circle(double x, double y, double r) {
+			this(x,y,r,0,0);
+		}
+
+		public void edges() {
+			if(x < r || x > WIDTH - r){
+				this.vx *= -1;
+			}
+			if(y < r || y > HEIGHT - r){
+				this.vy *= -1;
+			}
+		}
+
+		public void update(long delta) {
+			this.x += this.vx * delta / 10000000;
+			this.y += this.vy * delta / 10000000;
+			this.edges();
 		}
 	}
 
