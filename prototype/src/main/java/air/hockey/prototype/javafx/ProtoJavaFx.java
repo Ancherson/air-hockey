@@ -2,7 +2,6 @@ package air.hockey.prototype.javafx;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,7 +19,10 @@ public class ProtoJavaFx extends Application {
 
 	private Canvas canvas;
 	private GraphicsContext ctx;
-	private Circle circle;
+	private CircleMoving circle;
+
+	private Circle circleMouse;
+	private boolean isPressed = false;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -28,7 +30,9 @@ public class ProtoJavaFx extends Application {
 		primaryStage.setWidth(WIDTH);
 
 		canvas = new Canvas(WIDTH,HEIGHT);
-		canvas.setOnMouseClicked(this::handle);
+		canvas.setOnMousePressed(this::press);
+		canvas.setOnMouseDragged(this::dragged);
+		canvas.setOnMouseReleased(this::released);
 		ctx = canvas.getGraphicsContext2D();
 
 		Pane root = new Pane();
@@ -43,18 +47,35 @@ public class ProtoJavaFx extends Application {
 	}
 
 	public void setupAnimation() {
-		circle = new Circle(WIDTH / 2, HEIGHT / 2, 50, 5, 5);
+		circle = new CircleMoving(WIDTH / 2, HEIGHT / 2, 50, Color.BLUE, 5, 5);
+		circleMouse = new Circle(200,100,50,Color.RED);
 		new Animation().start();
-		draw();
 	}
 
-	public void handle(MouseEvent event) {
-		
+	public void press(MouseEvent event) {
+		if(isInCircleMouse(event.getX(), event.getY())) {
+			isPressed = true;
+		}
+	}
+
+	public void dragged(MouseEvent event) {
+		if(isPressed) {
+			circleMouse.x = event.getX();
+			circleMouse.y = event.getY();
+		}
+	}
+
+	public void released(MouseEvent event) {
+		isPressed = false;
+	}
+
+	public boolean isInCircleMouse(double x, double y) {
+		return ((x - circleMouse.x) * (x - circleMouse.x) + (y - circleMouse.y) * (y - circleMouse.y) < circleMouse.r * circleMouse.r);
 	}
 
 	public void drawCircle(Circle c) {
-		ctx.setFill(Color.BLUE);
-		ctx.fillOval(c.x - c.r, c.y - c.r, c.r, c.r);
+		ctx.setFill(c.color);
+		ctx.fillOval(c.x - c.r / 2, c.y - c.r / 2, c.r, c.r);
 	}
 
 	public void update(double deltaTime) {
@@ -65,6 +86,7 @@ public class ProtoJavaFx extends Application {
 		ctx.setFill(Color.BLACK);
 		ctx.fillRect(0,0, WIDTH, HEIGHT);
 		drawCircle(circle);
+		drawCircle(circleMouse);
 	}
 
 	public class Animation extends AnimationTimer {
@@ -80,20 +102,14 @@ public class ProtoJavaFx extends Application {
 		}
 	}
 
-	public class Circle {
-		private double x;
-		private double y;
-		private double r;
 
+	public class CircleMoving extends Circle{
 		private double vx;
 		private double vy;
-
 		private boolean out = false;
 
-		public Circle(double x, double y, double r, double vx, double vy) {
-			this.x = x;
-			this.y = y;
-			this.r = r;
+		public CircleMoving(double x, double y, double r, Color color, double vx, double vy) {
+			super(x,y,r,color);
 			this.vx = vx;
 			this.vy = vy;
 		}
@@ -116,6 +132,22 @@ public class ProtoJavaFx extends Application {
 			this.x += this.vx * (delta * 10 * 2);
 			this.y += this.vy * (delta * 10 * 2);
 			this.edges();
+		}
+
+	}
+
+	public class Circle {
+		protected double x;
+		protected double y;
+		protected double r;
+
+		private Color color;
+
+		public Circle(double x, double y, double r, Color color) {
+			this.x = x;
+			this.y = y;
+			this.r = r;
+			this.color = color;
 		}
 	}
 
