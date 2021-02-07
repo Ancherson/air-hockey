@@ -17,6 +17,7 @@ public class ProtoJavaFx extends Application {
 	private final int NUM_FRAME_PER_SEC = 60;
 	private final long NB_NSEC_PER_FRAME = Math.round(1.0 / NUM_FRAME_PER_SEC * 1e9);
 
+	private final double FRIXION = 0.99;
 	private Canvas canvas;
 	private GraphicsContext ctx;
 	private CircleMoving circle;
@@ -47,8 +48,8 @@ public class ProtoJavaFx extends Application {
 	}
 
 	public void setupAnimation() {
-		circle = new CircleMoving(WIDTH / 2, HEIGHT / 2, 50, Color.BLUE, 5, 5);
-		circleMouse = new Circle(200,100,50,Color.RED);
+		circle = new CircleMoving(WIDTH / 2, HEIGHT / 2, 25, Color.BLUE, 5, 5);
+		circleMouse = new Circle(200,100,25,Color.RED);
 		new Animation().start();
 	}
 
@@ -60,8 +61,10 @@ public class ProtoJavaFx extends Application {
 
 	public void dragged(MouseEvent event) {
 		if(isPressed) {
-			circleMouse.x = event.getX();
-			circleMouse.y = event.getY();
+			circleMouse.update(event.getX(), event.getY());
+			if(circleMouse.collide(circle)) {
+				circle.addSpeed(circleMouse.x - circleMouse.previousX, circleMouse.y - circleMouse.previousY);
+			}
 		}
 	}
 
@@ -75,7 +78,7 @@ public class ProtoJavaFx extends Application {
 
 	public void drawCircle(Circle c) {
 		ctx.setFill(c.color);
-		ctx.fillOval(c.x - c.r / 2, c.y - c.r / 2, c.r, c.r);
+		ctx.fillOval(c.x - c.r, c.y - c.r, c.r * 2, c.r * 2);
 	}
 
 	public void update(double deltaTime) {
@@ -114,6 +117,11 @@ public class ProtoJavaFx extends Application {
 			this.vy = vy;
 		}
 
+		public void addSpeed(double vx, double vy) {
+			this.vx += vx;
+			this.vy += vy;
+		}
+
 		public void edges() {
 			if(!out && (x < r || x > WIDTH - r)){
 				this.vx *= -1;
@@ -129,6 +137,9 @@ public class ProtoJavaFx extends Application {
 		}
 
 		public void update(double delta) {
+			this.vx *= FRIXION;
+			this.vy *= FRIXION;
+
 			this.x += this.vx * (delta * 10 * 2);
 			this.y += this.vy * (delta * 10 * 2);
 			this.edges();
@@ -141,6 +152,9 @@ public class ProtoJavaFx extends Application {
 		protected double y;
 		protected double r;
 
+		private double previousX;
+		private double previousY;
+
 		private Color color;
 
 		public Circle(double x, double y, double r, Color color) {
@@ -148,6 +162,21 @@ public class ProtoJavaFx extends Application {
 			this.y = y;
 			this.r = r;
 			this.color = color;
+
+			previousX = x;
+			previousY = y;
+		}
+
+		public boolean collide(Circle c) {
+			return ((x - c.x) * (x - c.x) + (y - c.y) * (y - c.y) < (c.r + r) * (c.r + r));
+		}
+
+		public void update(double x, double y) {
+			this.previousX = this.x;
+			this.x = x;
+
+			this.previousY = this.y;
+			this.y = y;
 		}
 	}
 
