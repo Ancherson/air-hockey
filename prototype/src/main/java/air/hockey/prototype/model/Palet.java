@@ -30,12 +30,12 @@ public class Palet extends Circle {
         }
     }
 
-    public void pusherCollisions(Pusher[] pushers){
+    public void pusherCollisions(Pusher[] pushers, double dt){
         for(Pusher p : pushers){
             if(isColliding(p)){
-                resolveCollision(p);
                 Vector normal = position.add(p.position.multiply(-1)).normalize();
-                speed = speed.reflection(normal).add(p.getSpeed());
+                speed = speed.reflection(normal).add(p.getSpeed(dt));
+                resolveCollision(p);
             }
         }
     }
@@ -43,6 +43,6 @@ public class Palet extends Circle {
     public void update(double dt, Wall[] walls, Pusher[] pushers){
         position = position.add(speed.multiply(dt));
         wallCollisions(walls);
-        pusherCollisions(pushers);
+        pusherCollisions(pushers, dt);
     }
 }

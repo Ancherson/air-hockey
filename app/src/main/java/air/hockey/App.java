@@ -3,7 +3,7 @@
  */
 package air.hockey;
 
-import air.hockey.prototype.javafx.ProtoJavaFx;
+import air.hockey.prototype.javafx.*;
 import air.hockey.prototype.model.*;
 
 public class App {
@@ -63,6 +63,6 @@ public class App {
     }
 
     public static void main(String[] args) {
-        ProtoJavaFx.launch(ProtoJavaFx.class, args);
+        ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);
     }
 }

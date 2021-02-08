@@ -48,7 +48,9 @@ public class Vector{
 
     // returns a vector of length 1 with the same direction as itself
     public Vector normalize(){
-        return multiply(1./length());
+        double l = length();
+        if(l == 0) return this;
+        return multiply(1./l);
     }
 
     // returns the reflexion of the vector according to the vector n

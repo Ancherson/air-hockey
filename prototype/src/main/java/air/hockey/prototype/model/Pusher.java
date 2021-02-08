@@ -7,23 +7,23 @@ import air.hockey.prototype.model.Vector;
 
 public class Pusher extends Circle {
 
-    private Vector speed;
+    private Vector lastPosition;
 
     public Pusher(Vector position, double radius){
         super(position,radius);
-        speed = new Vector(0,0);
+        resetMovement();
     }
 
-    public Vector getSpeed(){
-        return speed;
+    public Vector getSpeed(double dt){
+        return position.add(lastPosition.multiply(-1)).normalize().multiply(1./dt);
     }
 
-    public void setSpeed(Vector v){
-        speed = v;
+    public void resetMovement(){
+        lastPosition = position;
     }
     
     public String toString(){
-        return super.toString()+"\nSpeed: "+speed;
+        return super.toString()+"\nLastPosition: "+lastPosition;
     }
 
     public void wallCollisions(Wall[] walls){
