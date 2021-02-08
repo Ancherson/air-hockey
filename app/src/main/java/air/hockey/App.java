@@ -4,15 +4,65 @@
 package air.hockey;
 
 import air.hockey.prototype.javafx.ProtoJavaFx;
+import air.hockey.prototype.model.*;
 
 public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
 
     public static void main(String[] args) {
         System.out.println(new App().getGreeting());
         
         ProtoJavaFx.launch(ProtoJavaFx.class, args);
+        //Vector test
+        Vector v = new Vector(4.2, 1);
+        System.out.println(v);
+        v.setX(10);
+        v.setY(42);
+        System.out.println(v);
+        System.out.println(v.length());
+        System.out.println(v.normalize());
+        System.out.println(v);
+
+        System.out.println(v.add(new Vector(5, 5)));
+        System.out.println(v.multiply(2));
+
+        System.out.println();
+
+        Vector down = new Vector(0, -1);
+        Vector downRight = new Vector(1, -1);
+        Vector up = new Vector(0, 1);
+        Vector right = new Vector(1, 0);
+        Vector upLeft = (new Vector(-1, 1)).normalize();
+        System.out.println("Réflexion R du vecteur V par rapport au vecteur normal N");
+        System.out.println("V: down, N: up, R: "+down.reflection(up));
+        System.out.println("V: downRight, N: up, R: "+downRight.reflection(up));
+        System.out.println("V: right, N: upLeft, R: "+right.reflection(upLeft));
+
+        //Wall test
+        Wall w1 = new Wall(5,6,1,1);
+        Wall w2 = new Wall(v,up);
+        System.out.println(w1);
+        System.out.println(w1.getNormal());
+        System.out.println(downRight.reflection(w2.getNormal()));
+
+        //Circle test
+        Circle palet = new Palet(new Vector(6,6),2);
+        Circle pusher = new Pusher(new Vector(1,2),1);
+
+        System.out.println(palet.isColliding(pusher));
+        System.out.println(pusher.isColliding(palet));
+        System.out.println(palet.isColliding(w1));
+        palet.resolveCollision(w1);
+        System.out.println(palet);
+
+        Palet p = new Palet(new Vector(0, 0), 1);
+        p.setSpeed(new Vector(1, 2));
+        Wall[] walls = {new Wall(-5, 5, 0, 10), new Wall(5, 5, 0, 10), new Wall(-5, 5, 10, 0), new Wall(-5, -5, 10, 0)};
+        Pusher[] pushers = {new Pusher(new Vector(-3.5, 0), 1), new Pusher(new Vector(3.5, 0), 1)};
+
+        for(double t = 0.; t < 10.; t += 1./30.){
+            p.update(1./30., walls, pushers);
+            System.out.println(p);
+        }
+
     }
 }
