@@ -3,11 +3,15 @@
  */
 package air.hockey;
 
+import air.hockey.prototype.javafx.ProtoJavaFx;
 import air.hockey.prototype.model.*;
 
 public class App {
 
     public static void main(String[] args) {
+        System.out.println(new App().getGreeting());
+        
+        ProtoJavaFx.launch(ProtoJavaFx.class, args);
         //Vector test
         Vector v = new Vector(4.2, 1);
         System.out.println(v);
@@ -59,7 +63,6 @@ public class App {
             p.update(1./30., walls, pushers);
             System.out.println(p);
         }
-
 
     }
 }
