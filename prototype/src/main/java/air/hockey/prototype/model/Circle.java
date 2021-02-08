@@ -51,7 +51,7 @@ public class Circle{
     }
 
     public void resolveCollision(Circle c){
-        position = c.position.add(position.add(c.position.multiply(-1)).normalize().multiply((c.radius+radius)*1.01));
+        position = c.position.add(position.add(c.position.multiply(-1)).normalize().multiply(c.radius+radius));
     }
 
     public void resolveCollision(Wall w){

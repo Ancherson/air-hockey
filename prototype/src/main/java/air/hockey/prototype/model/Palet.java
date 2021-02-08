@@ -34,7 +34,7 @@ public class Palet extends Circle {
         for(Pusher p : pushers){
             if(isColliding(p)){
                 Vector normal = position.add(p.position.multiply(-1)).normalize();
-                speed = speed.reflection(normal).add(p.getSpeed(dt));
+                speed = normal.multiply(speed.length()).add(p.getSpeed(dt));
                 resolveCollision(p);
             }
         }
