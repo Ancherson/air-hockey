@@ -34,7 +34,7 @@ public class Circle{
     private Vector closestPoint(Wall w){
         Vector P = w.getPosition();
         Vector D = w.getDirection();
-        double lambda = (position.add(P.multiply(-1)).dotProduct(D))/(D.dotProduct(D));
+        double lambda = Math.max(0, Math.min(1, (position.add(P.multiply(-1)).dotProduct(D))/(D.dotProduct(D))));
         return P.add(D.multiply(lambda));
     }
 
@@ -58,5 +58,4 @@ public class Circle{
         Vector cp = closestPoint(w);
         resolveCollision(new Circle(cp,0));
     }
-
 }
