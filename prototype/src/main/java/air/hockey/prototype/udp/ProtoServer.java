@@ -1,6 +1,9 @@
 package air.hockey.prototype.udp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -20,8 +23,22 @@ public class ProtoServer extends Thread {
         clientAddress = new ArrayList<>();
     }
 
+    public void receiveMessage(byte[]buf, DatagramPacket packet) {
+        String content = new String(buf, buf.length);
+
+        InetAddress address = packet.getAddress();
+        System.out.println(packet.getPort());
+
+        if(!clientAddress.contains(address)) {
+            clientAddress.add(address);
+        }
+
+        System.out.println(address + " : " + content);
+    }
+
     @Override
     public void run() {
+        System.out.println("Serveur Lancé");
         byte[]buf = new byte[BUFFER];
         try {
             while(true) {
@@ -29,28 +46,14 @@ public class ProtoServer extends Thread {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
                 socket.receive(packet);
+                //receiveMessage(buf,packet);
 
-                String content = new String(buf, buf.length);
-
-                InetAddress address = packet.getAddress();
-                System.out.println(packet.getPort());
-
-                if(!clientAddress.contains(address)) {
-                    clientAddress.add(address);
-                }
-
-                System.out.println(address + " : " + content);
-
-//                byte[]data = (address + " : " + content).getBytes();
-
-//                for(int i = 0; i < clientAddress.size(); i++) {
-//                    InetAddress ci = clientAddress.get(i);
-//
-//                }
-
-
+                ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+                Personne p = (Personne)ois.readObject();
+                ois.close();
+                System.out.println(p);
             }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
