@@ -40,7 +40,7 @@ public class ProtoClient{
                     while(!in.ready()){
                         Thread.sleep(100);
                     }
-                Message(in.readLine());
+                    Message(in.readLine());
                 }catch(Exception e){
                         System.out.println("erreur");
                 }
@@ -52,13 +52,13 @@ public class ProtoClient{
         private final int SERVER_PORT = 6631;
         private String hostname = "localhost";
         private DatagramSocket socket;
-        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 
         public PersonneSender(DatagramSocket d) {
             socket = d;
         }
 
         public void message(Personne p) throws IOException {
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
             oo.writeObject(p);
             oo.close();
@@ -67,30 +67,42 @@ public class ProtoClient{
             socket.send(packet);
         }
 
+        public void wait(BufferedReader in) throws IOException, InterruptedException {
+            while(!in.ready()){
+                Thread.sleep(100);
+            }
+        }
+
         @Override
         public void run() {
-            Scanner sc = new Scanner(System.in);
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             while(true) {
                 try {
                     System.out.print("nom : ");
-                    String nom = sc.next();
+                    wait(in);
+                    String nom = in.readLine();
                     System.out.print("prénom : ");
-                    String prenom = sc.next();
+                    wait(in);
+                    String prenom = in.readLine();
                     System.out.print("age : ");
                     int age = 0;
+                    String a = "";
                     boolean pbm;
                     do {
                         pbm = false;
                         try {
-                            age = sc.nextInt();
+                            wait(in);
+                            a = in.readLine();
+                            age = Integer.parseInt(a);
                         }catch (RuntimeException e) {
                             System.out.println("Un AGE SVP !!!");
                             pbm = true;
                         }
-                    }while(!pbm);
+                    }while(pbm);
                     Personne p = new Personne(nom, prenom, age);
+                    System.out.println(p);
                     message(p);
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
