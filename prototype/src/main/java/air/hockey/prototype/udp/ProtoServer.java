@@ -51,6 +51,7 @@ public class ProtoServer extends Thread {
                 ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
                 Personne p = (Personne)ois.readObject();
                 ois.close();
+                System.out.println(p);
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

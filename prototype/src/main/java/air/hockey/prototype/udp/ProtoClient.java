@@ -100,7 +100,6 @@ public class ProtoClient{
                         }
                     }while(pbm);
                     Personne p = new Personne(nom, prenom, age);
-                    System.out.println(p);
                     message(p);
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
