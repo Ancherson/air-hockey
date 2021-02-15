@@ -20,10 +20,8 @@ public class ProtoPhysicJavaFx extends Application {
     private final int FPS = 60;
     private final long NANOTIME_PER_FRAME = Math.round(1.0 / FPS * 1e9);//in nanoseconds
     private boolean isPressed;
-    
-    private Palet palet;
-    private Pusher[] pusher;
-    private Wall[] walls;
+
+    private Model model;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,9 +34,6 @@ public class ProtoPhysicJavaFx extends Application {
         canvas.setOnMouseDragged(this::mouseDragged);
         canvas.setOnMouseReleased(this::mouseReleased);
 
-        
-
-
         Pane root = new Pane();
         root.getChildren().add(canvas);
 
@@ -48,17 +43,8 @@ public class ProtoPhysicJavaFx extends Application {
         primaryStage.show();
 
         isPressed = false;
-        
-        palet = new Palet(new Vector(400, 250), 20);
-        palet.setSpeed(new Vector(50, 70));
 
-        pusher = new Pusher[1];
-        pusher[0] = new Pusher(new Vector(300, 250), 25);
-        walls = new Wall[4];
-        walls[0] = new Wall(50, 50, WIDTH-100, 0);
-        walls[1] = new Wall(50, 50, 0, HEIGHT-100);
-        walls[2] = new Wall(WIDTH-50, 50, 0, HEIGHT-100);
-        walls[3] = new Wall(50, HEIGHT-50, WIDTH-100, 0);
+        model = new Model();
 
         draw();
         new Animation().start();
@@ -82,32 +68,22 @@ public class ProtoPhysicJavaFx extends Application {
     public void draw(){
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
-        drawCircle(palet, Color.BLUE);
-        drawCircle(pusher[0], Color.RED);
-        for(Wall w : walls){
+        drawCircle(model.getPalet(), Color.BLUE);
+        drawCircle(model.getPushers()[0], Color.RED);
+        for(Wall w : model.getWalls()){
             drawWall(w, Color.BLACK);
         }
     }
 
-    public void update(double dt){
-        palet.update(dt, walls, pusher);
-        pusher[0].resetMovement();
-    }
-
-    public boolean isInCircleMouse(double x, double y){
-        return pusher[0].getPosition().add(new Vector(x, y).multiply(-1)).length() < pusher[0].getRadius(); 
-    }
-
     public void mousePressed(MouseEvent event) {
-		if(isInCircleMouse(event.getX(), event.getY())) {
+		if(model.isInPusher(event.getX(), event.getY())) {
             isPressed = true;
 		}
     }
     
     public void mouseDragged(MouseEvent event) {
 		if(isPressed) {
-            pusher[0].setPosition(new Vector(event.getX(), event.getY()));
-            pusher[0].wallCollisions(walls);
+            model.setLocationPusher(event.getX(), event.getY());
 		}
 	}
 
@@ -123,7 +99,7 @@ public class ProtoPhysicJavaFx extends Application {
             long dt = now-lastUpdateTime;
 
             if(dt >= NANOTIME_PER_FRAME){
-                update(dt/(1e9*1.0));
+                model.update(dt/(1e9*1.0));
                 draw();
                 lastUpdateTime = now;
             }
