@@ -50,6 +50,10 @@ public class ProtoPhysicJavaFx extends Application {
         new Animation().start();
     }
 
+    public Model getModel() {
+        return model;
+    }
+
     public void drawCircle(Circle c, Color col){
         ctx.setFill(col);
         ctx.fillOval(c.getPosition().getX()-c.getRadius(), c.getPosition().getY()-c.getRadius(), 2*c.getRadius(), 2*c.getRadius());

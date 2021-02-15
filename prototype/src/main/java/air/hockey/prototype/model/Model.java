@@ -8,6 +8,8 @@ public class Model {
     private final int WIDTH = 800;
     private final int HEIGHT = 500;
 
+    private boolean hasPusherMoved = false;
+
     public Model() {
         palet = new Palet(new Vector(400, 250), 20);
         palet.setSpeed(new Vector(50, 70));
@@ -38,9 +40,18 @@ public class Model {
         return walls;
     }
 
+    public boolean hasPusherMoved() {
+        if(hasPusherMoved) {
+            hasPusherMoved = false;
+            return true;
+        }
+        return false;
+    }
+
     public void setLocationPusher(double x, double y) {
         pushers[0].setPosition(new Vector(x, y));
         pushers[0].wallCollisions(walls);
+        hasPusherMoved = true;
     }
 
     public void setLocationPalet(double x, double y) {
