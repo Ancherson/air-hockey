@@ -1,5 +1,7 @@
 package air.hockey.prototype.model;
 
+import java.lang.Math.*;
+
 public class Palet extends Circle {
 
     private Vector speed;
@@ -27,6 +29,7 @@ public class Palet extends Circle {
             if(isColliding(w)){
                 resolveCollision(w);
                 speed = speed.reflection(w.getNormal());
+                speed = speed.multiply(0.9);
                 hasCollided = true;
             }
         }
@@ -40,6 +43,7 @@ public class Palet extends Circle {
                 Vector normal = position.add(p.position.multiply(-1)).normalize();
                 speed = normal.multiply(speed.length()).add(p.getSpeed(dt));
                 resolveCollision(p);
+                speed = speed.multiply(0.96);
                 hasCollided = true;
             }
         }
@@ -53,13 +57,16 @@ public class Palet extends Circle {
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
+
+        double coeffFriction = 0.92;
+        speed = speed.multiply(Math.pow(coeffFriction, dt));
+
         for(double l = step; l < length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
             if(wallCollisions(walls) || pusherCollisions(pushers, dt)){
                 break;
             }
         }
-
 
     }
 }
