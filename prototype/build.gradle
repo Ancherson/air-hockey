@@ -4,6 +4,16 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.9'
 }
 
+apply plugin: 'java'
+
+task(runServer, dependsOn: 'classes', type: JavaExec) {
+   main = 'air.hockey.prototype.udp.ProtoServer'
+   classpath = sourceSets.main.runtimeClasspath
+}
+task(runClient, dependsOn: 'classes', type: JavaExec) {
+    main = 'air.hockey.prototype.udp.ProtoClient'
+    classpath = sourceSets.main.runtimeClasspath
+}
 repositories {
     // Use JCenter for resolving dependencies.
     jcenter()
