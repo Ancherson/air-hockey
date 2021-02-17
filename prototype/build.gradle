@@ -7,7 +7,7 @@ plugins {
 apply plugin: 'java'
 
 task(runServer, dependsOn: 'classes', type: JavaExec) {
-   main = 'air.hockey.prototype.udp.ProtoServer'
+   main = 'air.hockey.prototype.udp.Server'
    classpath = sourceSets.main.runtimeClasspath
 }
 task(runClient, dependsOn: 'classes', type: JavaExec) {
