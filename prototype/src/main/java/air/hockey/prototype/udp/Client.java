@@ -6,20 +6,27 @@ import air.hockey.prototype.model.Model;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 
 public class Client {
+    private String hostname = "localhost";
     public final int SERVER_PORT = 6666;
     private ProtoPhysicJavaFx game;
     public Client(String[]args) throws IOException {
         DatagramSocket socket = new DatagramSocket();
         game = new ProtoPhysicJavaFx();
-        //TODO ENVOYER AU SERVEUR QUE TU VEUX TE CONNECTER ET ATTENTRE SA REPONSE POUR LANCER LES 3 THREAD DESSOUS
-        byte[] buf = new byte[1024];
+
+        String connect = "connexion";
+        byte[] msgco = connect.getBytes();
+        DatagramPacket msg = new DatagramPacket(msgco,msgco.length, InetAddress.getByName(hostname),SERVER_PORT);
+        socket.send(msg);
+
+        byte[] buf = new byte[3];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
         String res = new String(buf);
-        System.out.println(buf);
+        System.out.println(res);
         //new Sender(socket).start();
         //new Receiver(socket).start();
         //ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);

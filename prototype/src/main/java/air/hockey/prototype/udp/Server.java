@@ -38,7 +38,7 @@ public class Server extends Thread {
         //TODO AVOIR DEUX JOUEURS CONNECTES ET STOCKER DANS LES LISTES LEUR PORT ET ADDRESSES
         try {
             while(nbClient < 2) {
-                byte[] buf = new byte[1024];
+                byte[] buf = new byte[9];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 String message = new String(buf);
