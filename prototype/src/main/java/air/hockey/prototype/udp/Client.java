@@ -65,9 +65,9 @@ public class Client {
         @Override
         public void run() {
             while (true) {
-                Model model = game.getModel();
-                if(model.hasPusherMoved) {
-                    model.hasPusherMoved = false;
+                System.out.print("");
+                if(game.getModel().hasPusherMoved) {
+                    game.getModel().hasPusherMoved = false;
                     System.out.println("J'ENVOIE LA POSITION DU PUSHER");
                     try {
                         sendPusher();

@@ -2,13 +2,13 @@ package air.hockey.prototype.model;
 
 public class Model {
     private Palet palet;
-    private Pusher[] pushers;
+    private static Pusher[] pushers;
     private Wall[] walls;
 
     private final int WIDTH = 800;
     private final int HEIGHT = 500;
 
-    public boolean hasPusherMoved = false;
+    public static boolean hasPusherMoved = false;
 
     public Model() {
         palet = new Palet(new Vector(400, 250), 20);

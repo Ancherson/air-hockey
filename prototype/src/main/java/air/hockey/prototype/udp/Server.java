@@ -85,8 +85,8 @@ public class Server extends Thread {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
         model.getPushers()[0] = p;
-        if(packet.getPort() == clientPorts.get(0)) iClient = 0;
-        else iClient = 1;
+        if(packet.getPort() == clientPorts.get(0)) iClient = 1;
+        else iClient = 0;
         haveReceivedPusher = true;
     }
 
@@ -102,12 +102,13 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
-    public class Sender extends Thread {
+    public class Receiver extends Thread {
         @Override
         public void run() {
             //TODO ENVOYER AU DEUX JOUEURS LA POSITION DU PALET
             //TODO ET SI LE PUSHER A BOUGE, ENVOYER LA POSITION DU PUSHER
             while(true) {
+
                 try {
                     System.out.println("J'ATTENDS DE RECECOIR LE PUSHER");
                     receivePusher();
@@ -121,11 +122,12 @@ public class Server extends Thread {
         }
     }
 
-    public class Receiver extends Thread {
+    public class Sender extends Thread {
         @Override
         public void run() {
             //TODO ACTUALISER LA POSITION DU PUSHER
             while(true) {
+                System.out.print("");
                 if(haveReceivedPusher) {
                     haveReceivedPusher = false;
                     try {
