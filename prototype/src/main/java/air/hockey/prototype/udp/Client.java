@@ -2,8 +2,9 @@ package air.hockey.prototype.udp;
 
 import air.hockey.prototype.javafx.ProtoPhysicJavaFx;
 import air.hockey.prototype.model.Model;
+import air.hockey.prototype.model.Pusher;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -12,9 +13,10 @@ import java.net.SocketException;
 public class Client {
     private String hostname = "localhost";
     public final int SERVER_PORT = 6666;
+    private DatagramSocket socket;
     private ProtoPhysicJavaFx game;
     public Client(String[]args) throws IOException {
-        DatagramSocket socket = new DatagramSocket();
+        socket = new DatagramSocket();
         game = new ProtoPhysicJavaFx();
 
         String connect = "connexion";
@@ -24,12 +26,34 @@ public class Client {
 
         byte[] buf = new byte[3];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        System.out.println("ATTEND REPONSE DU SERVEUR");
         socket.receive(packet);
+        System.out.println("J'AI RECU");
         String res = new String(buf);
         System.out.println(res);
-        //new Sender(socket).start();
-        //new Receiver(socket).start();
-        //ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);
+        new Sender().start();
+        new Receiver().start();
+        ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);
+    }
+
+    public void sendPusher() throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeObject(game.getModel().getPushers()[0]);
+        oo.close();
+        byte[] pusherSerialized = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(hostname), SERVER_PORT);
+        socket.send(packet);
+    }
+
+    public void receivePusher() throws IOException, ClassNotFoundException {
+        byte[]buf = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+        Pusher p = (Pusher)ois.readObject();
+        ois.close();
+        game.getModel().getPushers()[0] = p;
     }
 
     public static void main(String[] args) throws IOException {
@@ -37,32 +61,39 @@ public class Client {
     }
 
     public class Sender extends Thread {
-        private DatagramSocket socket;
-        public Sender(DatagramSocket socket) {
-            this.socket = socket;
-        }
 
         @Override
         public void run() {
             while (true) {
                 Model model = game.getModel();
-                if(model.hasPusherMoved()) {
-                    //TODO ENVOYER AU SERVEUR LA NOUVELLE POSITION DU PUSHER
+                if(model.hasPusherMoved) {
+                    model.hasPusherMoved = false;
+                    System.out.println("J'ENVOIE LA POSITION DU PUSHER");
+                    try {
+                        sendPusher();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
     }
 
     public class Receiver extends Thread {
-        private DatagramSocket socket;
-        public Receiver(DatagramSocket socket) {
-            this.socket = socket;
-        }
 
         @Override
         public void run() {
             while(true) {
-                //TODO RECOIT LA VRAIE POSITION DU PALET ET L'ACTUALISE, PEUT RECEVOIR LA POSITION DU PUSHER
+                //TODO RECOIT LA VRAIE POSITION DU PALET ET L'ACTUALISE
+                try {
+                    System.out.println("J'ATTEND DE RECEVOIR LE PUSHER");
+                    receivePusher();
+                    System.out.println("J'AI RECU LE PUSHER");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

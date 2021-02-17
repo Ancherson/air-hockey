@@ -23,6 +23,11 @@ public class ProtoPhysicJavaFx extends Application {
 
     private Model model;
 
+    public ProtoPhysicJavaFx() {
+        super();
+        model = new Model();
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setWidth(WIDTH);
@@ -43,8 +48,6 @@ public class ProtoPhysicJavaFx extends Application {
         primaryStage.show();
 
         isPressed = false;
-
-        model = new Model();
 
         draw();
         new Animation().start();
