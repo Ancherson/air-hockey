@@ -5,6 +5,7 @@ import java.lang.Math.*;
 public class Palet extends Circle {
 
     private Vector speed;
+    private final static double COEFF_FRICTION = 0.92;
     
     public Palet(Vector position, double radius){
         super(position, radius);
@@ -29,7 +30,7 @@ public class Palet extends Circle {
             if(isColliding(w)){
                 resolveCollision(w);
                 speed = speed.reflection(w.getNormal());
-                speed = speed.multiply(0.9);
+                speed = speed.multiply(0.94);
                 hasCollided = true;
             }
         }
@@ -51,15 +52,13 @@ public class Palet extends Circle {
     }
 
     public void update(double dt, Wall[] walls, Pusher[] pushers){
+        speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
 
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
-
-        double coeffFriction = 0.92;
-        speed = speed.multiply(Math.pow(coeffFriction, dt));
 
         for(double l = step; l < length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
