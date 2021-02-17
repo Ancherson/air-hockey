@@ -2,6 +2,8 @@ package air.hockey.prototype.udp;
 
 import air.hockey.prototype.model.Model;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 
 public class Server extends Thread {
     public final int SERVER_PORT = 6666;
+    public final String hostname = "localhost";
     private DatagramSocket socket;
 
     private int nbClient;
@@ -24,9 +27,33 @@ public class Server extends Thread {
         model = new Model();
     }
 
+    public void message(String content, InetAddress address, int port) throws IOException {
+        byte[]message = content.getBytes();
+        DatagramPacket packet = new DatagramPacket(message, message.length, address, port);
+        socket.send(packet);
+    }
+
     @Override
     public void run() {
-        //TODO AVOIR DE JOUEUR CONNECTER ET STOCKER DANS LES LISTES LEUR PORT ET ADDRESSES
+        //TODO AVOIR DEUX JOUEURS CONNECTES ET STOCKER DANS LES LISTES LEUR PORT ET ADDRESSES
+        try {
+            while(nbClient < 2) {
+                byte[] buf = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                socket.receive(packet);
+                String message = new String(buf);
+                if (message.equals("connexion")) {
+                    nbClient++;
+                    System.out.println("TOTAL JOUEUR CONNECTE : " + nbClient);
+                    clientPorts.add(packet.getPort());
+                    clientAddress.add(packet.getAddress());
+                    message("oui", packet.getAddress(), packet.getPort());
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //TODO LANCER LE THREAD SENDER
         //TODO LANCER LE THREAD RECEIVER
