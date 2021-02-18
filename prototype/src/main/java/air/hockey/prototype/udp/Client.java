@@ -2,6 +2,7 @@ package air.hockey.prototype.udp;
 
 import air.hockey.prototype.javafx.ProtoPhysicJavaFx;
 import air.hockey.prototype.model.Model;
+import air.hockey.prototype.model.Palet;
 import air.hockey.prototype.model.Pusher;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public class Client {
     public final int SERVER_PORT = 6666;
     private DatagramSocket socket;
     private Model model;
+    private int id;
 
     public Client(Model m) throws IOException {
         socket = new DatagramSocket();
@@ -32,7 +34,10 @@ public class Client {
         System.out.println("J'AI RECU");
         String res = new String(buf);
         if(res.equals("1")){
+            id = 1;
             model.swapPushers();
+        } else {
+            id = 0;
         }
         System.out.println(res);
         new Sender().start();
@@ -57,6 +62,19 @@ public class Client {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
         model.getPushers()[1] = p;
+    }
+
+    public void receiveModel() throws IOException, ClassNotFoundException {
+        System.out.println("J'AI RECU MODELE");
+        byte[]buf = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        socket.receive(packet);
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+        Pusher p = ((Pusher[])ois.readObject())[1-id];
+        Palet pa = (Palet)ois.readObject();
+        ois.close();
+        model.getPushers()[1] = p;
+        model.setPalet(pa);
     }
 
     public static void main(String[] args) throws IOException {
@@ -89,7 +107,7 @@ public class Client {
                 //TODO RECOIT LA VRAIE POSITION DU PALET ET L'ACTUALISE
                 try {
                     System.out.println("J'ATTEND DE RECEVOIR LE PUSHER");
-                    receivePusher();
+                    receiveModel();
                     System.out.println("J'AI RECU LE PUSHER");
                 } catch (IOException e) {
                     e.printStackTrace();

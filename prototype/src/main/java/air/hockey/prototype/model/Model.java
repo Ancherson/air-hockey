@@ -37,6 +37,10 @@ public class Model {
         return palet;
     }
 
+    public void setPalet(Palet p){
+        palet = p;
+    }
+
     public Wall[] getWalls() {
         return walls;
     }

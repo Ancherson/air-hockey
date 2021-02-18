@@ -71,6 +71,15 @@ public class Server extends Thread {
         //TODO LANCER LE THREAD RECEIVER
 
         //TODO LANCER UN WHILE TRUE QUI APPELLE UPDATE
+        double lastT = System.nanoTime();
+        double t;
+        while(true){
+            t = System.nanoTime();
+            double dt = (t-lastT)/(1e9*1.0);
+            model.update(dt);
+            lastT = t;
+
+        }
     }
 
     public static void main(String[] args) throws SocketException {
@@ -84,10 +93,40 @@ public class Server extends Thread {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         Pusher p = (Pusher)ois.readObject();
         ois.close();
-        model.getPushers()[0] = p;
         if(packet.getPort() == clientPorts.get(0)) iClient = 1;
         else iClient = 0;
+        model.getPushers()[1-iClient] = p;
         haveReceivedPusher = true;
+    }
+
+    public void sendObjects() throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeObject(model.getPushers());
+        oo.writeObject(model.getPalet());
+        oo.close();
+        byte[] objectSerialized = bStream.toByteArray();
+        int port = clientPorts.get(0);
+        InetAddress address = clientAddress.get(0);
+        DatagramPacket packet = new DatagramPacket(objectSerialized, objectSerialized.length, address, port);
+        socket.send(packet);
+
+        int port2 = clientPorts.get(1);
+        InetAddress address2 = clientAddress.get(1);
+        DatagramPacket packet2 = new DatagramPacket(objectSerialized, objectSerialized.length, address2, port2);
+        socket.send(packet2);
+    }
+
+    public<T extends Serializable> void sendObject(T t) throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeObject(t);
+        oo.close();
+        byte[] objectSerialized = bStream.toByteArray();
+        int port = clientPorts.get(iClient);
+        InetAddress address = clientAddress.get(iClient);
+        DatagramPacket packet = new DatagramPacket(objectSerialized, objectSerialized.length, address, port);
+        socket.send(packet);
     }
 
     public void sendPusher() throws IOException {
@@ -101,6 +140,7 @@ public class Server extends Thread {
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, address, port);
         socket.send(packet);
     }
+
 
     public class Receiver extends Thread {
         @Override
@@ -128,15 +168,12 @@ public class Server extends Thread {
             //TODO ACTUALISER LA POSITION DU PUSHER
             while(true) {
                 System.out.print("");
-                if(haveReceivedPusher) {
-                    haveReceivedPusher = false;
                     try {
                         System.out.println("J'ENVOIE LE PUSHER");
-                        sendPusher();
+                        sendObjects();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
             }
         }
     }
