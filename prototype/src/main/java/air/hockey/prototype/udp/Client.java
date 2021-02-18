@@ -66,8 +66,7 @@ public class Client {
         public void run() {
             while (true) {
                 System.out.print("");
-                if(game.getModel().hasPusherMoved) {
-                    game.getModel().hasPusherMoved = false;
+                if(game.getModel().hasPusherMoved()) {
                     System.out.println("J'ENVOIE LA POSITION DU PUSHER");
                     try {
                         sendPusher();

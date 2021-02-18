@@ -8,7 +8,7 @@ public class Model {
     private final int WIDTH = 800;
     private final int HEIGHT = 500;
 
-    public static boolean hasPusherMoved = false;
+    private static boolean hasPusherMoved = false;
 
     public Model() {
         palet = new Palet(new Vector(400, 250), 20);
