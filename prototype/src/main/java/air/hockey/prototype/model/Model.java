@@ -2,20 +2,21 @@ package air.hockey.prototype.model;
 
 public class Model {
     private Palet palet;
-    private static Pusher[] pushers;
+    private Pusher[] pushers;
     private Wall[] walls;
 
     private final int WIDTH = 800;
     private final int HEIGHT = 500;
 
-    private static boolean hasPusherMoved = false;
+    private boolean hasPusherMoved = false;
 
     public Model() {
         palet = new Palet(new Vector(400, 250), 20);
         palet.setSpeed(new Vector(50, 70));
 
-        pushers = new Pusher[1];
+        pushers = new Pusher[2];
         pushers[0] = new Pusher(new Vector(300, 250), 25);
+        pushers[1] = new Pusher(new Vector(600, 250), 25);
         walls = new Wall[4];
         walls[0] = new Wall(50, 50, WIDTH-100, 0);
         walls[1] = new Wall(50, 50, 0, HEIGHT-100);
@@ -38,6 +39,12 @@ public class Model {
 
     public Wall[] getWalls() {
         return walls;
+    }
+
+    public void swapPushers(){
+        Pusher tmp = pushers[0];
+        pushers[0] = pushers[1];
+        pushers[1] = tmp;
     }
 
     public boolean hasPusherMoved() {

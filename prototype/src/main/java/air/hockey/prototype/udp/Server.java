@@ -55,7 +55,7 @@ public class Server extends Thread {
             }
 
             for(int i = 0; i < clientAddress.size(); i++) {
-                message("oui", clientAddress.get(i), clientPorts.get(i));
+                message(i+"", clientAddress.get(i), clientPorts.get(i));
             }
 
         } catch (IOException e) {

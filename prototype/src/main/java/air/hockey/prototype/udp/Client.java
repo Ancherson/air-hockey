@@ -14,32 +14,35 @@ public class Client {
     private String hostname = "localhost";
     public final int SERVER_PORT = 6666;
     private DatagramSocket socket;
-    private ProtoPhysicJavaFx game;
-    public Client(String[]args) throws IOException {
+    private Model model;
+
+    public Client(Model m) throws IOException {
         socket = new DatagramSocket();
-        game = new ProtoPhysicJavaFx();
+        model = m;
 
         String connect = "connexion";
         byte[] msgco = connect.getBytes();
         DatagramPacket msg = new DatagramPacket(msgco,msgco.length, InetAddress.getByName(hostname),SERVER_PORT);
         socket.send(msg);
 
-        byte[] buf = new byte[3];
+        byte[] buf = new byte[1];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         System.out.println("ATTEND REPONSE DU SERVEUR");
         socket.receive(packet);
         System.out.println("J'AI RECU");
         String res = new String(buf);
+        if(res.equals("1")){
+            model.swapPushers();
+        }
         System.out.println(res);
         new Sender().start();
         new Receiver().start();
-        ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);
     }
 
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeObject(game.getModel().getPushers()[0]);
+        oo.writeObject(model.getPushers()[0]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(hostname), SERVER_PORT);
@@ -53,11 +56,11 @@ public class Client {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         Pusher p = (Pusher)ois.readObject();
         ois.close();
-        game.getModel().getPushers()[0] = p;
+        model.getPushers()[1] = p;
     }
 
     public static void main(String[] args) throws IOException {
-        new Client(args);
+        ProtoPhysicJavaFx.launch(ProtoPhysicJavaFx.class, args);
     }
 
     public class Sender extends Thread {
@@ -65,8 +68,8 @@ public class Client {
         @Override
         public void run() {
             while (true) {
-                System.out.print("");
-                if(game.getModel().hasPusherMoved()) {
+                System.out.print("");//Très louche!!!...
+                if(model.hasPusherMoved()) {
                     System.out.println("J'ENVOIE LA POSITION DU PUSHER");
                     try {
                         sendPusher();

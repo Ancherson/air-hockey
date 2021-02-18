@@ -1,5 +1,6 @@
 package air.hockey.prototype.javafx;
 
+import air.hockey.prototype.udp.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -12,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 
 import air.hockey.prototype.model.*;
 
+import java.io.IOException;
+
 public class ProtoPhysicJavaFx extends Application {
     private Canvas canvas;
     private GraphicsContext ctx;
@@ -23,9 +26,21 @@ public class ProtoPhysicJavaFx extends Application {
 
     private Model model;
 
+    private Client client;
+
     public ProtoPhysicJavaFx() {
         super();
+    }
+
+    @Override
+    public void init() throws Exception {
+        super.init();
         model = new Model();
+        try {
+            client = new Client(model);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -76,7 +91,8 @@ public class ProtoPhysicJavaFx extends Application {
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
         drawCircle(model.getPalet(), Color.BLUE);
-        drawCircle(model.getPushers()[0], Color.RED);
+        drawCircle(model.getPushers()[0], Color.GREEN);
+        drawCircle(model.getPushers()[1], Color.RED);
         for(Wall w : model.getWalls()){
             drawWall(w, Color.BLACK);
         }
@@ -112,4 +128,10 @@ public class ProtoPhysicJavaFx extends Application {
             }
         }
     }
+
+    /*public static void main(String[] args) {
+        System.out.println("a");
+        ProtoPhysicJavaFx.launch(args);
+        System.out.println("b");
+    }*/
 }
