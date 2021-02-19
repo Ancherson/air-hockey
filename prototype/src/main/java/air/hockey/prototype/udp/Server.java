@@ -150,9 +150,9 @@ public class Server extends Thread {
             while(true) {
 
                 try {
-                    System.out.println("J'ATTENDS DE RECECOIR LE PUSHER");
+                    //System.out.println("J'ATTENDS DE RECECOIR LE PUSHER");
                     receivePusher();
-                    System.out.println("J'EN AI RECU UN");
+                    //System.out.println("J'EN AI RECU UN");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -167,9 +167,9 @@ public class Server extends Thread {
         public void run() {
             //TODO ACTUALISER LA POSITION DU PUSHER
             while(true) {
-                System.out.print("");
+                //System.out.print("");
                     try {
-                        System.out.println("J'ENVOIE LE PUSHER");
+                        //System.out.println("J'ENVOIE LE PUSHER");
                         sendObjects();
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -65,7 +65,7 @@ public class Client {
     }
 
     public void receiveModel() throws IOException, ClassNotFoundException {
-        System.out.println("J'AI RECU MODELE");
+        //System.out.println("J'AI RECU MODELE");
         byte[]buf = new byte[1024];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
@@ -86,18 +86,20 @@ public class Client {
         @Override
         public void run() {
             while (true) {
-                System.out.print("");//Très louche!!!...
-                if(model.hasPusherMoved()) {
-                    System.out.println("J'ENVOIE LA POSITION DU PUSHER");
-                    try {
-                        sendPusher();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                synchronized(model) {
+                        if (model.hasPusherMoved()) {
+                            //System.out.println("J'ENVOIE LA POSITION DU PUSHER");
+                            try {
+                                sendPusher();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                 }
             }
         }
     }
+
 
     public class Receiver extends Thread {
 
@@ -106,9 +108,9 @@ public class Client {
             while(true) {
                 //TODO RECOIT LA VRAIE POSITION DU PALET ET L'ACTUALISE
                 try {
-                    System.out.println("J'ATTEND DE RECEVOIR LE PUSHER");
+                    //System.out.println("J'ATTEND DE RECEVOIR LE PUSHER");
                     receiveModel();
-                    System.out.println("J'AI RECU LE PUSHER");
+                    //System.out.println("J'AI RECU LE PUSHER");
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
