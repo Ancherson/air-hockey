@@ -49,11 +49,11 @@ public class ProtoPhysicJavaFx extends Application {
 
         isPressed = false;
         
-        palet = new Palet(new Vector(400, 250), 20);
-        palet.setSpeed(new Vector(50, 70));
+        palet = new Palet(new Vector(400, 200), 20);
+        palet.setSpeed(new Vector(0, 1));
 
         pusher = new Pusher[1];
-        pusher[0] = new Pusher(new Vector(300, 250), 25);
+        pusher[0] = new Pusher(new Vector(300, 100), 25);
         walls = new Wall[4];
         walls[0] = new Wall(50, 50, WIDTH-100, 0);
         walls[1] = new Wall(50, 50, 0, HEIGHT-100);
@@ -91,6 +91,7 @@ public class ProtoPhysicJavaFx extends Application {
 
     public void update(double dt){
         palet.update(dt, walls, pusher);
+        pusher[0].paletCollision(palet);
         pusher[0].resetMovement();
     }
 
@@ -122,11 +123,11 @@ public class ProtoPhysicJavaFx extends Application {
         public void handle(long now){
             long dt = now-lastUpdateTime;
 
-            if(dt >= NANOTIME_PER_FRAME){
+            //if(dt >= NANOTIME_PER_FRAME){
                 update(dt/(1e9*1.0));
                 draw();
                 lastUpdateTime = now;
-            }
+            //}
         }
     }
 }

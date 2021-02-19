@@ -33,4 +33,10 @@ public class Pusher extends Circle {
             }
         }
     }
+
+    public void paletCollision(Palet p){
+        if(isColliding(p)){
+            resolveCollision(p);
+        }
+    }
 }
