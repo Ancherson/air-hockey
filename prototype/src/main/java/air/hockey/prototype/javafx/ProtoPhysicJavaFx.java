@@ -23,6 +23,7 @@ public class ProtoPhysicJavaFx extends Application {
     private final int FPS = 60;
     private final long NANOTIME_PER_FRAME = Math.round(1.0 / FPS * 1e9);//in nanoseconds
     private boolean isPressed;
+    private double lastDragTime;
 
     private Model model;
 
@@ -102,12 +103,16 @@ public class ProtoPhysicJavaFx extends Application {
     public void mousePressed(MouseEvent event) {
 		if(model.isInPusher(event.getX(), event.getY())) {
             isPressed = true;
+            lastDragTime = System.nanoTime();
 		}
     }
     
     public void mouseDragged(MouseEvent event) {
 		if(isPressed) {
-            model.setLocationPusher(event.getX(), event.getY());
+		    double time = System.nanoTime();
+		    double dt = (time-lastDragTime)/(1e9*1.0);
+		    lastDragTime = time;
+            model.setLocationPusher(event.getX(), event.getY(), dt);
 		}
 	}
 
