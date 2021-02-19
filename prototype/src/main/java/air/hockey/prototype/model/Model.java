@@ -59,8 +59,10 @@ public class Model {
         return false;
     }
 
-    public void setLocationPusher(double x, double y) {
+    public void setLocationPusher(double x, double y, double dt) {
+        pushers[0].resetMovement();
         pushers[0].setPosition(new Vector(x, y));
+        pushers[0].setSpeed(pushers[0].getPosition().add(pushers[0].getLastPosition().multiply(-1)).normalize().multiply(1.0/dt));
         pushers[0].wallCollisions(walls);
         hasPusherMoved = true;
     }

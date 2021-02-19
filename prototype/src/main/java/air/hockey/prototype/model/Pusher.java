@@ -10,14 +10,27 @@ import java.io.Serializable;
 public class Pusher extends Circle implements Serializable {
 
     private Vector lastPosition;
+    private Vector speed;
 
     public Pusher(Vector position, double radius){
         super(position,radius);
         resetMovement();
+        speed = new Vector(0, 0);
     }
 
-    public Vector getSpeed(double dt){
-        return position.add(lastPosition.multiply(-1)).normalize().multiply(1./dt);
+    public void setSpeed(Vector s){
+        speed = s;
+    }
+    public Vector getSpeed(){
+        return speed;
+    }
+
+    public Vector getLastPosition(){
+        return lastPosition;
+    }
+
+    public void setLastPosition(Vector p){
+        lastPosition = p;
     }
 
     public void resetMovement(){
