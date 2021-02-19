@@ -2,10 +2,12 @@ package air.hockey.prototype.model;
 
 import air.hockey.prototype.model.Vector;
 
+import java.io.Serializable;
+
 /* Creates the pusher of a player
  */
 
-public class Pusher extends Circle {
+public class Pusher extends Circle implements Serializable {
 
     private Vector lastPosition;
 

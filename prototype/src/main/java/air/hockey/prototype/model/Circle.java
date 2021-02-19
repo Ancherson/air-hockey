@@ -2,10 +2,12 @@ package air.hockey.prototype.model;
 
 import air.hockey.prototype.model.Vector;
 
+import java.io.Serializable;
+
 /* Creates a circle that can be the palette or the pusher
  */
 
-public class Circle{
+public class Circle implements Serializable {
 
     protected Vector position;
     private double radius;
