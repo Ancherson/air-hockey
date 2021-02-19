@@ -167,6 +167,11 @@ public class Server extends Thread {
         public void run() {
             //TODO ACTUALISER LA POSITION DU PUSHER
             while(true) {
+                try {
+                    Thread.sleep(1000/40);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 //System.out.print("");
                     try {
                         //System.out.println("J'ENVOIE LE PUSHER");

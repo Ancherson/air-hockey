@@ -86,6 +86,11 @@ public class Client {
         @Override
         public void run() {
             while (true) {
+                try {
+                    Thread.sleep(1000/40);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 synchronized(model) {
                         if (model.hasPusherMoved()) {
                             //System.out.println("J'ENVOIE LA POSITION DU PUSHER");
