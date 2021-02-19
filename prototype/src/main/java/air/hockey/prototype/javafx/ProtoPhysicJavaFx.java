@@ -98,6 +98,7 @@ public class ProtoPhysicJavaFx extends Application {
         }
     }
 
+
     public void mousePressed(MouseEvent event) {
 		if(model.isInPusher(event.getX(), event.getY())) {
             isPressed = true;
@@ -121,11 +122,9 @@ public class ProtoPhysicJavaFx extends Application {
         public void handle(long now){
             long dt = now-lastUpdateTime;
 
-            if(dt >= NANOTIME_PER_FRAME){
                 model.update(dt/(1e9*1.0));
                 draw();
                 lastUpdateTime = now;
-            }
         }
     }
 

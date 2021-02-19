@@ -35,4 +35,10 @@ public class Pusher extends Circle implements Serializable {
             }
         }
     }
+
+    public void paletCollision(Palet p){
+        if(isColliding(p)){
+            resolveCollision(p);
+        }
+    }
 }
