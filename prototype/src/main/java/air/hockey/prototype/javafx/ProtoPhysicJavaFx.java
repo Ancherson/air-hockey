@@ -2,11 +2,13 @@ package air.hockey.prototype.javafx;
 
 import air.hockey.prototype.udp.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.scene.paint.Color;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.MouseEvent;
@@ -48,6 +50,7 @@ public class ProtoPhysicJavaFx extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setWidth(WIDTH);
         primaryStage.setHeight(HEIGHT);
+        primaryStage.setOnHiding(this::closeStage);
 
         canvas = new Canvas(WIDTH,HEIGHT);
         ctx = canvas.getGraphicsContext2D();
@@ -68,6 +71,11 @@ public class ProtoPhysicJavaFx extends Application {
         draw();
         new Animation().start();
     }
+
+
+	public void closeStage(WindowEvent event) {
+		Platform.runLater(() -> client.stopConnexion());
+	}
 
     public Model getModel() {
         return model;

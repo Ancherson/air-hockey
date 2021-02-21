@@ -44,6 +44,11 @@ public class Client {
         new Receiver().start();
     }
 
+    public void stopConnexion() {
+        this.socket.close();
+
+    }
+
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -85,7 +90,7 @@ public class Client {
 
         @Override
         public void run() {
-            while (true) {
+            while (!socket.isClosed()) {
                 try {
                     Thread.sleep(1000/40);
                 } catch (InterruptedException e) {
@@ -97,7 +102,7 @@ public class Client {
                             try {
                                 sendPusher();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
                             }
                         }
                 }
@@ -110,16 +115,16 @@ public class Client {
 
         @Override
         public void run() {
-            while(true) {
+            while(!socket.isClosed()) {
                 //TODO RECOIT LA VRAIE POSITION DU PALET ET L'ACTUALISE
                 try {
                     //System.out.println("J'ATTEND DE RECEVOIR LE PUSHER");
                     receiveModel();
                     //System.out.println("J'AI RECU LE PUSHER");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         }
