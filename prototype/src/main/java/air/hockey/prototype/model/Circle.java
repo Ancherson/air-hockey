@@ -33,7 +33,7 @@ public class Circle implements Serializable {
         return "Position:"+position+"\nRadius: "+radius;
     }
 
-    // calculates the closest point
+    // calculates the closest point to the circle on the wall w
     private Vector closestPoint(Wall w){
         Vector P = w.getPosition();
         Vector D = w.getDirection();
