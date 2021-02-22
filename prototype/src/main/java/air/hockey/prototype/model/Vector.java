@@ -55,9 +55,11 @@ public class Vector implements Serializable {
         return multiply(1./l);
     }
 
-    // returns the reflexion of the vector according to the vector n
+    // returns the reflection of the vector according to the vector n
     // n must be of length 1
     public Vector reflection(Vector n){
+        //n multiplied by the dot product of this and n is the projection of this on the vector n (since ||n|| = 1)
+        //so subtracting 2 times this vector to this means reversing the coordinate of this along the axis that goes in the direction of n, which is effectively a reflection
         return add(n.multiply(-2*dotProduct(n)));
     }
 }
