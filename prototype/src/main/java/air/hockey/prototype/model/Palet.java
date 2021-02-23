@@ -60,7 +60,7 @@ public class Palet extends Circle {
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
 
-        for(double l = step; l < length+step; l += step){
+        for(double l = step; l <= length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
             if(wallCollisions(walls) || pusherCollisions(pushers, dt)){
                 break;
