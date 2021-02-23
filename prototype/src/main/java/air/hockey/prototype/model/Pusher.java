@@ -74,7 +74,7 @@ public class Pusher extends Circle implements Serializable {
 
         for(double l=step; l < length+step; l+=step){
             position = p0.add(dir.multiply(Math.min(l,length)));
-            if(wallCollisions(walls) || paletCollision(p)){
+            if(paletCollision(p)||wallCollisions(walls)){
                 break;
             }
         }
