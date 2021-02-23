@@ -61,9 +61,13 @@ public class ProtoJavaFx extends Application {
 
 	public void dragged(MouseEvent event) {
 		if(isPressed) {
-			circleMouse.update(event.getX(), event.getY());
-			if(circleMouse.collide(circle)) {
-				circle.addSpeed(circleMouse.x - circleMouse.previousX, circleMouse.y - circleMouse.previousY);
+			if(event.getX()<100 || event.getX()>400||event.getY()<50||event.getY()>750){
+				released(event);
+			}else{
+				circleMouse.update(event.getX(), event.getY());
+				if(circleMouse.collide(circle)) {
+					circle.addSpeed(circleMouse.x - circleMouse.previousX, circleMouse.y - circleMouse.previousY);
+				}
 			}
 		}
 	}
