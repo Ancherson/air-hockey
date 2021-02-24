@@ -33,10 +33,13 @@ public class Circle implements Serializable {
         return "Position:"+position+"\nRadius: "+radius;
     }
 
+    // calculates the closest point to the circle on the wall w
     private Vector closestPoint(Wall w){
         Vector P = w.getPosition();
         Vector D = w.getDirection();
+        //lambda is in [0, 1], lambda = 0 means that the closest point is on the start point of the wall, lambda = 1 means that the closest point is the end point of the wall
         double lambda = Math.max(0, Math.min(1, (position.add(P.multiply(-1)).dotProduct(D))/(D.dotProduct(D))));
+        //by multiplying D by lambda and adding it to P we get the actual position of the point
         return P.add(D.multiply(lambda));
     }
 
