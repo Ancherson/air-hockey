@@ -41,17 +41,43 @@ public class Pusher extends Circle implements Serializable {
         return super.toString()+"\nLastPosition: "+lastPosition;
     }
 
-    public void wallCollisions(Wall[] walls){
+    public boolean wallCollisions(Wall[] walls){
+        boolean hasCollided =false;
         for(Wall w : walls){
             if(isColliding(w)){
                 resolveCollision(w);
+                hasCollided = true;
             }
         }
+        return hasCollided;
     }
 
-    public void paletCollision(Palet p){
+    public boolean paletCollision(Palet p){
+        boolean hasCollided = false;
         if(isColliding(p)){
+            //Vector normal = p.getPosition().add(position.multiply(-1)).normalize();
+            //p.setSpeed(normal.multiply(p.getSpeed().length()).add(speed));
             resolveCollision(p);
+            //p.setSpeed(p.getSpeed().multiply(0.96));
+            hasCollided = true;
         }
+        return hasCollided;
+    }
+
+    public void moveTo(Vector arrival, Wall[] walls, Palet p){
+        Vector distance = arrival.add(position.multiply(-1));
+        Vector dir = distance.normalize();
+        double length = distance.length();
+        double step = getRadius()*0.5;
+
+        Vector p0 = new Vector(position.getX(), position.getY());
+
+        for(double l=step; l < length+step; l+=step){
+            position = p0.add(dir.multiply(Math.min(l,length)));
+            if(paletCollision(p)||wallCollisions(walls)){
+                break;
+            }
+        }
+
     }
 }
