@@ -12,7 +12,7 @@ public class Model {
 
     public Model() {
         palet = new Palet(new Vector(400, 250), 20);
-        palet.setSpeed(new Vector(50, 70));
+        palet.setSpeed(new Vector(0, 0));
 
         pushers = new Pusher[2];
         pushers[0] = new Pusher(new Vector(300, 250), 25);
