@@ -14,6 +14,7 @@ import java.net.SocketException;
 public class Client {
     private String hostname = "localhost";
     public final int SERVER_PORT = 6666;
+    private int convPort;
     private DatagramSocket socket;
     private Model model;
     private int id;
@@ -22,13 +23,22 @@ public class Client {
         socket = new DatagramSocket();
         model = m;
 
+        byte[]msgFirstCo = {(byte)1};
+        DatagramPacket packet = new DatagramPacket(msgFirstCo, msgFirstCo.length, InetAddress.getByName(hostname),SERVER_PORT);
+        socket.send(packet);
+        
+        byte[]rep = new byte[4];
+        packet = new DatagramPacket(rep, rep.length);
+        socket.receive(packet);
+        convPort = Integer.parseInt(new String(rep));
+
         String connect = "connexion";
         byte[] msgco = connect.getBytes();
-        DatagramPacket msg = new DatagramPacket(msgco,msgco.length, InetAddress.getByName(hostname),SERVER_PORT);
+        DatagramPacket msg = new DatagramPacket(msgco,msgco.length, InetAddress.getByName(hostname),convPort);
         socket.send(msg);
 
         byte[] buf = new byte[1];
-        DatagramPacket packet = new DatagramPacket(buf, buf.length);
+        packet = new DatagramPacket(buf, buf.length);
         System.out.println("ATTEND REPONSE DU SERVEUR");
         socket.receive(packet);
         System.out.println("J'AI RECU");
@@ -50,7 +60,7 @@ public class Client {
         oo.writeObject(model.getPushers()[0]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(hostname), SERVER_PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(hostname), convPort);
         socket.send(packet);
     }
 
