@@ -5,6 +5,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import airhockey.model.Model;
+import airhockey.model.Palet;
+import airhockey.model.Pusher;
 
 public class Client{
     private String id;

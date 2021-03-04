@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     // Use JUnit test framework.
+    implementation project(':model')
     testImplementation 'junit:junit:4.13'
 }
 
