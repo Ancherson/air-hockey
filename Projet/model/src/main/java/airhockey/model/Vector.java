@@ -35,6 +35,10 @@ public class Vector implements Serializable {
         return new Vector(x+v.x, y+v.y);
     }
 
+    public Vector sub(Vector v){
+        return new Vector(x-v.x, y-v.y);
+    }
+
     public Vector multiply(double m){
         return new Vector(x*m, y*m);
     }
