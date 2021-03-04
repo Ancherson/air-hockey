@@ -1,6 +1,6 @@
 package airhockey.javafx;
 
-import Projet.MenuClient;
+
 import airhockey.model.Circle;
 import airhockey.model.Model;
 import airhockey.model.Vector;
