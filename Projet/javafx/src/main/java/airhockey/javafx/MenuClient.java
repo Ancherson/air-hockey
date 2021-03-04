@@ -1,5 +1,6 @@
 package airhockey.javafx;
 
+import airhockey.model.Model;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -16,6 +17,9 @@ public class MenuClient extends Application {
     private Scene scene1;
     private Scene scene2;
     private Scene scene3;
+    private Scene scene4;
+
+    private Model model = new Model();
 
 
     @Override
@@ -23,15 +27,30 @@ public class MenuClient extends Application {
 
         this.primaryStage = primaryStage;
 
-
-
-
-
         FirstMenu pane = new FirstMenu(this);
         Pane createMenu = new CreateMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
+        View view = new View(this, model);
 
-        primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
+         scene1 = new Scene(pane);
+         scene2 = new Scene(createMenu);
+         scene3 = new Scene(joinMenu);
+         scene4 = new Scene(view);
+
+        primaryStage.setMinHeight(300);
+        primaryStage.setMinWidth(400);
+
+        primaryStage.setHeight(HEIGHT);
+        primaryStage.setWidth(WIDTH);
+
+        primaryStage.setScene(scene1);
+        primaryStage.show();
+
+
+
+        /*
+            Fonction qui permet de center un Stackpane nommer "pane"
+            primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
             WIDTH = newVal.intValue();
             int heigth = HEIGHT/ 2 -60;
             int width = newVal.intValue()/2-100;
@@ -47,21 +66,7 @@ public class MenuClient extends Application {
             if((heigth) <0) heigth =0;
             Insets pad = new Insets(heigth,width,heigth,width);
             pane.setPadding(pad);
-        });
-
-         scene1 = new Scene(pane);
-         scene2 = new Scene(createMenu);
-         scene3 = new Scene(joinMenu);
-
-
-        primaryStage.setHeight(HEIGHT);
-        primaryStage.setWidth(WIDTH);
-
-
-
-
-        primaryStage.setScene(scene1);
-        primaryStage.show();
+        });*/
 
     }
 
@@ -69,8 +74,8 @@ public class MenuClient extends Application {
         switch (S){
             case 1:
                 primaryStage.setScene(scene1);
-                primaryStage.setMinHeight(100);
-                primaryStage.setMinWidth(250);
+                primaryStage.setMinHeight(300);
+                primaryStage.setMinWidth(400);
                 break;
 
             case 2:
@@ -84,7 +89,8 @@ public class MenuClient extends Application {
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 break;
-
+            case 4:
+                primaryStage.setScene(scene4);
         }
 
     }
