@@ -29,10 +29,18 @@ public class Room {
         return id;
     }
 
-    public void join(int port, InetAddress address){
+    public void join(int port, InetAddress address) throws IOException {
+        if(clientPorts.size() == 2){
+            byte[] buf = "fullRoom".getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+            serverSocket.send(packet);
+        }
         clientPorts.add(port);
         clientAddresses.add(address);
         if(clientPorts.size() == 2){
+            byte[] buf = "start".getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
+            serverSocket.send(packet);
             new Sender().start();
         }
     }

@@ -37,7 +37,7 @@ public class Server extends Thread {
                 //EXECUTE THE RIGHT THING
                 switch (part1) {
                     case "creer": createRoom(port, address);break;
-                    case "rejoindre" : joinRoom(part1, port, address);break;
+                    case "rejoindre" : joinRoom(ois, port, address);break;
                     default: sendToRoom(ois, part1, port, address);
                 }
             } catch (IOException | ClassNotFoundException e) {
@@ -67,14 +67,15 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
-    public void joinRoom(String id, int port, InetAddress address) throws IOException {
+    public void joinRoom(ObjectInputStream ois, int port, InetAddress address) throws IOException {
+        String id = ois.readUTF();
         //IF THE ID EXIST THE CLIENT JOIN THE ROOM THAT HAS THIS ID AS ID
         for(int i = 0; i < rooms.size(); i++) {
             if(rooms.get(i).getId().equals(id)) {
                 rooms.get(i).join(port, address);
 
                 //SEND HE JOINED THE ROOM
-                byte[] buf = "yesRoom".getBytes();
+                byte[] buf = "yesRoom ".getBytes();
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
                 socket.send(packet);
                 return;
@@ -82,7 +83,7 @@ public class Server extends Thread {
         }
 
         //IF THE ID ROOM IS NOT CORRECT, SEND HE DOES NOT JOIN A ROOM
-        byte[] buf = "noRoom".getBytes();
+        byte[] buf = "noRoom  ".getBytes();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
     }
