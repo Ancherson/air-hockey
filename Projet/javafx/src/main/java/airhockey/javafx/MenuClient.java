@@ -2,6 +2,7 @@ package airhockey.javafx;
 
 import airhockey.model.Model;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -80,21 +81,21 @@ public class MenuClient extends Application {
                 break;
 
             case 2:
-                primaryStage.setScene(scene2);
-                primaryStage.setMinHeight(330);
-                primaryStage.setMinWidth(400);
-                primaryStage.show();
+                Platform.runLater(() -> {
+                    primaryStage.setScene(scene2);
+                    primaryStage.setMinHeight(330);
+                    primaryStage.setMinWidth(400);
+                });
+
                 break;
 
             case 3:
                 primaryStage.setScene(scene3);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
-                primaryStage.show();
                 break;
             case 4:
                 primaryStage.setScene(scene4);
-                primaryStage.show();
         }
 
     }
