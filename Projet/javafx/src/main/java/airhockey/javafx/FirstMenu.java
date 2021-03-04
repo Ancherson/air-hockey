@@ -20,7 +20,7 @@ public class FirstMenu extends BorderPane {
         create.setPrefSize(100,60);
         create.setMinWidth(100);
         create.setOnAction(event -> {
-            Menu.setScene(4);
+            Menu.setScene(2);
         });
 
 
