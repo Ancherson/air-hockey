@@ -33,10 +33,10 @@ public class MenuClient extends Application {
         JoinMenu joinMenu = new JoinMenu(this);
         View view = new View(this, model);
 
-         scene1 = new Scene(pane);
-         scene2 = new Scene(createMenu);
-         scene3 = new Scene(joinMenu);
-         scene4 = new Scene(view);
+        scene1 = new Scene(pane);
+        scene2 = new Scene(createMenu);
+        scene3 = new Scene(joinMenu);
+        scene4 = new Scene(view);
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
@@ -77,16 +77,12 @@ public class MenuClient extends Application {
                 primaryStage.setScene(scene1);
                 primaryStage.setMinHeight(300);
                 primaryStage.setMinWidth(400);
-                primaryStage.show();
                 break;
 
             case 2:
-                Platform.runLater(() -> {
-                    primaryStage.setScene(scene2);
-                    primaryStage.setMinHeight(330);
-                    primaryStage.setMinWidth(400);
-                });
-
+                primaryStage.setScene(scene2);
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
                 break;
 
             case 3:
