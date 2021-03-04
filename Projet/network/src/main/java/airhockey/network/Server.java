@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Server extends Thread {
     public final static int PORT = 6666;
     public final static String HOSTNAME = "localhost";
-    public static int ID_LENGTH = 10
+    public static int ID_LENGTH = 10;
 
     private ArrayList<Room> rooms;
     private DatagramSocket socket;
@@ -40,7 +40,7 @@ public class Server extends Thread {
                     case "rejoindre" : joinRoom(part1, port, address);break;
                     default: sendToRoom(ois, part1, port, address);
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -71,7 +71,7 @@ public class Server extends Thread {
         //IF THE ID EXIST THE CLIENT JOIN THE ROOM THAT HAS THIS ID AS ID
         for(int i = 0; i < rooms.size(); i++) {
             if(rooms.get(i).getId().equals(id)) {
-                rooms.join(port, address);
+                rooms.get(i).join(port, address);
 
                 //SEND HE JOINED THE ROOM
                 byte[] buf = "yesRoom".getBytes();
@@ -87,7 +87,7 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
-    public void sendToRoom(ObjectInputStream ois, String id, int port, InetAddress address) {
+    public void sendToRoom(ObjectInputStream ois, String id, int port, InetAddress address) throws IOException, ClassNotFoundException {
         for(int i = 0; i < rooms.size(); i++) {
             if(rooms.get(i).getId().equals(id)) {
                 rooms.get(i).receive(ois, port, address);
