@@ -76,21 +76,25 @@ public class MenuClient extends Application {
                 primaryStage.setScene(scene1);
                 primaryStage.setMinHeight(300);
                 primaryStage.setMinWidth(400);
+                primaryStage.show();
                 break;
 
             case 2:
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
+                primaryStage.show();
                 break;
 
             case 3:
                 primaryStage.setScene(scene3);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
+                primaryStage.show();
                 break;
             case 4:
                 primaryStage.setScene(scene4);
+                primaryStage.show();
         }
 
     }
