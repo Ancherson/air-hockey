@@ -1,75 +1,102 @@
 package Projet;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import static com.sun.javafx.css.StyleClassSet.getStyleClass;
-
-
 public class MenuClient extends Application {
-    private final int WIDTH = 800;
-    private final int HEIGHT = 500;
+    private int WIDTH = 800;
+    private int HEIGHT = 500;
 
-
-    /*private Button B = new Button("Create room");
-    private Label L = new Label("coucou changement de scene");
-    private Pane pane = new Pane();
-    */
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        primaryStage.setMinHeight(60);
+        primaryStage.setMinWidth(200);
+
+
         Button create = new Button("Create room");
         Button join = new Button("join a room");
-        Button back = new Button("back");
+        Button backJ = new Button("back");
+        Button backC = new Button("back");
+
+
 
         Label creation = new Label("creation de la room");
         Label joinT = new Label("rentrer l'id");
 
         TextField id = new TextField();
+        HBox BoxB1 = new HBox(create,join);
+        //BoxB1.setPadding(new Insets(15,12,15,12));
+        BoxB1.setSpacing(0);
 
-        Pane pane = new Pane(create,join);
-        Pane createMenu = new Pane(creation,back);
-        Pane joinMenu = new Pane(joinT,id,back);
+        StackPane pane = new StackPane(BoxB1);
+        pane.setAlignment(BoxB1, Pos.CENTER);
+        Pane createMenu = new Pane(creation,backJ);
+        Pane joinMenu = new Pane(joinT,id,backC);
 
+        primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
+            WIDTH = newVal.intValue();
+            int heigth = HEIGHT/ 2 -60;
+            int width = newVal.intValue()/2-100;
+            if((width) <0) width =0;
+            Insets pad = new Insets(heigth,width,heigth,width);
+            pane.setPadding(pad);
+        });
+
+        primaryStage.heightProperty().addListener((obs,oldVal,newVal) ->{
+            HEIGHT = newVal.intValue();
+            int width = WIDTH/ 2 -100;
+            int heigth = newVal.intValue()/2-60;
+            if((heigth) <0) heigth =0;
+            Insets pad = new Insets(heigth,width,heigth,width);
+            pane.setPadding(pad);
+        });
 
         Scene scene1 = new Scene(pane);
         Scene scene2 = new Scene(createMenu);
         Scene scene3 = new Scene(joinMenu);
 
+
         primaryStage.setHeight(HEIGHT);
         primaryStage.setWidth(WIDTH);
 
-        create.setMaxSize(100,60);
-        create.setLayoutX(200);
-        create.setLayoutY(200);
-        create.setOnAction(value -> {
+        create.setPrefSize(100,60);
+        create.setMinWidth(100);
+        create.setOnAction(event -> {
             primaryStage.setScene(scene2);
         });
 
-        join.setMaxSize(100,60);
-        join.setLayoutX(300);
-        join.setLayoutY(200);
+
+        join.setPrefSize(100,60);
+        join.setMinWidth(100);
         join.setOnAction(value -> {
             primaryStage.setScene(scene3);
         });
 
-        creation.setMinHeight(100);
-        creation.setMaxHeight(100);
+        creation.setPrefHeight(100);
         creation.setLayoutX(300);
         creation.setLayoutY(200);
 
-        back.setMaxSize(100,60);
-        back.setLayoutX(300);
-        back.setLayoutY(200);
-        back.setOnAction(value -> {
+        backJ.setMaxSize(100,60);
+        backJ.setPrefSize(100,60);
+        backJ.setLayoutX(700);
+        backJ.setLayoutY(440);
+        backJ.setOnAction(value -> {
+            primaryStage.setScene(scene1);
+        });
+
+        backC.setMaxSize(100,60);
+        backC.setLayoutX(700);
+        backC.setLayoutY(440);
+        backC.setOnAction(value -> {
             primaryStage.setScene(scene1);
         });
 
@@ -92,9 +119,5 @@ public class MenuClient extends Application {
         primaryStage.setScene(scene1);
         primaryStage.show();
 
-    }
-
-    public static void main(String[] args){
-        launch(args);
     }
 }
