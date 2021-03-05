@@ -12,6 +12,7 @@ repositories {
 dependencies {
     // Use JUnit test framework.
     implementation project(':model')
+    implementation project(':javafx')
     testImplementation 'junit:junit:4.13'
 }
 

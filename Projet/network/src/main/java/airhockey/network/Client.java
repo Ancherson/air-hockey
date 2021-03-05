@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+
+import airhockey.javafx.MenuClient;
 import airhockey.model.Model;
 import airhockey.model.Palet;
 import airhockey.model.Pusher;
@@ -35,6 +37,10 @@ public class Client{
         packet = new DatagramPacket(idBuff, idBuff.length);
         socket.receive(packet);
         id = new String(idBuff);
+
+        //TODO ENVOYER L'ID DE LA ROOM AU MENU
+        System.out.println(id);
+        /****************************************/
 
         byte[] buff = new byte[5];
         packet = new DatagramPacket(idBuff, buff.length);
@@ -70,7 +76,7 @@ public class Client{
     }
 
     public void startGame(){
-        //TODO CHANGE SCENE TO GAME SCENE
+        //TODO CHANGE SCENE TO GAME
         new Sender().start();
         new Receiver().start();
     }
@@ -129,5 +135,9 @@ public class Client{
                 }
             }
         }
+    }
+
+    public void close() {
+        socket.close();
     }
 }

@@ -1,11 +1,15 @@
 package airhockey.javafx;
 
 import airhockey.model.Model;
+import airhockey.network.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.io.IOException;
+import java.net.SocketException;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -20,6 +24,8 @@ public class MenuClient extends Application {
     private Window window;
     private Model model = new Model();
 
+    private Client client;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,12 +33,10 @@ public class MenuClient extends Application {
         window = (Window) primaryStage;
 
         FirstMenu pane = new FirstMenu(this);
-        Pane createMenu = new CreateMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
         View view = new View(this, model);
 
         scene1 = new Scene(pane);
-        scene2 = new Scene(createMenu);
         scene3 = new Scene(joinMenu);
         scene4 = new Scene(view);
 
@@ -70,7 +74,7 @@ public class MenuClient extends Application {
 
     }
 
-    public void setScene(int S){
+    public void setScene(int S) {
         switch (S){
             case 1:
                 window.setHeight(primaryStage.getHeight());
@@ -81,6 +85,7 @@ public class MenuClient extends Application {
                 break;
 
             case 2:
+                scene2 = new Scene(new CreateMenu(this,model));
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(scene2);
@@ -99,9 +104,36 @@ public class MenuClient extends Application {
                 window.setHeight(540);
                 window.setWidth(820);
                 primaryStage.setScene(scene4);
-        }
 
+        }
     }
 
+    public void createRoom() {
+        try {
+            client = new Client(model);
+            client.createRoom();
+            setScene(4);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void joinRoom(String id) {
+        try {
+            client = new Client(model);
+            client.joinRoom(id);
+            setScene(4);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeClient() {
+        client.close();
+    }
 
 }

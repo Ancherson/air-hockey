@@ -31,7 +31,7 @@ public class JoinMenu extends StackPane {
             id.selectAll();
         });
         id.setOnAction(event -> {
-            System.out.println(id.getText());
+            menu.joinRoom(id.getText());
         });
 
         back.setMaxSize(100,50);
@@ -39,6 +39,7 @@ public class JoinMenu extends StackPane {
 
         back.setOnAction(value -> {
             menu.setScene(1);
+            menu.closeClient();
         });
 
         this.setPadding(new Insets(30,50,50,50));

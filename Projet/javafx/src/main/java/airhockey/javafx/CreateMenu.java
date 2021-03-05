@@ -1,15 +1,21 @@
 package airhockey.javafx;
 
+import airhockey.model.Model;
+import airhockey.network.Client;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
+import java.io.IOException;
+import java.net.SocketException;
+
 
 public class CreateMenu extends BorderPane {
 
-    public CreateMenu(MenuClient menu) {
+    public CreateMenu(MenuClient menu, Model model) {
+
 
         Label creation = new Label("creation de la room");
 
@@ -25,6 +31,7 @@ public class CreateMenu extends BorderPane {
 
         back.setOnAction(value -> {
             menu.setScene(1);
+            menu.closeClient();
         });
 
         this.setCenter(creation);
@@ -36,8 +43,12 @@ public class CreateMenu extends BorderPane {
 
         this.setPadding(new Insets(30,50,50,50));
 
-    }
+        System.out.println("EN ATTENTE DU SERVEUR");
+        menu.createRoom();
 
+        System.out.println("Ca commence !!!");
+
+    }
 
 
 }
