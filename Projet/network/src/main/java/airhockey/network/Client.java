@@ -1,14 +1,14 @@
 package airhockey.network;
 
+import airhockey.model.Model;
+import airhockey.model.Palet;
+import airhockey.model.Pusher;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-
-import airhockey.model.Model;
-import airhockey.model.Palet;
-import airhockey.model.Pusher;
 
 public class Client{
     private String id;
@@ -42,9 +42,10 @@ public class Client{
         /****************************************/
 
         byte[] buff = new byte[5];
-        packet = new DatagramPacket(idBuff, buff.length);
+        packet = new DatagramPacket(buff, buff.length);
         socket.receive(packet);
         String msg = new String(buff);
+        System.out.println(msg);
         if(msg.equals("start")){
             startGame();
         }
@@ -83,6 +84,7 @@ public class Client{
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF(id);
         oo.writeObject(model.getPushers()[numPlayer]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
