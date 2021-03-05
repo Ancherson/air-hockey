@@ -2,13 +2,10 @@ package airhockey.javafx;
 
 import airhockey.model.Model;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -20,13 +17,14 @@ public class MenuClient extends Application {
     private Scene scene3;
     private Scene scene4;
 
+    private Window window;
     private Model model = new Model();
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         this.primaryStage = primaryStage;
+        window = (Window) primaryStage;
 
         FirstMenu pane = new FirstMenu(this);
         Pane createMenu = new CreateMenu(this);
@@ -41,8 +39,8 @@ public class MenuClient extends Application {
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
 
-        primaryStage.setHeight(HEIGHT);
-        primaryStage.setWidth(WIDTH);
+        window.setHeight(HEIGHT);
+        window.setWidth(WIDTH);
 
         primaryStage.setScene(scene1);
         primaryStage.show();
@@ -51,6 +49,7 @@ public class MenuClient extends Application {
 
         /*
             Fonction qui permet de center un Stackpane nommer "pane"
+
             primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
             WIDTH = newVal.intValue();
             int heigth = HEIGHT/ 2 -60;
@@ -74,23 +73,31 @@ public class MenuClient extends Application {
     public void setScene(int S){
         switch (S){
             case 1:
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(scene1);
                 primaryStage.setMinHeight(300);
                 primaryStage.setMinWidth(400);
                 break;
 
             case 2:
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 break;
 
             case 3:
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(scene3);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 break;
             case 4:
+                window.setHeight(540);
+                window.setWidth(820);
                 primaryStage.setScene(scene4);
         }
 

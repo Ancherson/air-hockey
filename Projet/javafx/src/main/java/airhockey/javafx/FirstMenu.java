@@ -10,6 +10,9 @@ import javafx.scene.layout.StackPane;
 public class FirstMenu extends BorderPane {
 
     public FirstMenu(MenuClient Menu){
+        this.setWidth(800);
+        this.setHeight(500);
+
         Button create = new Button("Create room");
         Button join = new Button("join a room");
         Button test = new Button("ENTRAINEMENT");
