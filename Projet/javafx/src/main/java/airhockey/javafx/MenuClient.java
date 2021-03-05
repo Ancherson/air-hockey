@@ -3,6 +3,7 @@ package airhockey.javafx;
 import airhockey.model.Model;
 import airhockey.network.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -91,13 +92,12 @@ public class MenuClient extends Application {
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 System.out.println("EN ATTENTE DU SERVEUR");
-                createRoom();
+                new Thread (() ->{
+                    createRoom();
+                }).start();
+
 
                 System.out.println("Ca commence !!!");
                 break;
@@ -127,7 +127,7 @@ public class MenuClient extends Application {
         try {
             client = new Client(model);
             client.createRoom();
-            setView(0);
+            Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
