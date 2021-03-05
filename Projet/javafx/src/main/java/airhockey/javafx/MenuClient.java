@@ -4,7 +4,6 @@ import airhockey.model.Model;
 import airhockey.network.Client;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -35,8 +34,10 @@ public class MenuClient extends Application {
         FirstMenu pane = new FirstMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
         View view = new View(this, model);
+        CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
+        scene2 = new Scene(create);
         scene3 = new Scene(joinMenu);
         scene4 = new Scene(view);
 
@@ -85,12 +86,15 @@ public class MenuClient extends Application {
                 break;
 
             case 2:
-                scene2 = new Scene(new CreateMenu(this,model));
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
+                System.out.println("EN ATTENTE DU SERVEUR");
+                createRoom();
+
+                System.out.println("Ca commence !!!");
                 break;
 
             case 3:
