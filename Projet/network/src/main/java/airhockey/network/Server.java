@@ -103,4 +103,8 @@ public class Server extends Thread {
         }
         return false;
     }
+
+    public static void main(String[]args) throws SocketException, UnknownHostException {
+        new Server().start();
+    }
 }

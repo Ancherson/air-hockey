@@ -6,7 +6,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import airhockey.javafx.MenuClient;
 import airhockey.model.Model;
 import airhockey.model.Palet;
 import airhockey.model.Pusher;
