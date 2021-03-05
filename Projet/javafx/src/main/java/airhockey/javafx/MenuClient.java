@@ -33,7 +33,7 @@ public class MenuClient extends Application {
 
         FirstMenu pane = new FirstMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
-        View view = new View(this, model);
+        View view = new View(this, model,1);
         CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
@@ -91,6 +91,11 @@ public class MenuClient extends Application {
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("EN ATTENTE DU SERVEUR");
                 createRoom();
 
@@ -112,11 +117,17 @@ public class MenuClient extends Application {
         }
     }
 
+    public void setView(int numplayer){
+        View view = new View(this, model,numplayer);
+        scene4 = new Scene(view);
+        setScene(4);
+    }
+
     public void createRoom() {
         try {
             client = new Client(model);
             client.createRoom();
-            setScene(4);
+            setView(0);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -128,7 +139,7 @@ public class MenuClient extends Application {
         try {
             client = new Client(model);
             client.joinRoom(id);
-            setScene(4);
+            setView(1);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {

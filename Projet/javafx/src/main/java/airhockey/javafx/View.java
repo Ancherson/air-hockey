@@ -22,11 +22,13 @@ public class View extends Pane {
     private boolean isPressed;
     private double lastDragTime;
     private Model model;
+    private int numplayer;
 
 
-    public View(MenuClient menu, Model model) {
+    public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
         this.menu = menu;
+        this.numplayer = numplayer;
 
         canvas = new Canvas(WIDTH,HEIGHT);
         ctx = canvas.getGraphicsContext2D();
@@ -60,8 +62,8 @@ public class View extends Pane {
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
         drawCircle(model.getPalet(), Color.BLUE);
-        drawCircle(model.getPushers()[0], Color.GREEN);
-        drawCircle(model.getPushers()[1], Color.RED);
+        drawCircle(model.getPushers()[numplayer], Color.GREEN);
+        drawCircle(model.getPushers()[1-numplayer], Color.RED);
         for(Wall w : model.getWalls()){
             drawWall(w, Color.BLACK);
         }
@@ -69,7 +71,7 @@ public class View extends Pane {
 
 
     public void mousePressed(MouseEvent event) {
-        if(model.isInPusher(event.getX(), event.getY())) {
+        if(model.isInPusher(event.getX(), event.getY(),numplayer)) {
             isPressed = true;
             lastDragTime = System.nanoTime();
         }
@@ -80,7 +82,7 @@ public class View extends Pane {
             double time = System.nanoTime();
             double dt = (time-lastDragTime)/(1e9*1.0);
             lastDragTime = time;
-            model.setLocationPusher(event.getX(), event.getY(), dt);
+            model.setLocationPusher(event.getX(), event.getY(), dt, numplayer);
         }
     }
 

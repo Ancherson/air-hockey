@@ -68,6 +68,7 @@ public class Client{
         String msg = new String(buff);
         switch(msg){
             case "yesRoom ":
+                this.id = id;
                 startGame();
                 break;
 
@@ -109,15 +110,19 @@ public class Client{
         @Override
         public void run() {
             while(!socket.isClosed()){
-                try {
-                    Thread.sleep(1000/40);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    sendPusher();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                synchronized(model) {
+                    if (model.hasPusherMoved()) {
+                        try {
+                            Thread.sleep(1000 / 40);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sendPusher();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }

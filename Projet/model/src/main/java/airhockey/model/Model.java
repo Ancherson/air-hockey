@@ -59,11 +59,11 @@ public class Model {
         return false;
     }
 
-    public void setLocationPusher(double x, double y, double dt) {
-        pushers[0].resetMovement();
-        pushers[0].moveTo(new Vector(x,y),walls,palet);
-        pushers[0].setSpeed(pushers[0].getPosition().add(pushers[0].getLastPosition().multiply(-1)).normalize().multiply(1.0/dt));
-        pushers[0].wallCollisions(walls);
+    public void setLocationPusher(double x, double y, double dt,int numplayer) {
+        pushers[numplayer].resetMovement();
+        pushers[numplayer].moveTo(new Vector(x,y),walls,palet);
+        pushers[numplayer].setSpeed(pushers[numplayer].getPosition().add(pushers[numplayer].getLastPosition().multiply(-1)).normalize().multiply(1.0/dt));
+        pushers[numplayer].wallCollisions(walls);
         hasPusherMoved = true;
     }
 
@@ -71,7 +71,7 @@ public class Model {
         palet.setPosition(new Vector(x, y));
     }
 
-    public boolean isInPusher(double x, double y) {
-        return pushers[0].getPosition().add(new Vector(x, y).multiply(-1)).length() < pushers[0].getRadius();
+    public boolean isInPusher(double x, double y, int numplayer) {
+        return pushers[numplayer].getPosition().add(new Vector(x, y).multiply(-1)).length() < pushers[numplayer].getRadius();
     }
 }
