@@ -3,6 +3,7 @@
  */
 package Projet;
 
+import airhockey.javafx.App;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
