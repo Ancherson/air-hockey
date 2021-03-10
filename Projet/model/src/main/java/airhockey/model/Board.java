@@ -54,8 +54,8 @@ public class Board {
     }
 
     public void reset(int numPlayer){
-        pushers[0].setPosition(new Vector(200, 250));
-        pushers[1].setPosition(new Vector(700, 250));
+        //pushers[0].setPosition(new Vector(200, 250));
+        //pushers[1].setPosition(new Vector(700, 250));
         switch(numPlayer){
             case -1:
                 palet.setPosition(new Vector(50+(WIDTH-100)/2, 50+(HEIGHT-100)/2));

@@ -2,10 +2,14 @@ package airhockey.model;
 
 public class Model {
     private Board board;
+    private Player[] players;
     private boolean hasPusherMoved = false;
 
     public Model() {
         board = new Board();
+        players = new Player[2];
+        players[0] = new Player();
+        players[1] = new Player();
     }
 
     public Board getBoard(){
@@ -15,8 +19,11 @@ public class Model {
     public void update(double dt){
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
-            board.reset(board.getPalet().getScoredGoal());
+            int p = board.getPalet().getScoredGoal();
+            board.reset(p);
             board.getPalet().resetScoredGoal();
+            players[1-p].setScore(players[1-p].getScore()+1);
+            System.out.println(players[0].getScore()+"  "+players[1].getScore());
         }
     }
 
