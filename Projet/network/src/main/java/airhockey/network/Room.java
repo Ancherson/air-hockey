@@ -15,18 +15,29 @@ public class Room {
     private DatagramSocket serverSocket;
     private ArrayList<Integer> clientPorts;
     private ArrayList<InetAddress> clientAddresses;
+    private boolean full = false;
+    private boolean isPublic;
     private Model model;
 
-    public Room(DatagramSocket serverSocket, String id) throws SocketException {
+    public Room(DatagramSocket serverSocket, String id, boolean ispublic) throws SocketException {
         this.serverSocket = serverSocket;
         this.id = id;
         this.clientPorts = new ArrayList<Integer>();
         this.clientAddresses = new ArrayList<InetAddress>();
+        this.isPublic = ispublic;
         model = new Model();
     }
 
     public String getId(){
         return id;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public boolean isFull() {
+        return full;
     }
 
     public void join(int port, InetAddress address) throws IOException {

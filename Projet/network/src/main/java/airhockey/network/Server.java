@@ -36,17 +36,45 @@ public class Server extends Thread {
 
                 //EXECUTE THE RIGHT THING
                 switch (part1) {
-                    case "creer": createRoom(port, address);break;
-                    case "rejoindre" : joinRoom(ois, port, address);break;
-                    default: sendToRoom(ois, part1, port, address);
+                    case "creer":
+                        new Thread(() -> {
+                            try {
+                                createRoom(port, address, false);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                        break;
+                    case "rejoindre" :
+                        new Thread(() -> {
+                            try {
+                                joinRoom(ois, port, address);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }).start();
+                        break;
+
+                    case "public" :
+
+                        break;
+                    default: new Thread(() -> {
+                        try {
+                            sendToRoom(ois, part1, port, address);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void createRoom(int port, InetAddress address) throws IOException {
+    public void createRoom(int port, InetAddress address, boolean isPublic) throws IOException {
         //CREATE A RANDOM ID AND VERIFY THIS ID DOES NOT EXIST;
         String id = "";
         do {
@@ -57,7 +85,7 @@ public class Server extends Thread {
         }while(isIdExist(id));
 
         //CREATE A ROOM AND ADD TO THE LIST
-        Room room = new Room(socket, id);
+        Room room = new Room(socket, id, isPublic);
         room.join(port, address);
         rooms.add(room);
 
@@ -102,6 +130,24 @@ public class Server extends Thread {
             if(rooms.get(i).getId().equals(id)) return true;
         }
         return false;
+    }
+
+    public void joinPublicRoom(ObjectInputStream ois,int port, InetAddress address) throws IOException {
+        Room room = getPublicRoom();
+        if(room != null) {
+            joinRoom(ois, port, address);
+        } else {
+
+        }
+    }
+
+    private Room getPublicRoom() {
+        for(int i = 0; i < rooms.size(); i++) {
+            if(rooms.get(i).isPublic() && !rooms.get(i).isFull()) {
+                return rooms.get(i);
+            }
+        }
+        return null;
     }
 
     public static void main(String[]args) throws SocketException, UnknownHostException {
