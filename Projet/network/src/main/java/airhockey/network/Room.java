@@ -19,12 +19,12 @@ public class Room {
     private boolean isPublic;
     private Model model;
 
-    public Room(DatagramSocket serverSocket, String id, boolean ispublic) throws SocketException {
+    public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
         this.id = id;
         this.clientPorts = new ArrayList<Integer>();
         this.clientAddresses = new ArrayList<InetAddress>();
-        this.isPublic = ispublic;
+        this.isPublic = isPublic;
         model = new Model();
     }
 
@@ -53,6 +53,7 @@ public class Room {
             DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
             serverSocket.send(packet);
             new Sender().start();
+            new Updater().start();
         }
     }
 
@@ -84,14 +85,7 @@ public class Room {
     public class Sender extends Thread {
         @Override
         public void run() {
-            double lastT = System.nanoTime();
-            double t;
             while(true) {
-                t = System.nanoTime();
-                double dt = (t-lastT)/(1e9*1.0);
-                model.update(dt);
-                lastT = t;
-
                 try {
                     Thread.sleep(1000/40);
                 } catch (InterruptedException e) {
@@ -102,6 +96,25 @@ public class Room {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+
+    public class Updater extends Thread {
+        @Override
+        public void run() {
+            double lastT = System.nanoTime();
+            double t;
+            while(true) {
+                try {
+                    Thread.sleep(1000 / 60);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                t = System.nanoTime();
+                double dt = (t-lastT)/(1e9*1.0);
+                model.update(dt);
+                lastT = t;
             }
         }
     }

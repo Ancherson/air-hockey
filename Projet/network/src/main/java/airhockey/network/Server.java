@@ -36,39 +36,12 @@ public class Server extends Thread {
 
                 //EXECUTE THE RIGHT THING
                 switch (part1) {
-                    case "creer":
-                        new Thread(() -> {
-                            try {
-                                createRoom(port, address, false);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }).start();
-                        break;
-                    case "rejoindre" :
-                        new Thread(() -> {
-                            try {
-                                joinRoom(ois, port, address);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }).start();
-                        break;
-
-                    case "public" :
-
-                        break;
-                    default: new Thread(() -> {
-                        try {
-                            sendToRoom(ois, part1, port, address);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                    }).start();
+                    case "creer": createRoom(port, address, false);break;
+                    case "rejoindre" : joinRoom(ois, port, address);break;
+                    case "public" : joinPublicRoom(ois, port, address);break;
+                    default: sendToRoom(ois, part1, port, address);
                 }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -135,9 +108,21 @@ public class Server extends Thread {
     public void joinPublicRoom(ObjectInputStream ois,int port, InetAddress address) throws IOException {
         Room room = getPublicRoom();
         if(room != null) {
-            joinRoom(ois, port, address);
-        } else {
+            byte[] buf = "1".getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+            socket.send(packet);
 
+            buf = room.getId().getBytes();
+            packet = new DatagramPacket(buf, buf.length, address, port);
+            socket.send(packet);
+
+            room.join(port,address);
+        } else {
+            byte[] buf = "0".getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
+            socket.send(packet);
+
+            createRoom(port, address, true);
         }
     }
 
