@@ -1,54 +1,15 @@
 package airhockey.model;
 
 public class Model {
-    private Palet palet;
-    private Pusher[] pushers;
-    private Wall[] walls;
-
-    private final int WIDTH = 800;
-    private final int HEIGHT = 500;
-
+    private Board board;
     private boolean hasPusherMoved = false;
 
     public Model() {
-        palet = new Palet(new Vector(400, 250), 20);
-        palet.setSpeed(new Vector(0, 0));
-
-        pushers = new Pusher[2];
-        pushers[0] = new Pusher(new Vector(300, 250), 25);
-        pushers[1] = new Pusher(new Vector(600, 250), 25);
-        walls = new Wall[4];
-        walls[0] = new Wall(50, 50, WIDTH-100, 0);
-        walls[1] = new Wall(50, 50, 0, HEIGHT-100);
-        walls[2] = new Wall(WIDTH-50, 50, 0, HEIGHT-100);
-        walls[3] = new Wall(50, HEIGHT-50, WIDTH-100, 0);
+        board = new Board();
     }
 
     public void update(double dt){
-        palet.update(dt, walls, pushers);
-        pushers[0].resetMovement();
-    }
-
-    public Pusher[] getPushers() {
-        return pushers;
-    }
-
-    public Palet getPalet() {
-        return palet;
-    }
-
-    public void setPalet(Palet p){
-        palet = p;
-    }
-
-    public Wall[] getWalls() {
-        return walls;
-    }
-
-    public void swapPushers(){
-        Pusher tmp = pushers[0];
-        pushers[0] = pushers[1];
-        pushers[1] = tmp;
+        board.update(dt);
     }
 
     public boolean hasPusherMoved() {
