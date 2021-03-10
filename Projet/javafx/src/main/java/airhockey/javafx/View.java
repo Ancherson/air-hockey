@@ -87,6 +87,7 @@ public class View extends Pane {
     }
 
     public void mouseReleased(MouseEvent event) {
+        model.getPushers()[0].resetSpeed();
         isPressed = false;
     }
 
