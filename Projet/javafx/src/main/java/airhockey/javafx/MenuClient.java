@@ -1,11 +1,15 @@
 package airhockey.javafx;
 
 import airhockey.model.Model;
+import airhockey.network.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.io.IOException;
+import java.net.SocketException;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -20,6 +24,8 @@ public class MenuClient extends Application {
     private Window window;
     private Model model = new Model();
 
+    private Client client;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -27,12 +33,12 @@ public class MenuClient extends Application {
         window = (Window) primaryStage;
 
         FirstMenu pane = new FirstMenu(this);
-        Pane createMenu = new CreateMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
-        View view = new View(this, model);
+        View view = new View(this, model,1);
+        CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
-        scene2 = new Scene(createMenu);
+        scene2 = new Scene(create);
         scene3 = new Scene(joinMenu);
         scene4 = new Scene(view);
 
@@ -70,7 +76,7 @@ public class MenuClient extends Application {
 
     }
 
-    public void setScene(int S){
+    public void setScene(int S) {
         switch (S){
             case 1:
                 window.setHeight(primaryStage.getHeight());
@@ -86,6 +92,14 @@ public class MenuClient extends Application {
                 primaryStage.setScene(scene2);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
+
+                System.out.println("EN ATTENTE DU SERVEUR");
+                new Thread (() ->{
+                    createRoom();
+                }).start();
+
+
+                System.out.println("Ca commence !!!");
                 break;
 
             case 3:
@@ -99,9 +113,42 @@ public class MenuClient extends Application {
                 window.setHeight(540);
                 window.setWidth(820);
                 primaryStage.setScene(scene4);
-        }
 
+        }
     }
 
+    public void setView(int numplayer){
+        View view = new View(this, model,numplayer);
+        scene4 = new Scene(view);
+        setScene(4);
+    }
+
+    public void createRoom() {
+        try {
+            client = new Client(model);
+            client.createRoom();
+            Platform.runLater(() -> setView(0));
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void joinRoom(String id) {
+        try {
+            client = new Client(model);
+            client.joinRoom(id);
+            setView(1);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeClient() {
+        client.close();
+    }
 
 }

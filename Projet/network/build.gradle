@@ -9,6 +9,11 @@ repositories {
     jcenter()
 }
 
+task(runServer, dependsOn: 'classes', type: JavaExec) {
+    main = 'airhockey.network.Server'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 dependencies {
     // Use JUnit test framework.
     implementation project(':model')

@@ -11,6 +11,7 @@ public class CreateMenu extends BorderPane {
 
     public CreateMenu(MenuClient menu) {
 
+
         Label creation = new Label("creation de la room");
 
         Button back = new Button("back");
@@ -25,6 +26,7 @@ public class CreateMenu extends BorderPane {
 
         back.setOnAction(value -> {
             menu.setScene(1);
+            menu.closeClient();
         });
 
         this.setCenter(creation);
@@ -36,8 +38,9 @@ public class CreateMenu extends BorderPane {
 
         this.setPadding(new Insets(30,50,50,50));
 
-    }
 
+
+    }
 
 
 }

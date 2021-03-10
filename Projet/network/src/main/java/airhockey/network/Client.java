@@ -1,13 +1,14 @@
 package airhockey.network;
 
+import airhockey.model.Model;
+import airhockey.model.Palet;
+import airhockey.model.Pusher;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import airhockey.model.Model;
-import airhockey.model.Palet;
-import airhockey.model.Pusher;
 
 public class Client{
     private String id;
@@ -36,10 +37,15 @@ public class Client{
         socket.receive(packet);
         id = new String(idBuff);
 
+        //TODO ENVOYER L'ID DE LA ROOM AU MENU
+        System.out.println(id);
+        /****************************************/
+
         byte[] buff = new byte[5];
-        packet = new DatagramPacket(idBuff, buff.length);
+        packet = new DatagramPacket(buff, buff.length);
         socket.receive(packet);
         String msg = new String(buff);
+        System.out.println(msg);
         if(msg.equals("start")){
             startGame();
         }
@@ -62,6 +68,7 @@ public class Client{
         String msg = new String(buff);
         switch(msg){
             case "yesRoom ":
+                this.id = id;
                 startGame();
                 break;
 
@@ -70,7 +77,7 @@ public class Client{
     }
 
     public void startGame(){
-        //TODO CHANGE SCENE TO GAME SCENE
+        //TODO CHANGE SCENE TO GAME
         new Sender().start();
         new Receiver().start();
     }
@@ -78,7 +85,8 @@ public class Client{
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeObject(model.getPushers()[numPlayer]);
+        oo.writeUTF(id);
+        oo.writeObject(model.getBoard().getPushers()[numPlayer]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
@@ -94,23 +102,27 @@ public class Client{
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         ois.close();
-        model.getPushers()[1-numPlayer] = p;
-        model.setPalet(pa);
+        model.getBoard().getPushers()[1-numPlayer] = p;
+        model.getBoard().setPalet(pa);
     }
 
     public class Sender extends Thread{
         @Override
         public void run() {
             while(!socket.isClosed()){
-                try {
-                    Thread.sleep(1000/40);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    sendPusher();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                synchronized(model) {
+                    if (model.hasPusherMoved()) {
+                        try {
+                            Thread.sleep(1000 / 40);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            sendPusher();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }
@@ -129,5 +141,9 @@ public class Client{
                 }
             }
         }
+    }
+
+    public void close() {
+        socket.close();
     }
 }

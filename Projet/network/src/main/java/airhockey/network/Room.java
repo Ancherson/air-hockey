@@ -48,15 +48,15 @@ public class Room {
     public void receive(ObjectInputStream ois, int port, InetAddress address) throws IOException, ClassNotFoundException {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
-        int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 1 : 0;
-        model.getPushers()[1-iClient] = p;
+        int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
+        model.getBoard().getPushers()[iClient] = p;
     }
 
     public void sendPaletAndPushers() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeObject(model.getPushers());
-        oo.writeObject(model.getPalet());
+        oo.writeObject(model.getBoard().getPushers());
+        oo.writeObject(model.getBoard().getPalet());
         oo.close();
         byte[] objectSerialized = bStream.toByteArray();
         int port = clientPorts.get(0);

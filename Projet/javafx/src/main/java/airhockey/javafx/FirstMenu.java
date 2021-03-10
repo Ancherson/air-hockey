@@ -24,6 +24,7 @@ public class FirstMenu extends BorderPane {
         create.setMinWidth(100);
         create.setOnAction(event -> {
             Menu.setScene(2);
+
         });
 
 
