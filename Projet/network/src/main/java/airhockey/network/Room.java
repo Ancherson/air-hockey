@@ -49,14 +49,14 @@ public class Room {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
-        model.getPushers()[iClient] = p;
+        model.getBoard().getPushers()[iClient] = p;
     }
 
     public void sendPaletAndPushers() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeObject(model.getPushers());
-        oo.writeObject(model.getPalet());
+        oo.writeObject(model.getBoard().getPushers());
+        oo.writeObject(model.getBoard().getPalet());
         oo.close();
         byte[] objectSerialized = bStream.toByteArray();
         int port = clientPorts.get(0);
