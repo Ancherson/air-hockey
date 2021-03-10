@@ -38,13 +38,17 @@ public class Palet extends Circle {
         return hasCollided;
     }
 
-    public boolean pusherCollisions(Pusher[] pushers, double dt){
+    public boolean pusherCollisions(Pusher[] pushers, Wall[] walls, double dt){
         boolean hasCollided = false;
         for(Pusher p : pushers){
             if(isColliding(p)){
                 Vector normal = position.add(p.position.multiply(-1)).normalize();
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
-                resolveCollision(p);
+
+                Circle newPosition = new Circle(new Vector(getPosition().getX(), getPosition().getY()), getRadius());
+                newPosition.resolveCollision(p);
+                moveTo(newPosition.getPosition(), walls);
+
                 speed = speed.multiply(0.96);
                 hasCollided = true;
             }
@@ -70,6 +74,22 @@ public class Palet extends Circle {
         return false;
     }
 
+    public void moveTo(Vector p, Wall[] walls){
+        Vector distance = p.add(position.multiply(-1));
+        Vector dir = distance.normalize();
+        double length = distance.length();
+        double step = getRadius()*0.5;
+
+        Vector p0 = new Vector(position.getX(), position.getY());
+
+        for(double l=step; l < length+step; l+=step){
+            position = p0.add(dir.multiply(Math.min(l,length)));
+            if(wallCollisions(walls)){
+                break;
+            }
+        }
+    }
+
     public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
         speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
 
@@ -81,7 +101,7 @@ public class Palet extends Circle {
 
         for(double l = step; l <= length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
-            if(goalCollisions(goals) || wallCollisions(walls) || pusherCollisions(pushers, dt)){
+            if(goalCollisions(goals) || wallCollisions(walls) || pusherCollisions(pushers, walls, dt)){
                 break;
             }
         }
