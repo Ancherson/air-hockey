@@ -61,10 +61,10 @@ public class View extends Pane {
     public void draw(){
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
-        drawCircle(model.getPalet(), Color.BLUE);
-        drawCircle(model.getPushers()[numplayer], Color.GREEN);
-        drawCircle(model.getPushers()[1-numplayer], Color.RED);
-        for(Wall w : model.getWalls()){
+        drawCircle(model.getBoard().getPalet(), Color.BLUE);
+        drawCircle(model.getBoard().getPushers()[numplayer], Color.GREEN);
+        drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
+        for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
         }
     }
@@ -87,6 +87,7 @@ public class View extends Pane {
     }
 
     public void mouseReleased(MouseEvent event) {
+        model.getBoard().getPushers()[0].resetSpeed();
         isPressed = false;
     }
 

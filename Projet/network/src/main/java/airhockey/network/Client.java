@@ -86,7 +86,7 @@ public class Client{
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeUTF(id);
-        oo.writeObject(model.getPushers()[numPlayer]);
+        oo.writeObject(model.getBoard().getPushers()[numPlayer]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
@@ -102,8 +102,8 @@ public class Client{
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         ois.close();
-        model.getPushers()[1-numPlayer] = p;
-        model.setPalet(pa);
+        model.getBoard().getPushers()[1-numPlayer] = p;
+        model.getBoard().setPalet(pa);
     }
 
     public class Sender extends Thread{

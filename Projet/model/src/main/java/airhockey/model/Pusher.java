@@ -1,7 +1,5 @@
 package airhockey.model;
 
-import airhockey.model.Vector;
-
 import java.io.Serializable;
 
 /* Creates the pusher of a player
@@ -79,5 +77,9 @@ public class Pusher extends Circle implements Serializable {
             }
         }
 
+    }
+
+    public void resetSpeed(){
+        this.speed = new Vector(0,0);
     }
 }
