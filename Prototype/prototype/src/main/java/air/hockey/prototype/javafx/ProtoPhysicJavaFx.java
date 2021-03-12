@@ -26,6 +26,7 @@ public class ProtoPhysicJavaFx extends Application {
     private final long NANOTIME_PER_FRAME = Math.round(1.0 / FPS * 1e9);//in nanoseconds
     private boolean isPressed;
     private double lastDragTime;
+    private int id;
 
     private Model model;
 
@@ -41,6 +42,7 @@ public class ProtoPhysicJavaFx extends Application {
         model = new Model();
         try {
             client = new Client(model);
+            id = client.init();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -99,17 +101,17 @@ public class ProtoPhysicJavaFx extends Application {
     public void draw(){
         ctx.setFill(Color.WHITE);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
-        drawCircle(model.getPalet(), Color.BLUE);
-        drawCircle(model.getPushers()[0], Color.GREEN);
-        drawCircle(model.getPushers()[1], Color.RED);
-        for(Wall w : model.getWalls()){
+        drawCircle(model.getBoard().getPalet(), Color.BLUE);
+        drawCircle(model.getBoard().getPushers()[0], Color.GREEN);
+        drawCircle(model.getBoard().getPushers()[1], Color.RED);
+        for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
         }
     }
 
 
     public void mousePressed(MouseEvent event) {
-		if(model.isInPusher(event.getX(), event.getY())) {
+		if(model.isInPusher(event.getX(), event.getY(), id)) {
             isPressed = true;
             lastDragTime = System.nanoTime();
 		}
@@ -120,7 +122,7 @@ public class ProtoPhysicJavaFx extends Application {
 		    double time = System.nanoTime();
 		    double dt = (time-lastDragTime)/(1e9*1.0);
 		    lastDragTime = time;
-            model.setLocationPusher(event.getX(), event.getY(), dt);
+            model.setLocationPusher(event.getX(), event.getY(), dt, id);
 		}
 	}
 

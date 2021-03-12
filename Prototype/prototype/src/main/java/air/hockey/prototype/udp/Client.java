@@ -22,11 +22,14 @@ public class Client {
     public Client(Model m) throws IOException {
         socket = new DatagramSocket();
         model = m;
+    }
+
+    public int init() throws IOException {
 
         byte[]msgFirstCo = {(byte)1};
         DatagramPacket packet = new DatagramPacket(msgFirstCo, msgFirstCo.length, InetAddress.getByName(hostname),SERVER_PORT);
         socket.send(packet);
-        
+
         byte[]rep = new byte[4];
         packet = new DatagramPacket(rep, rep.length);
         socket.receive(packet);
@@ -45,13 +48,14 @@ public class Client {
         String res = new String(buf);
         if(res.equals("1")){
             id = 1;
-            model.swapPushers();
         } else {
             id = 0;
         }
         System.out.println(res);
         new Sender().start();
         new Receiver().start();
+
+        return id;
     }
 
     public void stopConnexion() {
@@ -62,7 +66,7 @@ public class Client {
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeObject(model.getPushers()[0]);
+        oo.writeObject(model.getBoard().getPushers()[0]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(hostname), convPort);
@@ -76,7 +80,7 @@ public class Client {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         Pusher p = (Pusher)ois.readObject();
         ois.close();
-        model.getPushers()[1] = p;
+        model.getBoard().getPushers()[1] = p;
     }
 
     public void receiveModel() throws IOException, ClassNotFoundException {
@@ -88,8 +92,8 @@ public class Client {
         Pusher p = ((Pusher[])ois.readObject())[1-id];
         Palet pa = (Palet)ois.readObject();
         ois.close();
-        model.getPushers()[1] = p;
-        model.setPalet(pa);
+        model.getBoard().getPushers()[1] = p;
+        model.getBoard().setPalet(pa);
     }
 
     public static void main(String[] args) throws IOException {

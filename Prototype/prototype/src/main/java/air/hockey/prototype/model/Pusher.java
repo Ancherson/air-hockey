@@ -36,7 +36,7 @@ public class Pusher extends Circle implements Serializable {
     public void resetMovement(){
         lastPosition = position;
     }
-    
+
     public String toString(){
         return super.toString()+"\nLastPosition: "+lastPosition;
     }
@@ -79,5 +79,9 @@ public class Pusher extends Circle implements Serializable {
             }
         }
 
+    }
+
+    public void resetSpeed(){
+        this.speed = new Vector(0,0);
     }
 }

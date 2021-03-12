@@ -6,7 +6,8 @@ public class Palet extends Circle {
 
     private Vector speed;
     private final static double COEFF_FRICTION = 0.92;
-    
+    private int scoredGoal = -1;
+
     public Palet(Vector position, double radius){
         super(position, radius);
         speed = new Vector(0,0);
@@ -51,7 +52,25 @@ public class Palet extends Circle {
         return hasCollided;
     }
 
-    public void update(double dt, Wall[] walls, Pusher[] pushers){
+    public void resetScoredGoal(){
+        scoredGoal = -1;
+    }
+
+    public int getScoredGoal(){
+        return scoredGoal;
+    }
+
+    public boolean goalCollisions(Goal[] goals){
+        for(int i = 0; i < goals.length; i++){
+            if(goals[i].isInGoal(this)){
+                scoredGoal = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
         speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
 
         Vector v = speed.multiply(dt);
@@ -62,10 +81,11 @@ public class Palet extends Circle {
 
         for(double l = step; l <= length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
-            if(wallCollisions(walls) || pusherCollisions(pushers, dt)){
+            if(goalCollisions(goals) || wallCollisions(walls) || pusherCollisions(pushers, dt)){
                 break;
             }
         }
 
     }
 }
+

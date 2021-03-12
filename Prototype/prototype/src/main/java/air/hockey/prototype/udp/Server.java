@@ -135,15 +135,15 @@ public class Server extends Thread {
             ois.close();
             if(packet.getPort() == clientPorts.get(0)) iClient = 1;
             else iClient = 0;
-            model.getPushers()[1-iClient] = p;
+            model.getBoard().getPushers()[1-iClient] = p;
             haveReceivedPusher = true;
         }
     
         public void sendObjects() throws IOException {
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeObject(model.getPushers());
-            oo.writeObject(model.getPalet());
+            oo.writeObject(model.getBoard().getPushers());
+            oo.writeObject(model.getBoard().getPalet());
             oo.close();
             byte[] objectSerialized = bStream.toByteArray();
             int port = clientPorts.get(0);
@@ -172,7 +172,7 @@ public class Server extends Thread {
         public void sendPusher() throws IOException {
             ByteArrayOutputStream bStream = new ByteArrayOutputStream();
             ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeObject(model.getPushers()[0]);
+            oo.writeObject(model.getBoard().getPushers()[0]);
             oo.close();
             byte[] pusherSerialized = bStream.toByteArray();
             int port = clientPorts.get(iClient);
