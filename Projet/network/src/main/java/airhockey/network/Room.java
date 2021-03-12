@@ -4,10 +4,7 @@ import airhockey.model.Model;
 import airhockey.model.Pusher;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.util.ArrayList;
 
 public class Room {
@@ -18,14 +15,16 @@ public class Room {
     private boolean full = false;
     private boolean isPublic;
     private Model model;
+    private int portRoom = 6667;
 
-    public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
-        this.serverSocket = serverSocket;
+    public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws IOException {
+        //this.serverSocket = serverSocket;
+        this.serverSocket = new DatagramSocket(6667);
         this.id = id;
         this.clientPorts = new ArrayList<Integer>();
         this.clientAddresses = new ArrayList<InetAddress>();
         this.isPublic = isPublic;
-        model = new Model();
+        this.model = new Model();
     }
 
     public String getId(){
@@ -53,6 +52,7 @@ public class Room {
             DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
             serverSocket.send(packet);
             new Sender().start();
+            new Receiver().start();
             new Updater().start();
         }
     }
@@ -63,6 +63,18 @@ public class Room {
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
         model.getBoard().getPushers()[iClient] = p;
     }
+
+    public void receive2() throws IOException, ClassNotFoundException {
+        byte[]content = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(content, content.length);
+        serverSocket.receive(packet);
+        int port = packet.getPort();
+        InetAddress address = packet.getAddress();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content));
+        receive(ois, port, address);
+    }
+
+
 
     public void sendPaletAndPushers() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -94,6 +106,21 @@ public class Room {
                 try {
                     sendPaletAndPushers();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public class Receiver extends Thread {
+        @Override
+        public void run() {
+            while(true) {
+                try {
+                    receive2();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }

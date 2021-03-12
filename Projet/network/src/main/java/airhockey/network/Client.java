@@ -121,11 +121,10 @@ public class Client{
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
-        oo.writeUTF(id);
         oo.writeObject(model.getBoard().getPushers()[numPlayer]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), 6667);
         socket.send(packet);
     }
 
@@ -146,12 +145,12 @@ public class Client{
         @Override
         public void run() {
             while(!socket.isClosed()){
+                try {
+                    Thread.sleep(1000 / 40);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 synchronized(model) {
-                    try {
-                        Thread.sleep(1000 / 40);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     if (model.hasPusherMoved()) {
                         try {
                             sendPusher();
