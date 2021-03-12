@@ -41,6 +41,7 @@ public class Server extends Thread {
                     case "public" : joinPublicRoom(ois, port, address);break;
                     default: sendToRoom(ois, part1, port, address);
                 }
+                ois.close();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

@@ -121,10 +121,11 @@ public class Client{
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF(id);
         oo.writeObject(model.getBoard().getPushers()[numPlayer]);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), 6667);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
         socket.send(packet);
     }
 
