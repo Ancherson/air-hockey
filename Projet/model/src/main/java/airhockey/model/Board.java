@@ -13,12 +13,12 @@ public class Board {
 
 
     public Board() {
-        palet = new Palet(new Vector(400, 250), 20);
+        palet = new Palet(new Vector(400, 250), 18);
         palet.setSpeed(new Vector(0, 0));
 
         pushers = new Pusher[2];
-        pushers[0] = new Pusher(new Vector(200, 250), 25);
-        pushers[1] = new Pusher(new Vector(700, 250), 25);
+        pushers[0] = new Pusher(new Vector(200, 250), 30);
+        pushers[1] = new Pusher(new Vector(700, 250), 30);
 
         walls = new Wall[6];
         walls[0] = new Wall(50, 50, WIDTH-100, 0); //mur haut
