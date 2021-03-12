@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'Projet'
-include('javafx','model','network')
+include('javafx')
