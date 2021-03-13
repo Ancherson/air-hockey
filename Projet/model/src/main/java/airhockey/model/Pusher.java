@@ -53,7 +53,7 @@ public class Pusher extends Circle implements Serializable {
     public boolean paletCollision(Palet p, Wall[] walls){
         boolean hasCollided = false;
         if(isColliding(p)){
-            Vector normal = p.getPosition().add(position.multiply(-1)).normalize();
+            Vector normal = p.getPosition().sub(position).normalize();
             p.setSpeed(normal.multiply(p.getSpeed().length()).add(speed));
             Circle newPaletPosition = new Circle(new Vector(p.getPosition().getX(), p.getPosition().getY()), p.getRadius());
             newPaletPosition.resolveCollision(this);

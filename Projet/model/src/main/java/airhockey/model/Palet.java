@@ -42,7 +42,7 @@ public class Palet extends Circle {
         boolean hasCollided = false;
         for(Pusher p : pushers){
             if(isColliding(p)){
-                Vector normal = position.add(p.position.multiply(-1)).normalize();
+                Vector normal = position.sub(p.position).normalize();
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
 
                 Circle newPosition = new Circle(new Vector(getPosition().getX(), getPosition().getY()), getRadius());
