@@ -56,7 +56,7 @@ public class Circle implements Serializable {
     }
 
     public void resolveCollision(Wall w){
-        Vector cp = closestPoint(w);
+        Vector cp = w.closestPoint(position);
         resolveCollision(new Circle(cp,0));
     }
 }

@@ -35,6 +35,11 @@ public class Model {
         return false;
     }
 
+    public void PusherReleased(int numplayer){
+        this.board.getPushers()[numplayer].resetSpeed();
+        hasPusherMoved = true;
+    }
+
     public void setLocationPusher(double x, double y, double dt,int numplayer) {
         Pusher[] pushers = board.getPushers();
         pushers[numplayer].resetMovement();

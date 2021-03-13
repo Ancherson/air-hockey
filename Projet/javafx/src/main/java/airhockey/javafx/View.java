@@ -6,6 +6,7 @@ import airhockey.model.Model;
 import airhockey.model.Vector;
 import airhockey.model.Wall;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -87,7 +88,7 @@ public class View extends Pane {
     }
 
     public void mouseReleased(MouseEvent event) {
-        model.getBoard().getPushers()[0].resetSpeed();
+        model.PusherReleased(numplayer);
         isPressed = false;
     }
 
@@ -97,7 +98,6 @@ public class View extends Pane {
         @Override
         public void handle(long now){
             long dt = now-lastUpdateTime;
-
             model.update(dt/(1e9*1.0));
             draw();
             lastUpdateTime = now;

@@ -10,6 +10,10 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -34,13 +38,11 @@ public class MenuClient extends Application {
 
         FirstMenu pane = new FirstMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
-        View view = new View(this, model,1);
         CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
         scene3 = new Scene(joinMenu);
-        scene4 = new Scene(view);
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);

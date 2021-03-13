@@ -30,7 +30,7 @@ public class Palet extends Circle {
         for(Wall w : walls){
             if(isColliding(w)){
                 resolveCollision(w);
-                speed = speed.reflection(w.getNormal());
+                speed = speed.reflection(w.getNormal(position));
                 speed = speed.multiply(0.94);
                 hasCollided = true;
             }
