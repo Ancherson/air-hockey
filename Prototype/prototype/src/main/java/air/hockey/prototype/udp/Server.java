@@ -118,6 +118,11 @@ public class Server extends Thread {
             double lastT = System.nanoTime();
             double t;
             while(true){
+		try {
+                        Thread.sleep(1000/40);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                }
                 t = System.nanoTime();
                 double dt = (t-lastT)/(1e9*1.0);
                 model.update(dt);
