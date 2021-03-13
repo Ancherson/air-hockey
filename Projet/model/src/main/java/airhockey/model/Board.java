@@ -61,10 +61,14 @@ public class Board {
                 palet.setPosition(new Vector(50+(WIDTH-100)/2, 50+(HEIGHT-100)/2));
                 break;
             case 0:
-                palet.setPosition(new Vector(50+(WIDTH-100)/2-80, 50+(HEIGHT-100)/2));
+                Circle test0 = new Circle(new Vector(50+(WIDTH-100)/2-80, 50+(HEIGHT-100)/2),18);
+                Vector starting0 = pushers[0].isColliding(test0)?  new Vector(50+(WIDTH-100)/2-80-60, 50+(HEIGHT-100)/2+60) : new Vector(50+(WIDTH-100)/2-80, 50+(HEIGHT-100)/2);
+                palet.setPosition(starting0);
                 break;
             case 1:
-                palet.setPosition(new Vector(50+(WIDTH-100)/2+80, 50+(HEIGHT-100)/2));
+                Circle test1 = new Circle(new Vector(50+(WIDTH-100)/2+80, 50+(HEIGHT-100)/2),18);
+                Vector starting1 = pushers[1].isColliding(test1)? new Vector(50+(WIDTH-100)/2+80+60, 50+(HEIGHT-100)/2+60) : new Vector(50+(WIDTH-100)/2+80, 50+(HEIGHT-100)/2);
+                palet.setPosition(starting1);
                 break;
         }
 
