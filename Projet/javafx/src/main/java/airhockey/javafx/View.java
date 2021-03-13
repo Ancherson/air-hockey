@@ -88,7 +88,7 @@ public class View extends Pane {
     }
 
     public void mouseReleased(MouseEvent event) {
-        model.getBoard().getPushers()[0].resetSpeed();
+        model.PusherReleased(numplayer);
         isPressed = false;
     }
 
