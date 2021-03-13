@@ -61,7 +61,9 @@ public class Room {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
-        model.getBoard().getPushers()[iClient] = p;
+        synchronized (model) {
+            model.getBoard().getPushers()[iClient] = p;
+        }
     }
 
     public void sendPaletAndPushers() throws IOException {
@@ -91,10 +93,12 @@ public class Room {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                try {
-                    sendPaletAndPushers();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                synchronized (model) {
+                    try {
+                        sendPaletAndPushers();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -107,14 +111,16 @@ public class Room {
             double t;
             while(true) {
                 try {
-                    Thread.sleep(1000 / 60);
+                    Thread.sleep(1000 / 80);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                t = System.nanoTime();
-                double dt = (t-lastT)/(1e9*1.0);
-                model.update(dt);
-                lastT = t;
+                synchronized (model) {
+                    t = System.nanoTime();
+                    double dt = (t-lastT)/(1e9*1.0);
+                    model.update(dt);
+                    lastT = t;
+                }
             }
         }
     }

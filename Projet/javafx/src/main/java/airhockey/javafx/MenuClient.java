@@ -10,6 +10,10 @@ import javafx.stage.Window;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -125,7 +129,7 @@ public class MenuClient extends Application {
 
     public void createRoom() {
         try {
-            client = new Client(model);
+            client = new Client(model, Platform::runLater);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -137,7 +141,7 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model);
+            client = new Client(model, Platform::runLater);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
