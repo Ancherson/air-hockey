@@ -53,7 +53,6 @@ public class Room {
             DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
             serverSocket.send(packet);
             new Sender().start();
-            new Updater().start();
         }
     }
 
@@ -61,9 +60,7 @@ public class Room {
         Pusher p = (Pusher)ois.readObject();
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
-        synchronized (model) {
-            model.getBoard().getPushers()[iClient] = p;
-        }
+        model.getBoard().getPushers()[iClient] = p;
     }
 
     public void sendPaletAndPushers() throws IOException {
@@ -87,41 +84,25 @@ public class Room {
     public class Sender extends Thread {
         @Override
         public void run() {
+            double lastT = System.nanoTime();
+            double t;
             while(true) {
+                t = System.nanoTime();
+                double dt = (t-lastT)/(1e9*1.0);
+                model.update(dt);
+                lastT = t;
+                try {
+                    sendPaletAndPushers();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 try {
                     Thread.sleep(1000/40);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                synchronized (model) {
-                    try {
-                        sendPaletAndPushers();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
     }
 
-    public class Updater extends Thread {
-        @Override
-        public void run() {
-            double lastT = System.nanoTime();
-            double t;
-            while(true) {
-                try {
-                    Thread.sleep(1000 / 80);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                synchronized (model) {
-                    t = System.nanoTime();
-                    double dt = (t-lastT)/(1e9*1.0);
-                    model.update(dt);
-                    lastT = t;
-                }
-            }
-        }
-    }
 }

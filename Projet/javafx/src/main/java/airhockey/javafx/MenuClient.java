@@ -38,13 +38,11 @@ public class MenuClient extends Application {
 
         FirstMenu pane = new FirstMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
-        View view = new View(this, model,1);
         CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
         scene3 = new Scene(joinMenu);
-        scene4 = new Scene(view);
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
@@ -129,7 +127,7 @@ public class MenuClient extends Application {
 
     public void createRoom() {
         try {
-            client = new Client(model, Platform::runLater);
+            client = new Client(model);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -141,7 +139,7 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model, Platform::runLater);
+            client = new Client(model);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {

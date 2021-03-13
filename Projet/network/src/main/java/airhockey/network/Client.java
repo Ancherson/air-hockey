@@ -9,20 +9,16 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class Client{
     private String id;
     private DatagramSocket socket;
     private Model model;
     private int numPlayer;
-    private Consumer<Runnable> runlater;
 
-    public Client(Model m, Consumer<Runnable> runlater) throws SocketException {
+    public Client(Model m) throws SocketException {
         socket = new DatagramSocket();
         model = m;
-        this.runlater = runlater;
     }
 
     public void createRoom() throws IOException {
@@ -142,10 +138,8 @@ public class Client{
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         ois.close();
-        runlater.accept(() -> {
-            model.getBoard().getPushers()[1-numPlayer] = p;
-            model.getBoard().setPalet(pa);
-        });
+        model.getBoard().getPushers()[1-numPlayer] = p;
+        model.getBoard().setPalet(pa);
     }
 
     public class Sender extends Thread{
@@ -157,7 +151,7 @@ public class Client{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                runlater.accept(() -> {
+                synchronized (model) {
                     if (model.hasPusherMoved()) {
                         try {
                             sendPusher();
@@ -165,7 +159,7 @@ public class Client{
                             e.printStackTrace();
                         }
                     }
-                });
+                }
             }
         }
     }

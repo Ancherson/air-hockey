@@ -37,7 +37,7 @@ public class FirstMenu extends BorderPane {
         test.setPrefSize(130,55);
         test.setMinWidth(130);
         test.setOnAction(value ->{
-            Menu.setScene(4);
+            Menu.setView(1);
         });
         this.setAlignment(BoxB1, Pos.CENTER);
         this.setCenter(BoxB1);
