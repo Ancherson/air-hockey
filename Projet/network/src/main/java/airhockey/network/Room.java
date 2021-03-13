@@ -97,7 +97,7 @@ public class Room {
                     e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(1000/40);
+                    Thread.sleep(1000/100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
