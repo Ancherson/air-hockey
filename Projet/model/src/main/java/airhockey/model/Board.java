@@ -20,13 +20,14 @@ public class Board {
         pushers[0] = new Pusher(new Vector(200, 250), 30);
         pushers[1] = new Pusher(new Vector(700, 250), 30);
 
-        walls = new Wall[6];
+        walls = new Wall[7];
         walls[0] = new Wall(50, 50, WIDTH-100, 0); //mur haut
         walls[1] = new Wall(50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 1
         walls[2] = new Wall(50,50+((HEIGHT-100)/2)+(GOAL_SIZE/2),0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 2
         walls[3] = new Wall(WIDTH-50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 1
         walls[4] = new Wall(WIDTH-50, 50+((HEIGHT-100)/2)+(GOAL_SIZE/2), 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 2
         walls[5] = new Wall(50, HEIGHT-50, WIDTH-100, 0); //mur bas
+        walls[6] = new Wall(500, 200, 10, 100);
         
         goals = new Goal[2];
         goals[0] = new Goal(50-200, 50+((HEIGHT-100)/2)-(GOAL_SIZE),200, GOAL_SIZE*2); //goal gauche
