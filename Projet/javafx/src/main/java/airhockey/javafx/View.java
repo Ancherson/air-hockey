@@ -50,7 +50,7 @@ public class View extends Pane {
     }
 
     public void drawWall(Wall w, Color col){
-        ctx.setFill(col);
+        ctx.setStroke(col);
         ctx.beginPath();
         ctx.moveTo(w.getPosition().getX(), w.getPosition().getY());
         Vector end = w.getPosition().add(w.getDirection());
@@ -67,6 +67,9 @@ public class View extends Pane {
         drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
+        }
+        for(Wall w : model.getBoard().getInvisibleWalls()) {
+            drawWall(w, Color.GREEN);
         }
     }
 
