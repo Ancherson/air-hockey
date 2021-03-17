@@ -39,6 +39,7 @@ public class Server extends Thread {
                     case "creer": createRoom(port, address, false);break;
                     case "rejoindre" : joinRoom(ois, port, address);break;
                     case "public" : joinPublicRoom(ois, port, address);break;
+                    case "close" : close(ois);break;
                     default: sendToRoom(ois, part1, port, address);
                 }
                 ois.close();
@@ -134,6 +135,19 @@ public class Server extends Thread {
             }
         }
         return null;
+    }
+
+    private void close(ObjectInputStream ois) throws IOException {
+        String id = ois.readUTF();
+        ois.close();
+        for(int i = 0; i < rooms.size(); i++) {
+            Room room = rooms.get(i);
+            if(room.getId().equals(id)) {
+                room.close();
+                rooms.remove(i);
+                return;
+            }
+        }
     }
 
     public static void main(String[]args) throws SocketException, UnknownHostException {

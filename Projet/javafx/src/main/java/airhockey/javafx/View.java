@@ -24,7 +24,7 @@ public class View extends Pane {
     private double lastDragTime;
     private Model model;
     private int numplayer;
-
+    private Animation animation;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
@@ -41,7 +41,8 @@ public class View extends Pane {
         this.getChildren().add(canvas);
 
         draw();
-        new Animation().start();
+        animation = new Animation();
+        animation.start();
     }
 
     public void drawCircle(Circle c, Color col){
@@ -90,6 +91,10 @@ public class View extends Pane {
     public void mouseReleased(MouseEvent event) {
         model.PusherReleased(numplayer);
         isPressed = false;
+    }
+
+    public void close() {
+        animation.stop();
     }
 
     public class Animation extends AnimationTimer {

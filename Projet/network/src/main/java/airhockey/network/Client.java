@@ -156,7 +156,7 @@ public class Client{
                         try {
                             sendPusher();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("Socket Closed");
                         }
                     }
                 }
@@ -171,7 +171,7 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -179,7 +179,16 @@ public class Client{
         }
     }
 
-    public void close() {
+    public void close() throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF("close");
+        oo.writeUTF(id);
+        oo.close();
+        byte[] message = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        socket.send(packet);
+
         socket.close();
     }
 }
