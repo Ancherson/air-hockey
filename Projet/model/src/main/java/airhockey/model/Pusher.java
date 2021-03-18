@@ -50,19 +50,21 @@ public class Pusher extends Circle implements Serializable {
         return hasCollided;
     }
 
-    public boolean paletCollision(Palet p){
+    public boolean paletCollision(Palet p, Wall[] walls){
         boolean hasCollided = false;
         if(isColliding(p)){
-            //Vector normal = p.getPosition().add(position.multiply(-1)).normalize();
-            //p.setSpeed(normal.multiply(p.getSpeed().length()).add(speed));
-            resolveCollision(p);
+            Vector normal = p.getPosition().sub(position).normalize();
+            p.setSpeed(normal.multiply(p.getSpeed().length()).add(speed));
+            Circle newPaletPosition = new Circle(new Vector(p.getPosition().getX(), p.getPosition().getY()), p.getRadius());
+            newPaletPosition.resolveCollision(this);
+            p.moveTo(newPaletPosition.getPosition(), walls);
             //p.setSpeed(p.getSpeed().multiply(0.96));
             hasCollided = true;
         }
         return hasCollided;
     }
 
-    public void moveTo(Vector arrival, Wall[] walls, Palet p){
+    public void moveTo(Vector arrival, Wall[] walls, Wall[] invisibleWalls,Palet p){
         Vector distance = arrival.add(position.multiply(-1));
         Vector dir = distance.normalize();
         double length = distance.length();
@@ -72,7 +74,7 @@ public class Pusher extends Circle implements Serializable {
 
         for(double l=step; l < length+step; l+=step){
             position = p0.add(dir.multiply(Math.min(l,length)));
-            if(paletCollision(p)||wallCollisions(walls)){
+            if(paletCollision(p, walls)||wallCollisions(walls)||wallCollisions(invisibleWalls)){
                 break;
             }
         }

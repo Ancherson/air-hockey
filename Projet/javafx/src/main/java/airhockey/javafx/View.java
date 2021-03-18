@@ -6,6 +6,7 @@ import airhockey.model.Model;
 import airhockey.model.Vector;
 import airhockey.model.Wall;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -23,7 +24,7 @@ public class View extends Pane {
     private double lastDragTime;
     private Model model;
     private int numplayer;
-
+    private Animation animation;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
@@ -40,7 +41,8 @@ public class View extends Pane {
         this.getChildren().add(canvas);
 
         draw();
-        new Animation().start();
+        animation = new Animation();
+        animation.start();
     }
 
     public void drawCircle(Circle c, Color col){
@@ -49,7 +51,7 @@ public class View extends Pane {
     }
 
     public void drawWall(Wall w, Color col){
-        ctx.setFill(col);
+        ctx.setStroke(col);
         ctx.beginPath();
         ctx.moveTo(w.getPosition().getX(), w.getPosition().getY());
         Vector end = w.getPosition().add(w.getDirection());
@@ -66,6 +68,9 @@ public class View extends Pane {
         drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
+        }
+        for(Wall w : model.getBoard().getInvisibleWalls()) {
+            drawWall(w, Color.GREEN);
         }
     }
 
@@ -87,8 +92,12 @@ public class View extends Pane {
     }
 
     public void mouseReleased(MouseEvent event) {
-        model.getBoard().getPushers()[0].resetSpeed();
+        model.PusherReleased(numplayer);
         isPressed = false;
+    }
+
+    public void close() {
+        animation.stop();
     }
 
     public class Animation extends AnimationTimer {
@@ -97,7 +106,6 @@ public class View extends Pane {
         @Override
         public void handle(long now){
             long dt = now-lastUpdateTime;
-
             model.update(dt/(1e9*1.0));
             draw();
             lastUpdateTime = now;

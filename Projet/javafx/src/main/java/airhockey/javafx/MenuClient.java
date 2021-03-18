@@ -7,9 +7,14 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -36,15 +41,15 @@ public class MenuClient extends Application {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
-        pane = new FirstMenu(this);
-        joinMenu = new JoinMenu(this);
-        view = new View(this, model,1);
-        create = new CreateMenu(this);
+
+        primaryStage.setOnHiding(this::close);
+        FirstMenu pane = new FirstMenu(this);
+        JoinMenu joinMenu = new JoinMenu(this);
+        CreateMenu create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
         scene3 = new Scene(joinMenu);
-        scene4 = new Scene(view);
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
@@ -81,7 +86,7 @@ public class MenuClient extends Application {
     }
 
     public void setScene(int S) {
-        switch (S){
+        switch (S) {
             case 1:
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
@@ -98,7 +103,7 @@ public class MenuClient extends Application {
                 primaryStage.setMinWidth(400);
 
                 System.out.println("EN ATTENTE DU SERVEUR");
-                new Thread (() ->{
+                new Thread(() -> {
                     createRoom();
                 }).start();
 
@@ -121,8 +126,8 @@ public class MenuClient extends Application {
         }
     }
 
-    public void setView(int numplayer){
-        View view = new View(this, model,numplayer);
+    public void setView(int numplayer) {
+        View view = new View(this, model, numplayer);
         scene4 = new Scene(view);
         setScene(4);
     }
@@ -151,8 +156,23 @@ public class MenuClient extends Application {
         }
     }
 
-    public void closeClient() {
-        client.close();
+
+    public void closeClient()  {
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    private void close(WindowEvent windowEvent) {
+        if(scene4 != null) ((View)(scene4.getRoot())).close();
+        if(client != null) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

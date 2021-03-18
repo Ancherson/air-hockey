@@ -15,18 +15,30 @@ public class Room {
     private DatagramSocket serverSocket;
     private ArrayList<Integer> clientPorts;
     private ArrayList<InetAddress> clientAddresses;
+    private boolean full = false;
+    private boolean isPublic;
     private Model model;
+    private boolean isRunning = true;
 
-    public Room(DatagramSocket serverSocket, String id) throws SocketException {
+    public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
         this.id = id;
         this.clientPorts = new ArrayList<Integer>();
         this.clientAddresses = new ArrayList<InetAddress>();
-        model = new Model();
+        this.isPublic = isPublic;
+        this.model = new Model();
     }
 
     public String getId(){
         return id;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public boolean isFull() {
+        return full;
     }
 
     public void join(int port, InetAddress address) throws IOException {
@@ -75,23 +87,27 @@ public class Room {
         public void run() {
             double lastT = System.nanoTime();
             double t;
-            while(true) {
+            while(isRunning) {
                 t = System.nanoTime();
                 double dt = (t-lastT)/(1e9*1.0);
                 model.update(dt);
                 lastT = t;
-
-                try {
-                    Thread.sleep(1000/40);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 try {
                     sendPaletAndPushers();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                try {
+                    Thread.sleep(1000/120);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
+
+    public void close() {
+        isRunning = false;
+    }
+
 }

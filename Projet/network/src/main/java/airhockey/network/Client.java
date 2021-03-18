@@ -83,6 +83,43 @@ public class Client{
         }
     }
 
+    public void joinRoomPublic() throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF("public");
+        oo.close();
+        byte[] message = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        socket.send(packet);
+
+        byte[] msg = new byte[1];
+        packet = new DatagramPacket(msg, msg.length);
+        socket.receive(packet);
+        id = new String(msg);
+        if(msg.equals("0")) numPlayer = 0;
+        if(msg.equals("1")) numPlayer = 1;
+
+        byte[] idBuff = new byte[Server.ID_LENGTH];
+        packet = new DatagramPacket(idBuff, idBuff.length);
+        socket.receive(packet);
+        id = new String(idBuff);
+
+        if(numPlayer == 1) {
+            startGame();
+            return;
+        }
+
+        byte[] buff = new byte[5];
+        packet = new DatagramPacket(buff, buff.length);
+        socket.receive(packet);
+        String res = new String(buff);
+        System.out.println(res);
+        if(res.equals("start")){
+            startGame();
+        }
+
+    }
+
     public void startGame(){
         //TODO CHANGE SCENE TO GAME
         new Sender().start();
@@ -117,17 +154,17 @@ public class Client{
         @Override
         public void run() {
             while(!socket.isClosed()){
-                synchronized(model) {
+                try {
+                    Thread.sleep(1000 / 120);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                synchronized (model) {
                     if (model.hasPusherMoved()) {
-                        try {
-                            Thread.sleep(1000 / 40);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         try {
                             sendPusher();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            System.out.println("Socket Closed");
                         }
                     }
                 }
@@ -142,7 +179,7 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -150,7 +187,16 @@ public class Client{
         }
     }
 
-    public void close() {
+    public void close() throws IOException {
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF("close");
+        oo.writeUTF(id);
+        oo.close();
+        byte[] message = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        socket.send(packet);
+
         socket.close();
     }
 }

@@ -17,7 +17,6 @@ public class CreateMenu extends BorderPane {
     public CreateMenu(MenuClient menu) {
 
         creation = new Label("creation de la room");
-    //coucou
         Button back = new Button("back");
 
         Clipboard clipboard = Clipboard.getSystemClipboard();

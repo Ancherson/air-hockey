@@ -38,29 +38,25 @@ public class Circle implements Serializable {
         Vector P = w.getPosition();
         Vector D = w.getDirection();
         //lambda is in [0, 1], lambda = 0 means that the closest point is on the start point of the wall, lambda = 1 means that the closest point is the end point of the wall
-        double lambda = Math.max(0, Math.min(1, (position.add(P.multiply(-1)).dotProduct(D))/(D.dotProduct(D))));
+        double lambda = Math.max(0, Math.min(1, (position.sub(P).dotProduct(D))/(D.dotProduct(D))));
         //by multiplying D by lambda and adding it to P we get the actual position of the point
         return P.add(D.multiply(lambda));
     }
 
     public boolean isColliding(Circle c){
-        return c.position.add(position.multiply(-1)).length()<radius+c.radius;
+        return c.position.sub(position).length()<radius+c.radius;
     }
 
     public boolean isColliding(Wall w){
-        /*Vector distance = position.add(w.getPosition().multiply(-1));
-        Vector direction = w.getDirection();
-        double h = Math.max(0, Math.min(1, distance.dotProduct(direction)/direction.dotProduct(direction)));
-        return distance.add(direction.multiply(-h)).length()<radius;*/
-        return position.add(closestPoint(w).multiply(-1)).length()<radius;
+        return position.sub(closestPoint(w)).length()<radius;
     }
 
     public void resolveCollision(Circle c){
-        position = c.position.add(position.add(c.position.multiply(-1)).normalize().multiply(c.radius+radius));
+        position = c.position.add(position.sub(c.position).normalize().multiply(c.radius+radius));
     }
 
     public void resolveCollision(Wall w){
-        Vector cp = closestPoint(w);
+        Vector cp = w.closestPoint(position);
         resolveCollision(new Circle(cp,0));
     }
 }
