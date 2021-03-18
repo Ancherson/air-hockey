@@ -32,7 +32,7 @@ public class View extends Pane {
         this.menu = menu;
         this.numplayer = numplayer;
 
-        camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1);
+        camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
 
         canvas = new Canvas(WIDTH,HEIGHT);
         ctx = canvas.getGraphicsContext2D();
@@ -48,18 +48,25 @@ public class View extends Pane {
     }
 
     public Vector gameToScreen(Vector v){
-        return v.sub(camera.position).multiply(camera.zoom).add(new Vector(WIDTH, HEIGHT).multiply(.5));
+        v = v.sub(camera.position).multiply(camera.zoom);
+        if(camera.flipX) v.setX(-v.getX());
+        return v.add(new Vector(WIDTH, HEIGHT).multiply(.5));
     }
 
     public Vector screenToGame(Vector v){
-        return v.sub(new Vector(WIDTH, HEIGHT).multiply(.5)).multiply(1.0/camera.zoom).add(camera.position);
+        v = v.sub(new Vector(WIDTH, HEIGHT).multiply(.5));
+        if(camera.flipX) v.setX(-v.getX());
+        return v.multiply(1.0/camera.zoom).add(camera.position);
     }
 
     public void drawCircle(Circle c, Color col){
         ctx.setFill(col);
         Vector pos = c.getPosition().sub(new Vector(c.getRadius(), c.getRadius()));
         Vector screenPos = gameToScreen(pos);
-        ctx.fillOval(screenPos.getX(), screenPos.getY(), 2*c.getRadius()*camera.zoom, 2*c.getRadius()* camera.zoom);
+
+        Vector size = new Vector(2*c.getRadius()*camera.zoom, 2*c.getRadius()*camera.zoom);
+        if(camera.flipX) screenPos = screenPos.sub(new Vector(size.getX(), 0));
+        ctx.fillOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
     }
 
     public void drawWall(Wall w, Color col){
@@ -123,9 +130,11 @@ public class View extends Pane {
     class Camera{
         private Vector position;
         private double zoom;
-        public Camera(Vector p, double z){
+        private boolean flipX;
+        public Camera(Vector p, double z, boolean fx){
             position = p;
             zoom = z;
+            flipX = fx;
         }
     }
 }
