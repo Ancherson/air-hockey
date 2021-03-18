@@ -7,30 +7,38 @@ public class Board {
     private Wall[] walls;
     private Goal[] goals;
 
-    private final int WIDTH = 800;
-    private final int HEIGHT = 500;
+    private final int WIDTH = 700;
+    private final int HEIGHT = 400;
     private final int GOAL_SIZE = 125;
 
 
     public Board() {
-        palet = new Palet(new Vector(400, 250), 18);
+        palet = new Palet(new Vector(350, 200), 18);
         palet.setSpeed(new Vector(0, 0));
 
         pushers = new Pusher[2];
-        pushers[0] = new Pusher(new Vector(200, 250), 30);
-        pushers[1] = new Pusher(new Vector(700, 250), 30);
+        pushers[0] = new Pusher(new Vector(100, 200), 30);
+        pushers[1] = new Pusher(new Vector(600, 200), 30);
 
         walls = new Wall[6];
-        walls[0] = new Wall(50, 50, WIDTH-100, 0); //mur haut
-        walls[1] = new Wall(50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 1
-        walls[2] = new Wall(50,50+((HEIGHT-100)/2)+(GOAL_SIZE/2),0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 2
-        walls[3] = new Wall(WIDTH-50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 1
-        walls[4] = new Wall(WIDTH-50, 50+((HEIGHT-100)/2)+(GOAL_SIZE/2), 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 2
-        walls[5] = new Wall(50, HEIGHT-50, WIDTH-100, 0); //mur bas
+        walls[0] = new Wall(0, 0, WIDTH, 0); //mur haut
+        walls[1] = new Wall(0, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 1
+        walls[2] = new Wall(0,HEIGHT/2+GOAL_SIZE/2,0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 2
+        walls[3] = new Wall(WIDTH, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 1
+        walls[4] = new Wall(WIDTH, HEIGHT/2+GOAL_SIZE/2, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 2
+        walls[5] = new Wall(0, HEIGHT, WIDTH, 0); //mur bas
         
         goals = new Goal[2];
-        goals[0] = new Goal(50-200, 50+((HEIGHT-100)/2)-(GOAL_SIZE),200, GOAL_SIZE*2); //goal gauche
-        goals[1] = new Goal(WIDTH-50,50+((HEIGHT-100)/2)-(GOAL_SIZE),200, GOAL_SIZE*2); // goal droite
+        goals[0] = new Goal(-200, HEIGHT/2-GOAL_SIZE,200, GOAL_SIZE*2); //goal gauche
+        goals[1] = new Goal(WIDTH,HEIGHT/2-GOAL_SIZE,200, GOAL_SIZE*2); // goal droite
+    }
+
+    public int getWIDTH(){
+        return WIDTH;
+    }
+
+    public int getHEIGHT(){
+        return HEIGHT;
     }
 
     public Pusher[] getPushers() {

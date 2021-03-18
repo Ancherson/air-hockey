@@ -28,10 +28,11 @@ public class View extends Pane {
 
 
     public View(MenuClient menu, Model model, int numplayer) {
-        camera = new Camera(new Vector(0, 0), 1);
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
+
+        camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1);
 
         canvas = new Canvas(WIDTH,HEIGHT);
         ctx = canvas.getGraphicsContext2D();
@@ -47,11 +48,11 @@ public class View extends Pane {
     }
 
     public Vector gameToScreen(Vector v){
-        return v.sub(camera.position).multiply(camera.zoom);
+        return v.sub(camera.position).multiply(camera.zoom).add(new Vector(WIDTH, HEIGHT).multiply(.5));
     }
 
     public Vector screenToGame(Vector v){
-        return v.multiply(1.0/camera.zoom).add(camera.position);
+        return v.sub(new Vector(WIDTH, HEIGHT).multiply(.5)).multiply(1.0/camera.zoom).add(camera.position);
     }
 
     public void drawCircle(Circle c, Color col){
@@ -122,8 +123,6 @@ public class View extends Pane {
     class Camera{
         private Vector position;
         private double zoom;
-        private boolean invertX;
-        private boolean invertY;
         public Camera(Vector p, double z){
             position = p;
             zoom = z;
