@@ -26,16 +26,20 @@ public class MenuClient extends Application {
 
     private Client client;
 
+    private FirstMenu pane;
+    private JoinMenu joinMenu;
+    private View view;
+    private CreateMenu create;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
-        FirstMenu pane = new FirstMenu(this);
-        JoinMenu joinMenu = new JoinMenu(this);
-        View view = new View(this, model,1);
-        CreateMenu create = new CreateMenu(this);
+        pane = new FirstMenu(this);
+        joinMenu = new JoinMenu(this);
+        view = new View(this, model,1);
+        create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
@@ -125,7 +129,7 @@ public class MenuClient extends Application {
 
     public void createRoom() {
         try {
-            client = new Client(model);
+            client = new Client(model,Platform::runLater,create::setID);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -137,7 +141,7 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model);
+            client = new Client(model, Platform::runLater, create::setID);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
