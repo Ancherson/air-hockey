@@ -24,9 +24,11 @@ public class View extends Pane {
     private double lastDragTime;
     private Model model;
     private int numplayer;
+    private Camera camera;
 
 
     public View(MenuClient menu, Model model, int numplayer) {
+        camera = new Camera(new Vector(0, 0), 1);
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
@@ -44,17 +46,28 @@ public class View extends Pane {
         new Animation().start();
     }
 
+    public Vector gameToScreen(Vector v){
+        return v.sub(camera.position).multiply(camera.zoom);
+    }
+
+    public Vector screenToGame(Vector v){
+        return v.multiply(1.0/camera.zoom).add(camera.position);
+    }
+
     public void drawCircle(Circle c, Color col){
         ctx.setFill(col);
-        ctx.fillOval(c.getPosition().getX()-c.getRadius(), c.getPosition().getY()-c.getRadius(), 2*c.getRadius(), 2*c.getRadius());
+        Vector pos = c.getPosition().sub(new Vector(c.getRadius(), c.getRadius()));
+        Vector screenPos = gameToScreen(pos);
+        ctx.fillOval(screenPos.getX(), screenPos.getY(), 2*c.getRadius()*camera.zoom, 2*c.getRadius()* camera.zoom);
     }
 
     public void drawWall(Wall w, Color col){
         ctx.setFill(col);
         ctx.beginPath();
-        ctx.moveTo(w.getPosition().getX(), w.getPosition().getY());
-        Vector end = w.getPosition().add(w.getDirection());
-        ctx.lineTo(end.getX(), end.getY());
+        Vector screenPos = gameToScreen(w.getPosition());
+        ctx.moveTo(screenPos.getX(), screenPos.getY());
+        Vector screenEndPos = gameToScreen(w.getPosition().add(w.getDirection()));
+        ctx.lineTo(screenEndPos.getX(), screenEndPos.getY());
         ctx.stroke();
     }
 
@@ -72,7 +85,8 @@ public class View extends Pane {
 
 
     public void mousePressed(MouseEvent event) {
-        if(model.isInPusher(event.getX(), event.getY(),numplayer)) {
+        Vector gamePos = screenToGame(new Vector(event.getX(), event.getY()));
+        if(model.isInPusher(gamePos.getX(), gamePos.getY(), numplayer)) {
             isPressed = true;
             lastDragTime = System.nanoTime();
         }
@@ -83,7 +97,8 @@ public class View extends Pane {
             double time = System.nanoTime();
             double dt = (time-lastDragTime)/(1e9*1.0);
             lastDragTime = time;
-            model.setLocationPusher(event.getX(), event.getY(), dt, numplayer);
+            Vector gamePos = screenToGame(new Vector(event.getX(), event.getY()));
+            model.setLocationPusher(gamePos.getX(), gamePos.getY(), dt, numplayer);
         }
     }
 
@@ -101,6 +116,17 @@ public class View extends Pane {
             model.update(dt/(1e9*1.0));
             draw();
             lastUpdateTime = now;
+        }
+    }
+
+    class Camera{
+        private Vector position;
+        private double zoom;
+        private boolean invertX;
+        private boolean invertY;
+        public Camera(Vector p, double z){
+            position = p;
+            zoom = z;
         }
     }
 }
