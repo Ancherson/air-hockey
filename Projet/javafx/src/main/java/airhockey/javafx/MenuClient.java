@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -36,6 +37,7 @@ public class MenuClient extends Application {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
+        primaryStage.setOnHiding(this::close);
         FirstMenu pane = new FirstMenu(this);
         JoinMenu joinMenu = new JoinMenu(this);
         CreateMenu create = new CreateMenu(this);
@@ -79,7 +81,7 @@ public class MenuClient extends Application {
     }
 
     public void setScene(int S) {
-        switch (S){
+        switch (S) {
             case 1:
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
@@ -96,7 +98,7 @@ public class MenuClient extends Application {
                 primaryStage.setMinWidth(400);
 
                 System.out.println("EN ATTENTE DU SERVEUR");
-                new Thread (() ->{
+                new Thread(() -> {
                     createRoom();
                 }).start();
 
@@ -119,8 +121,8 @@ public class MenuClient extends Application {
         }
     }
 
-    public void setView(int numplayer){
-        View view = new View(this, model,numplayer);
+    public void setView(int numplayer) {
+        View view = new View(this, model, numplayer);
         scene4 = new Scene(view);
         setScene(4);
     }
@@ -149,8 +151,23 @@ public class MenuClient extends Application {
         }
     }
 
-    public void closeClient() {
-        client.close();
+
+    public void closeClient()  {
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    private void close(WindowEvent windowEvent) {
+        if(scene4 != null) ((View)(scene4.getRoot())).close();
+        if(client != null) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

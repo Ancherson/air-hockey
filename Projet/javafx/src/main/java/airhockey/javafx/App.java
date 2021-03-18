@@ -13,11 +13,4 @@ public class App {
     public static void main(String[] args){
         MenuClient.launch(MenuClient.class, args);
     }
-
-    /*public void start(Stage primaryStage) throws Exception{
-        primaryStage.setHeight(HEIGHT);
-        primaryStage.setWidth(WIDTH);
-        primaryStage.show();
-
-    }*/
 }
