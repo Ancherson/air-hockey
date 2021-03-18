@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class View extends Pane {
 
@@ -39,7 +40,7 @@ public class View extends Pane {
         isPressed = false;
 
         this.getChildren().add(canvas);
-
+        ctx.setFont(new Font("Ubuntu", 24));
         draw();
         new Animation().start();
     }
@@ -60,8 +61,10 @@ public class View extends Pane {
 
 
     public void draw(){
-        ctx.setFill(Color.WHITE);
+        ctx.setFill(Color.rgb(255, 255, 255, 0.8));
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.setFill(Color.BLACK);
+        ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
         drawCircle(model.getBoard().getPalet(), Color.BLUE);
         drawCircle(model.getBoard().getPushers()[numplayer], Color.GREEN);
         drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
