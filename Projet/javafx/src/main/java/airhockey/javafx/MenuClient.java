@@ -43,9 +43,9 @@ public class MenuClient extends Application {
 
 
         primaryStage.setOnHiding(this::close);
-        FirstMenu pane = new FirstMenu(this);
-        JoinMenu joinMenu = new JoinMenu(this);
-        CreateMenu create = new CreateMenu(this);
+         pane = new FirstMenu(this);
+         joinMenu = new JoinMenu(this);
+         create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
