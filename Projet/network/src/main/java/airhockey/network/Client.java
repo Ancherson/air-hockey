@@ -9,16 +9,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.function.Consumer;
 
 public class Client{
     private String id;
     private DatagramSocket socket;
     private Model model;
     private int numPlayer;
+    private Consumer<Runnable> runLater;
+    private Consumer<String> setID;
 
-    public Client(Model m) throws SocketException {
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID) throws SocketException {
         socket = new DatagramSocket();
         model = m;
+        this.runLater = runlater;
+        this.setID = setID;
     }
 
     public void createRoom() throws IOException {
@@ -36,8 +41,11 @@ public class Client{
         socket.receive(packet);
         id = new String(idBuff);
 
-        //TODO ENVOYER L'ID DE LA ROOM AU MENU
+        runLater.accept(() -> {
+            setID.accept(id);
+        });
         System.out.println(id);
+
         /****************************************/
 
         byte[] buff = new byte[5];
@@ -88,8 +96,8 @@ public class Client{
         packet = new DatagramPacket(msg, msg.length);
         socket.receive(packet);
         id = new String(msg);
-        if(msg.equals("0")) numPlayer = 0;
-        if(msg.equals("1")) numPlayer = 1;
+        if(id.equals("0")) numPlayer = 0;
+        if(id.equals("1")) numPlayer = 1;
 
         byte[] idBuff = new byte[Server.ID_LENGTH];
         packet = new DatagramPacket(idBuff, idBuff.length);
@@ -190,5 +198,9 @@ public class Client{
         socket.send(packet);
 
         socket.close();
+    }
+
+    public int getNumPlayer() {
+        return numPlayer;
     }
 }

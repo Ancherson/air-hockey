@@ -31,16 +31,21 @@ public class MenuClient extends Application {
 
     private Client client;
 
+    private FirstMenu pane;
+    private JoinMenu joinMenu;
+    private View view;
+    private CreateMenu create;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
+
         primaryStage.setOnHiding(this::close);
-        FirstMenu pane = new FirstMenu(this);
-        JoinMenu joinMenu = new JoinMenu(this);
-        CreateMenu create = new CreateMenu(this);
+         pane = new FirstMenu(this);
+         joinMenu = new JoinMenu(this);
+         create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
@@ -129,7 +134,7 @@ public class MenuClient extends Application {
 
     public void createRoom() {
         try {
-            client = new Client(model);
+            client = new Client(model,Platform::runLater,create::setID);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -141,9 +146,24 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model);
+            client = new Client(model, Platform::runLater, create::setID);
             client.joinRoom(id);
             setView(1);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void joinPublicRoom() {
+        try {
+            client = new Client(model,Platform::runLater,create::setID);
+            client.joinRoomPublic();
+            Platform.runLater(() -> {
+                System.out.println(client.getNumPlayer());
+                setView(client.getNumPlayer());
+            });
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {

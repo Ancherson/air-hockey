@@ -109,6 +109,7 @@ public class Server extends Thread {
 
     public void joinPublicRoom(ObjectInputStream ois,int port, InetAddress address) throws IOException {
         Room room = getPublicRoom();
+        System.out.println(room);
         if(room != null) {
             byte[] buf = "1".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);

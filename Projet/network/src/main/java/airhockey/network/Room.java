@@ -50,6 +50,7 @@ public class Room {
         clientPorts.add(port);
         clientAddresses.add(address);
         if(clientPorts.size() == 2){
+            full = true;
             byte[] buf = "start".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
             serverSocket.send(packet);
