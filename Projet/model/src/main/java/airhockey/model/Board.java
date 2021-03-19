@@ -22,17 +22,17 @@ public class Board {
         pushers[1] = new Pusher(new Vector(600, 200), 30);
 
         walls = new Wall[6];
-        walls[0] = new Wall(50, 50, WIDTH-100, 0); //mur haut
-        walls[1] = new Wall(50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 1
-        walls[2] = new Wall(50,50+((HEIGHT-100)/2)+(GOAL_SIZE/2),0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 2
-        walls[3] = new Wall(WIDTH-50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 1
-        walls[4] = new Wall(WIDTH-50, 50+((HEIGHT-100)/2)+(GOAL_SIZE/2), 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 2
-        walls[5] = new Wall(50, HEIGHT-50, WIDTH-100, 0); //mur bas
+        walls[0] = new Wall(0, 0, WIDTH, 0); //mur haut
+        walls[1] = new Wall(0, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 1
+        walls[2] = new Wall(0,HEIGHT/2+GOAL_SIZE/2,0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 2
+        walls[3] = new Wall(WIDTH, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 1
+        walls[4] = new Wall(WIDTH, HEIGHT/2+GOAL_SIZE/2, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 2
+        walls[5] = new Wall(0, HEIGHT, WIDTH, 0); //mur bas
 
         invisibleWalls = new Wall[3];
-        invisibleWalls[0] = new Wall(50, 50 + ((HEIGHT-100)/2)-(GOAL_SIZE/2), 0, GOAL_SIZE);
-        invisibleWalls[1] = new Wall(WIDTH-50, 50 + ((HEIGHT-100)/2)-(GOAL_SIZE/2), 0, GOAL_SIZE);
-        invisibleWalls[2] = new Wall(WIDTH / 2, 50, 0, HEIGHT - 100);
+        invisibleWalls[0] = new Wall(0, HEIGHT/2-GOAL_SIZE/2, 0, GOAL_SIZE);
+        invisibleWalls[1] = new Wall(WIDTH, HEIGHT/2-GOAL_SIZE/2, 0, GOAL_SIZE);
+        invisibleWalls[2] = new Wall(WIDTH / 2, 0, 0, HEIGHT);
 
         goals = new Goal[2];
         goals[0] = new Goal(-200, HEIGHT/2-GOAL_SIZE,200, GOAL_SIZE*2); //goal gauche
@@ -76,16 +76,16 @@ public class Board {
         //pushers[1].setPosition(new Vector(700, 250));
         switch(numPlayer){
             case -1:
-                palet.setPosition(new Vector(50+(WIDTH-100)/2, 50+(HEIGHT-100)/2));
+                palet.setPosition(new Vector(WIDTH/2, HEIGHT/2));
                 break;
             case 0:
-                Circle test0 = new Circle(new Vector(50+(WIDTH-100)/2-80, 50+(HEIGHT-100)/2),18);
-                Vector starting0 = pushers[0].isColliding(test0)?  new Vector(50+(WIDTH-100)/2-80-60, 50+(HEIGHT-100)/2+60) : new Vector(50+(WIDTH-100)/2-80, 50+(HEIGHT-100)/2);
+                Circle test0 = new Circle(new Vector(WIDTH/2-80, HEIGHT/2),18);
+                Vector starting0 = pushers[0].isColliding(test0)?  new Vector(WIDTH/2-80-60, HEIGHT/2+60) : new Vector(WIDTH/2-80, HEIGHT/2);
                 palet.setPosition(starting0);
                 break;
             case 1:
-                Circle test1 = new Circle(new Vector(50+(WIDTH-100)/2+80, 50+(HEIGHT-100)/2),18);
-                Vector starting1 = pushers[1].isColliding(test1)? new Vector(50+(WIDTH-100)/2+80+60, 50+(HEIGHT-100)/2+60) : new Vector(50+(WIDTH-100)/2+80, 50+(HEIGHT-100)/2);
+                Circle test1 = new Circle(new Vector(WIDTH/2+80, HEIGHT/2),18);
+                Vector starting1 = pushers[1].isColliding(test1)? new Vector(WIDTH/2+80+60, HEIGHT/2+60) : new Vector(WIDTH/2+80, HEIGHT/2);
                 palet.setPosition(starting1);
                 break;
         }
