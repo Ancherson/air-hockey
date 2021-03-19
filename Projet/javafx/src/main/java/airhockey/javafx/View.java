@@ -69,9 +69,9 @@ public class View extends Pane {
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
         }
-        for(Wall w : model.getBoard().getInvisibleWalls()) {
+        /*for(Wall w : model.getBoard().getInvisibleWalls()) {
             drawWall(w, Color.GREEN);
-        }
+        }*/
     }
 
 
