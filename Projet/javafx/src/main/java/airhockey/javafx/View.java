@@ -68,7 +68,7 @@ public class View extends Pane {
 
         Vector size = new Vector(2*c.getRadius()*camera.zoom, 2*c.getRadius()*camera.zoom);
         if(camera.flipX) screenPos = screenPos.sub(new Vector(size.getX(), 0));
-        ctx.fillOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
+        ctx.strokeOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
     }
 
     public void drawWall(Wall w, Color col){
@@ -83,15 +83,17 @@ public class View extends Pane {
 
 
     public void draw(){
-        ctx.setFill(Color.rgb(255, 255, 255, 0.8));
+
+        ctx.setFill(Color.rgb(40, 40, 40, .8));
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
-        ctx.setFill(Color.BLACK);
+
+        ctx.setFill(Color.WHITE);
         ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
-        drawCircle(model.getBoard().getPalet(), Color.BLUE);
-        drawCircle(model.getBoard().getPushers()[numplayer], Color.GREEN);
-        drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
+        drawCircle(model.getBoard().getPalet(), Color.WHITE);
+        drawCircle(model.getBoard().getPushers()[numplayer], Color.WHITE);
+        drawCircle(model.getBoard().getPushers()[1-numplayer], Color.WHITE);
         for(Wall w : model.getBoard().getWalls()){
-            drawWall(w, Color.BLACK);
+            drawWall(w, Color.WHITE);
         }
         /*for(Wall w : model.getBoard().getInvisibleWalls()) {
             drawWall(w, Color.GREEN);
