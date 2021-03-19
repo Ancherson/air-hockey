@@ -29,7 +29,7 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'airhockey.javafx.App'
+    mainClass = 'airhockey.gui.App'
 }
 
 javafx {
