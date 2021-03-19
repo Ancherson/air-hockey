@@ -1,4 +1,4 @@
-package airhockey.javafx;
+package airhockey.gui;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
