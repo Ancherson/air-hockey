@@ -1,4 +1,4 @@
-package airhockey.javafx;
+package airhockey.gui;
 
 import airhockey.model.Model;
 import airhockey.network.Client;
