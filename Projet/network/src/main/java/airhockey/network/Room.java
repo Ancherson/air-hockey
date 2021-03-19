@@ -18,6 +18,7 @@ public class Room {
     private boolean full = false;
     private boolean isPublic;
     private Model model;
+    private boolean isRunning = true;
 
     public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
@@ -49,6 +50,7 @@ public class Room {
         clientPorts.add(port);
         clientAddresses.add(address);
         if(clientPorts.size() == 2){
+            full = true;
             byte[] buf = "start".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, clientAddresses.get(0), clientPorts.get(0));
             serverSocket.send(packet);
@@ -86,7 +88,7 @@ public class Room {
         public void run() {
             double lastT = System.nanoTime();
             double t;
-            while(true) {
+            while(isRunning) {
                 t = System.nanoTime();
                 double dt = (t-lastT)/(1e9*1.0);
                 model.update(dt);
@@ -103,6 +105,10 @@ public class Room {
                 }
             }
         }
+    }
+
+    public void close() {
+        isRunning = false;
     }
 
 }

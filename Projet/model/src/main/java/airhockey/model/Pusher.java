@@ -64,7 +64,7 @@ public class Pusher extends Circle implements Serializable {
         return hasCollided;
     }
 
-    public void moveTo(Vector arrival, Wall[] walls, Palet p){
+    public void moveTo(Vector arrival, Wall[] walls, Wall[] invisibleWalls,Palet p){
         Vector distance = arrival.add(position.multiply(-1));
         Vector dir = distance.normalize();
         double length = distance.length();
@@ -74,7 +74,7 @@ public class Pusher extends Circle implements Serializable {
 
         for(double l=step; l < length+step; l+=step){
             position = p0.add(dir.multiply(Math.min(l,length)));
-            if(paletCollision(p, walls)||wallCollisions(walls)){
+            if(paletCollision(p, walls)||wallCollisions(walls)||wallCollisions(invisibleWalls)){
                 break;
             }
         }

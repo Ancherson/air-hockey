@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class View extends Pane {
 
@@ -25,7 +26,7 @@ public class View extends Pane {
     private Model model;
     private int numplayer;
     private Camera camera;
-
+    private Animation animation;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
@@ -42,9 +43,10 @@ public class View extends Pane {
         isPressed = false;
 
         this.getChildren().add(canvas);
-
+        ctx.setFont(new Font("Ubuntu", 24));
         draw();
-        new Animation().start();
+        animation = new Animation();
+        animation.start();
     }
 
     public Vector gameToScreen(Vector v){
@@ -70,7 +72,7 @@ public class View extends Pane {
     }
 
     public void drawWall(Wall w, Color col){
-        ctx.setFill(col);
+        ctx.setStroke(col);
         ctx.beginPath();
         Vector screenPos = gameToScreen(w.getPosition());
         ctx.moveTo(screenPos.getX(), screenPos.getY());
@@ -81,14 +83,19 @@ public class View extends Pane {
 
 
     public void draw(){
-        ctx.setFill(Color.WHITE);
+        ctx.setFill(Color.rgb(255, 255, 255, 0.8));
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.setFill(Color.BLACK);
+        ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
         drawCircle(model.getBoard().getPalet(), Color.BLUE);
         drawCircle(model.getBoard().getPushers()[numplayer], Color.GREEN);
         drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED);
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.BLACK);
         }
+        /*for(Wall w : model.getBoard().getInvisibleWalls()) {
+            drawWall(w, Color.GREEN);
+        }*/
     }
 
 
@@ -113,6 +120,10 @@ public class View extends Pane {
     public void mouseReleased(MouseEvent event) {
         model.PusherReleased(numplayer);
         isPressed = false;
+    }
+
+    public void close() {
+        animation.stop();
     }
 
     public class Animation extends AnimationTimer {

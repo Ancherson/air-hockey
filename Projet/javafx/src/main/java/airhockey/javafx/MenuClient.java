@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -30,15 +31,21 @@ public class MenuClient extends Application {
 
     private Client client;
 
+    private FirstMenu pane;
+    private JoinMenu joinMenu;
+    private View view;
+    private CreateMenu create;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
-        FirstMenu pane = new FirstMenu(this);
-        JoinMenu joinMenu = new JoinMenu(this);
-        CreateMenu create = new CreateMenu(this);
+
+        primaryStage.setOnHiding(this::close);
+         pane = new FirstMenu(this);
+         joinMenu = new JoinMenu(this);
+         create = new CreateMenu(this);
 
         scene1 = new Scene(pane);
         scene2 = new Scene(create);
@@ -79,7 +86,7 @@ public class MenuClient extends Application {
     }
 
     public void setScene(int S) {
-        switch (S){
+        switch (S) {
             case 1:
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
@@ -96,7 +103,7 @@ public class MenuClient extends Application {
                 primaryStage.setMinWidth(400);
 
                 System.out.println("EN ATTENTE DU SERVEUR");
-                new Thread (() ->{
+                new Thread(() -> {
                     createRoom();
                 }).start();
 
@@ -119,15 +126,15 @@ public class MenuClient extends Application {
         }
     }
 
-    public void setView(int numplayer){
-        View view = new View(this, model,numplayer);
+    public void setView(int numplayer) {
+        View view = new View(this, model, numplayer);
         scene4 = new Scene(view);
         setScene(4);
     }
 
     public void createRoom() {
         try {
-            client = new Client(model);
+            client = new Client(model,Platform::runLater,create::setID);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -139,7 +146,7 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model);
+            client = new Client(model, Platform::runLater, create::setID);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
@@ -149,8 +156,38 @@ public class MenuClient extends Application {
         }
     }
 
-    public void closeClient() {
-        client.close();
+    public void joinPublicRoom() {
+        try {
+            client = new Client(model,Platform::runLater,create::setID);
+            client.joinRoomPublic();
+            Platform.runLater(() -> {
+                System.out.println(client.getNumPlayer());
+                setView(client.getNumPlayer());
+            });
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+
+    public void closeClient()  {
+        try {
+            client.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void close(WindowEvent windowEvent) {
+        if(scene4 != null) ((View)(scene4.getRoot())).close();
+        if(client != null) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

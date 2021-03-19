@@ -5,6 +5,7 @@ public class Board {
     private Palet palet;
     private Pusher[] pushers;
     private Wall[] walls;
+    private Wall[] invisibleWalls;
     private Goal[] goals;
 
     private final int WIDTH = 700;
@@ -21,13 +22,18 @@ public class Board {
         pushers[1] = new Pusher(new Vector(600, 200), 30);
 
         walls = new Wall[6];
-        walls[0] = new Wall(0, 0, WIDTH, 0); //mur haut
-        walls[1] = new Wall(0, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 1
-        walls[2] = new Wall(0,HEIGHT/2+GOAL_SIZE/2,0, HEIGHT/2-GOAL_SIZE/2); //mur gauche 2
-        walls[3] = new Wall(WIDTH, 0, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 1
-        walls[4] = new Wall(WIDTH, HEIGHT/2+GOAL_SIZE/2, 0, HEIGHT/2-GOAL_SIZE/2); //mur droite 2
-        walls[5] = new Wall(0, HEIGHT, WIDTH, 0); //mur bas
-        
+        walls[0] = new Wall(50, 50, WIDTH-100, 0); //mur haut
+        walls[1] = new Wall(50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 1
+        walls[2] = new Wall(50,50+((HEIGHT-100)/2)+(GOAL_SIZE/2),0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur gauche 2
+        walls[3] = new Wall(WIDTH-50, 50, 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 1
+        walls[4] = new Wall(WIDTH-50, 50+((HEIGHT-100)/2)+(GOAL_SIZE/2), 0, ((HEIGHT-100)/2)-(GOAL_SIZE/2)); //mur droite 2
+        walls[5] = new Wall(50, HEIGHT-50, WIDTH-100, 0); //mur bas
+
+        invisibleWalls = new Wall[3];
+        invisibleWalls[0] = new Wall(50, 50 + ((HEIGHT-100)/2)-(GOAL_SIZE/2), 0, GOAL_SIZE);
+        invisibleWalls[1] = new Wall(WIDTH-50, 50 + ((HEIGHT-100)/2)-(GOAL_SIZE/2), 0, GOAL_SIZE);
+        invisibleWalls[2] = new Wall(WIDTH / 2, 50, 0, HEIGHT - 100);
+
         goals = new Goal[2];
         goals[0] = new Goal(-200, HEIGHT/2-GOAL_SIZE,200, GOAL_SIZE*2); //goal gauche
         goals[1] = new Goal(WIDTH,HEIGHT/2-GOAL_SIZE,200, GOAL_SIZE*2); // goal droite
@@ -47,6 +53,10 @@ public class Board {
 
     public Wall[] getWalls() {
         return walls;
+    }
+
+    public Wall[] getInvisibleWalls() {
+        return invisibleWalls;
     }
 
     public Goal[] getGoals(){
