@@ -156,6 +156,21 @@ public class MenuClient extends Application {
         }
     }
 
+    public void joinPublicRoom() {
+        try {
+            client = new Client(model,Platform::runLater,create::setID);
+            client.joinRoomPublic();
+            Platform.runLater(() -> {
+                System.out.println(client.getNumPlayer());
+                setView(client.getNumPlayer());
+            });
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void closeClient()  {
         try {

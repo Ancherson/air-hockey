@@ -96,8 +96,8 @@ public class Client{
         packet = new DatagramPacket(msg, msg.length);
         socket.receive(packet);
         id = new String(msg);
-        if(msg.equals("0")) numPlayer = 0;
-        if(msg.equals("1")) numPlayer = 1;
+        if(id.equals("0")) numPlayer = 0;
+        if(id.equals("1")) numPlayer = 1;
 
         byte[] idBuff = new byte[Server.ID_LENGTH];
         packet = new DatagramPacket(idBuff, idBuff.length);
@@ -198,5 +198,9 @@ public class Client{
         socket.send(packet);
 
         socket.close();
+    }
+
+    public int getNumPlayer() {
+        return numPlayer;
     }
 }
