@@ -16,6 +16,10 @@ public class Model {
         return board;
     }
 
+    public String getScore(){
+        return players[0].getScore()+" : "+players[1].getScore();
+    }
+
     public void update(double dt){
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
@@ -23,7 +27,6 @@ public class Model {
             board.reset(p);
             board.getPalet().resetScoredGoal();
             players[1-p].setScore(players[1-p].getScore()+1);
-            System.out.println(players[0].getScore()+"  "+players[1].getScore());
         }
     }
 
