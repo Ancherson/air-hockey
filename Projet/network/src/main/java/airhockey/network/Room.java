@@ -19,6 +19,7 @@ public class Room {
     private boolean isPublic;
     private Model model;
     private boolean isRunning = true;
+    private long timeLastPacket = 0;
 
     public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
@@ -60,6 +61,9 @@ public class Room {
 
     public void receive(ObjectInputStream ois, int port, InetAddress address) throws IOException, ClassNotFoundException {
         Pusher p = (Pusher)ois.readObject();
+        long time = ois.readLong();
+        if(time > timeLastPacket) timeLastPacket = time;
+        else return;
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
         model.getBoard().getPushers()[iClient] = p;

@@ -131,6 +131,7 @@ public class Client{
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeUTF(id);
         oo.writeObject(model.getBoard().getPushers()[numPlayer]);
+        oo.writeLong(System.nanoTime());
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
