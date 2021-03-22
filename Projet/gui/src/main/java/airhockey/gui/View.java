@@ -137,6 +137,9 @@ public class View extends Pane {
             model.update(dt/(1e9*1.0));
             draw();
             lastUpdateTime = now;
+            if(model.isFinished()){
+                menu.endRoom(model.hasWon(numplayer));
+            }
         }
     }
 

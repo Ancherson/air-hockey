@@ -4,6 +4,7 @@ public class Model {
     private Board board;
     private Player[] players;
     private boolean hasPusherMoved = false;
+    private static final int SCORE_MAX=1;
 
     public Model() {
         board = new Board();
@@ -20,8 +21,12 @@ public class Model {
         return players[0].getScore()+" : "+players[1].getScore();
     }
 
-    public boolean hasWon(int score, Player p){
-        return p.getScore()>=score;
+    public boolean isFinished(){
+        return (hasWon(0) || hasWon(1));
+    }
+
+    public boolean hasWon(int numplayer){
+        return players[numplayer].getScore()>=SCORE_MAX;
     }
 
     public void update(double dt){
