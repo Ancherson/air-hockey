@@ -20,6 +20,10 @@ public class Model {
         return players[0].getScore()+" : "+players[1].getScore();
     }
 
+    public boolean hasWon(int score, Player p){
+        return p.getScore()>=score;
+    }
+
     public void update(double dt){
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
