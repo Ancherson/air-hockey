@@ -7,10 +7,17 @@ public class Palet extends Circle {
     private Vector speed;
     private final static double COEFF_FRICTION = 0.92;
     private int scoredGoal = -1;
+    private boolean hasHit;
+    private Vector hitPosition;
+    private Vector hitNormal;
     
     public Palet(Vector position, double radius){
         super(position, radius);
         speed = new Vector(0,0);
+
+        hasHit = false;
+        hitPosition = new Vector(0, 0);
+        hitNormal = new Vector(0, 0);
     }
 
     public Vector getSpeed(){
@@ -21,6 +28,18 @@ public class Palet extends Circle {
         speed = v;
     }
 
+    public boolean getHasHit(){
+        return hasHit;
+    }
+
+    public Vector getHitPosition(){
+        return hitPosition;
+    }
+
+    public Vector getHitNormal(){
+        return hitNormal;
+    }
+
     public String toString(){
         return super.toString()+"\nSpeed: "+speed;
     }
@@ -29,9 +48,14 @@ public class Palet extends Circle {
         boolean hasCollided = false;
         for(Wall w : walls){
             if(isColliding(w)){
+                hasHit = true;
+                hitPosition = w.closestPoint(position);
+                hitNormal = position.sub(hitPosition).normalize();//w.getNormal(hitPosition);
+
                 resolveCollision(w);
                 speed = speed.reflection(w.getNormal(position));
                 speed = speed.multiply(0.94);
+
                 hasCollided = true;
             }
         }
@@ -91,6 +115,7 @@ public class Palet extends Circle {
     }
 
     public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
+        hasHit = false;
         speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
 
         Vector v = speed.multiply(dt);

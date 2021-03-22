@@ -1,12 +1,8 @@
 package airhockey.gui;
 
 
-import airhockey.model.Circle;
-import airhockey.model.Model;
-import airhockey.model.Vector;
-import airhockey.model.Wall;
+import airhockey.model.*;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -27,11 +23,14 @@ public class View extends Pane {
     private int numplayer;
     private Camera camera;
     private Animation animation;
+    private ParticleManager particles;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
+
+        particles = new ParticleManager();
 
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
 
@@ -62,7 +61,7 @@ public class View extends Pane {
     }
 
     public void drawCircle(Circle c, Color col){
-        ctx.setFill(col);
+        ctx.setStroke(col);
         Vector pos = c.getPosition().sub(new Vector(c.getRadius(), c.getRadius()));
         Vector screenPos = gameToScreen(pos);
 
@@ -95,6 +94,12 @@ public class View extends Pane {
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.WHITE);
         }
+
+        for(Particle p: particles.getParticles()){
+            double alpha = p.getLife()/p.getStartLife();
+            drawCircle(p, Color.rgb(255, 255, 255, alpha));
+        }
+
         /*for(Wall w : model.getBoard().getInvisibleWalls()) {
             drawWall(w, Color.GREEN);
         }*/
@@ -135,6 +140,15 @@ public class View extends Pane {
         public void handle(long now){
             long dt = now-lastUpdateTime;
             model.update(dt/(1e9*1.0));
+            if(model.getBoard().getPalet().getHasHit()){
+                Vector hitPos = model.getBoard().getPalet().getHitPosition();
+                Vector hitNorm = model.getBoard().getPalet().getHitNormal();
+                Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
+                for(int i = 0; i < 8; i++){
+                    particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
+                }
+            }
+            particles.update(dt/(1e9*1.0));
             draw();
             lastUpdateTime = now;
         }
