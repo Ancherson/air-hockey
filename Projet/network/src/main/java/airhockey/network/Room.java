@@ -62,9 +62,9 @@ public class Room {
     public void receive(ObjectInputStream ois, int port, InetAddress address) throws IOException, ClassNotFoundException {
         Pusher p = (Pusher)ois.readObject();
         long time = ois.readLong();
+        ois.close();
         if(time > timeLastPacket) timeLastPacket = time;
         else return;
-        ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
         model.getBoard().getPushers()[iClient] = p;
     }
@@ -74,6 +74,7 @@ public class Room {
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
+        oo.writeLong(System.nanoTime());
         oo.close();
         byte[] objectSerialized = bStream.toByteArray();
         int port = clientPorts.get(0);

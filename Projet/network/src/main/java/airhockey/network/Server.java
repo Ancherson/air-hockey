@@ -21,6 +21,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
+        System.out.println("################### SERVEUR LANCE !!!! ###################");
         while(!socket.isClosed()) {
             try {
                 //RECEIVE PACKET
