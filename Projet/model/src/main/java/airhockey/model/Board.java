@@ -8,9 +8,9 @@ public class Board {
     private Wall[] invisibleWalls;
     private Goal[] goals;
 
-    private final int WIDTH = 700;
-    private final int HEIGHT = 400;
-    private final int GOAL_SIZE = 125;
+    public static final int WIDTH = 700;
+    public static final int HEIGHT = 400;
+    public static final int GOAL_SIZE = 125;
 
 
     public Board() {
