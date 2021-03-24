@@ -25,6 +25,7 @@ public class MenuClient extends Application {
     private Scene scene2;
     private Scene scene3;
     private Scene scene4;
+    private Scene scene5;
 
     private Window window;
     private Model model = new Model();
@@ -33,7 +34,6 @@ public class MenuClient extends Application {
 
     private FirstMenu pane;
     private JoinMenu joinMenu;
-    private View view;
     private CreateMenu create;
 
     @Override
@@ -122,11 +122,19 @@ public class MenuClient extends Application {
                 window.setHeight(540);
                 window.setWidth(820);
                 primaryStage.setScene(scene4);
-
+                break;
+            case 5:
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
+                primaryStage.setScene(scene5);
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
+                break;
         }
     }
 
     public void setView(int numplayer) {
+        //model = new Model();
         View view = new View(this, model, numplayer);
         scene4 = new Scene(view);
         setScene(4);
@@ -171,6 +179,12 @@ public class MenuClient extends Application {
         }
     }
 
+    public void endRoom(boolean won){
+        close();
+        EndMenu end = new EndMenu(this, won);
+        scene5 = new Scene(end);
+        setScene(5);
+    }
 
     public void closeClient()  {
         try {
@@ -178,6 +192,11 @@ public class MenuClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void close() {
+        model = new Model();
+        close(null);
     }
 
     private void close(WindowEvent windowEvent) {
