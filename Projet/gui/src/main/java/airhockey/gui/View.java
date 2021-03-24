@@ -3,23 +3,15 @@ package airhockey.gui;
 
 import airhockey.model.*;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
-
-import java.lang.management.OperatingSystemMXBean;
 import java.util.LinkedList;
 
 import static javafx.scene.paint.Color.BLACK;
@@ -43,15 +35,15 @@ public class View extends BorderPane {
 
     private LinkedList<Vector> listPosPalet = new LinkedList<>();
     private int maxLengthListPalet = 20;
+    private ParticleManager particles;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
 
-
+        particles = new ParticleManager();
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
-
         canvas = new Canvas(WIDTH,HEIGHT);
 
         Button quit = new Button("Quit");
@@ -107,7 +99,6 @@ public class View extends BorderPane {
         ctx.setFill(fillColor);
         Vector pos = center.sub(new Vector(radius, radius));
         Vector screenPos = gameToScreen(pos);
-
         Vector size = new Vector(2 * radius * camera.zoom, 2 * radius * camera.zoom);
         if(camera.flipX) screenPos = screenPos.sub(new Vector(size.getX(), 0));
         ctx.fillOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
@@ -180,21 +171,24 @@ public class View extends BorderPane {
 
         ctx.setFill(bgColor);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-//        ctx.setFill(Color.WHITE);
-//        ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
         drawScore();
         drawLinesBoard();
-        //Palet p = model.getBoard().getPalet();
         Pusher p1 = model.getBoard().getPushers()[numplayer];
         Pusher p2 = model.getBoard().getPushers()[1 - numplayer];
         drawPalet();
-        //drawCircle(p.getPosition(), p.getRadius(), Color.WHITE, Color.WHITE);
         drawCircle(p1.getPosition(), p1.getRadius(), WHITE, bgColor);
         drawCircle(p2.getPosition(), p2.getRadius(), Color.RED, bgColor);
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, WHITE);
         }
+        for(Particle p: particles.getParticles()){
+            double alpha = p.getLife()/p.getStartLife();
+            drawCircle(p.getPosition(), p.getRadius(), Color.rgb(255, 255, 255, alpha), Color.rgb(255, 255, 255, alpha));
+        }
+
+        /*for(Wall w : model.getBoard().getInvisibleWalls()) {
+            drawWall(w, Color.GREEN);
+        }*/
     }
 
 
@@ -234,6 +228,16 @@ public class View extends BorderPane {
             if(frame % 2 == 0) {
                 long dt = now-lastUpdateTime;
                 model.update(dt/(1e9*1.0));
+                if(model.getBoard().getPalet().getHasHit()){
+                    Vector hitPos = model.getBoard().getPalet().getHitPosition();
+                    Vector hitNorm = model.getBoard().getPalet().getHitNormal();
+                    Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
+                    int n = 10 +(int)Math.floor(Math.random()*10);
+                    for(int i = 0; i < n; i++){
+                        particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
+                    }
+                }
+                particles.update(dt/(1e9*1.0));
                 draw();
                 lastUpdateTime = now;
                 if(model.isFinished()) menu.endRoom(model.hasWon(numplayer));
