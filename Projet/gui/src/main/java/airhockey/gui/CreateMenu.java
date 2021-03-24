@@ -29,8 +29,6 @@ public class CreateMenu extends BorderPane {
             clipboard.setContent(content);
         } );
 
-
-
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
 

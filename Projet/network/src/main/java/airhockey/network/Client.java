@@ -16,6 +16,9 @@ public class Client{
     private DatagramSocket socket;
     private Model model;
     private int numPlayer;
+
+    private long timeLastPacket = 0;
+
     private Consumer<Runnable> runLater;
     private Consumer<String> setID;
 
@@ -121,7 +124,6 @@ public class Client{
     }
 
     public void startGame(){
-        //TODO CHANGE SCENE TO GAME
         new Sender().start();
         new Receiver().start();
     }
@@ -131,6 +133,7 @@ public class Client{
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeUTF(id);
         oo.writeObject(model.getBoard().getPushers()[numPlayer]);
+        oo.writeLong(System.nanoTime());
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
@@ -138,14 +141,16 @@ public class Client{
     }
 
     public void receiveModel() throws IOException, ClassNotFoundException {
-        //System.out.println("J'AI RECU MODELE");
         byte[]buf = new byte[1024];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
+        long time = ois.readLong();
         ois.close();
+        if(time > timeLastPacket) timeLastPacket = time;
+        else return;
         model.getBoard().getPushers()[1-numPlayer] = p;
         model.getBoard().setPalet(pa);
     }
