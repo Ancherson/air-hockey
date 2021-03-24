@@ -70,7 +70,7 @@ public class View extends BorderPane {
 
         back.setOnAction(value -> {
             menu.setScene(1);
-            close();
+            menu.close();
         });
         back.setAlignment(Pos.TOP_RIGHT);
         ctx = canvas.getGraphicsContext2D();

@@ -196,7 +196,7 @@ public class MenuClient extends Application {
         }
     }
 
-    private void close() {
+    public void close() {
         model = new Model();
         close(null);
     }
