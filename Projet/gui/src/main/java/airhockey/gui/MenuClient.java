@@ -201,7 +201,7 @@ public class MenuClient extends Application {
         close(null);
     }
 
-    private void close(WindowEvent windowEvent) {
+    public void close(WindowEvent windowEvent) {
         if(scene4 != null) ((View)(scene4.getRoot())).close();
         if(client != null) {
             try {
