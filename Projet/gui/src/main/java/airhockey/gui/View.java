@@ -144,7 +144,8 @@ public class View extends Pane {
                 Vector hitPos = model.getBoard().getPalet().getHitPosition();
                 Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                 Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
-                for(int i = 0; i < 8; i++){
+                int n = 4+(int)Math.floor(Math.random()*5);
+                for(int i = 0; i < n; i++){
                     particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
                 }
             }
