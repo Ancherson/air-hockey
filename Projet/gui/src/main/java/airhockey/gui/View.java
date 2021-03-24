@@ -4,19 +4,29 @@ package airhockey.gui;
 import airhockey.model.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 import java.lang.management.OperatingSystemMXBean;
 import java.util.LinkedList;
 
-public class View extends Pane {
+import static javafx.scene.paint.Color.BLACK;
+import static javafx.scene.paint.Color.WHITE;
+
+
+public class View extends BorderPane {
 
     private MenuClient menu;
     private Canvas canvas;
@@ -39,16 +49,41 @@ public class View extends Pane {
         this.menu = menu;
         this.numplayer = numplayer;
 
+
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
 
         canvas = new Canvas(WIDTH,HEIGHT);
+
+        Button back = new Button("back");
+        back.setStyle("-fx-background-color: #565656;");
+        back.setTextFill(WHITE);
+
+        back.setOnMouseEntered((action)->{
+            back.setStyle("-fx-background-color: #FFFFFF;");
+            back.setTextFill(BLACK);
+        });
+
+        back.setOnMouseExited((action)->{
+            back.setStyle("-fx-background-color: #565656;");
+            back.setTextFill(WHITE);
+        });
+
+        back.setOnAction(value -> {
+            menu.setScene(1);
+            close();
+        });
+        back.setAlignment(Pos.TOP_RIGHT);
         ctx = canvas.getGraphicsContext2D();
         canvas.setOnMousePressed(this::mousePressed);
         canvas.setOnMouseDragged(this::mouseDragged);
         canvas.setOnMouseReleased(this::mouseReleased);
         isPressed = false;
 
-        this.getChildren().add(canvas);
+        this.setCenter(canvas);
+        this.setBottom(back);
+        this.setAlignment(back,Pos.TOP_RIGHT);
+        this.setStyle("-fx-background-color: #282828;");
+
         ctx.setFont(new Font("Ubuntu", 24));
         draw();
         animation = new Animation();
@@ -112,15 +147,15 @@ public class View extends Pane {
     }
 
     public void drawLinesBoard() {
-        drawLine(new Vector(Board.WIDTH / 2, 0), new Vector(Board.WIDTH / 2, Board.HEIGHT), Color.WHITE);
-        drawLine(new Vector(Board.WIDTH / 4, 0), new Vector(Board.WIDTH / 4, Board.HEIGHT), Color.WHITE);
-        drawLine(new Vector( 3 * Board.WIDTH / 4, 0), new Vector(3 * Board.WIDTH / 4, Board.HEIGHT), Color.WHITE);
-        drawArc(new Vector(0, Board.HEIGHT / 2), 100, 270, 180, Color.WHITE);
-        drawArc(new Vector(Board.WIDTH, Board.HEIGHT / 2), 100, 90, 180, Color.WHITE);
+        drawLine(new Vector(Board.WIDTH / 2, 0), new Vector(Board.WIDTH / 2, Board.HEIGHT), WHITE);
+        drawLine(new Vector(Board.WIDTH / 4, 0), new Vector(Board.WIDTH / 4, Board.HEIGHT), WHITE);
+        drawLine(new Vector( 3 * Board.WIDTH / 4, 0), new Vector(3 * Board.WIDTH / 4, Board.HEIGHT), WHITE);
+        drawArc(new Vector(0, Board.HEIGHT / 2), 100, 270, 180, WHITE);
+        drawArc(new Vector(Board.WIDTH, Board.HEIGHT / 2), 100, 90, 180, WHITE);
     }
 
     public void drawScore() {
-        ctx.setFill(Color.WHITE);
+        ctx.setFill(WHITE);
         Vector pos = new Vector(3 * Board.WIDTH / 8 + 10, Board.HEIGHT / 8);
         pos = gameToScreen(pos);
         ctx.fillText(Integer.toString(model.getScore(0)), pos.getX(), pos.getY());
@@ -155,10 +190,10 @@ public class View extends Pane {
         Pusher p2 = model.getBoard().getPushers()[1 - numplayer];
         drawPalet();
         //drawCircle(p.getPosition(), p.getRadius(), Color.WHITE, Color.WHITE);
-        drawCircle(p1.getPosition(), p1.getRadius(), Color.WHITE, bgColor);
+        drawCircle(p1.getPosition(), p1.getRadius(), WHITE, bgColor);
         drawCircle(p2.getPosition(), p2.getRadius(), Color.RED, bgColor);
         for(Wall w : model.getBoard().getWalls()){
-            drawWall(w, Color.WHITE);
+            drawWall(w, WHITE);
         }
     }
 
