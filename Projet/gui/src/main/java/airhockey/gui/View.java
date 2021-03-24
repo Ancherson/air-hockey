@@ -54,25 +54,25 @@ public class View extends BorderPane {
 
         canvas = new Canvas(WIDTH,HEIGHT);
 
-        Button back = new Button("back");
-        back.setStyle("-fx-background-color: #565656;");
-        back.setTextFill(WHITE);
+        Button quit = new Button("Quit");
+        quit.setStyle("-fx-background-color: #565656;");
+        quit.setTextFill(WHITE);
 
-        back.setOnMouseEntered((action)->{
-            back.setStyle("-fx-background-color: #FFFFFF;");
-            back.setTextFill(BLACK);
+        quit.setOnMouseEntered((action)->{
+            quit.setStyle("-fx-background-color: #FFFFFF;");
+            quit.setTextFill(BLACK);
         });
 
-        back.setOnMouseExited((action)->{
-            back.setStyle("-fx-background-color: #565656;");
-            back.setTextFill(WHITE);
+        quit.setOnMouseExited((action)->{
+            quit.setStyle("-fx-background-color: #565656;");
+            quit.setTextFill(WHITE);
         });
 
-        back.setOnAction(value -> {
+        quit.setOnAction(value -> {
             menu.setScene(1);
             menu.close();
         });
-        back.setAlignment(Pos.TOP_RIGHT);
+        quit.setAlignment(Pos.TOP_RIGHT);
         ctx = canvas.getGraphicsContext2D();
         canvas.setOnMousePressed(this::mousePressed);
         canvas.setOnMouseDragged(this::mouseDragged);
@@ -80,8 +80,8 @@ public class View extends BorderPane {
         isPressed = false;
 
         this.setCenter(canvas);
-        this.setBottom(back);
-        this.setAlignment(back,Pos.TOP_RIGHT);
+        this.setBottom(quit);
+        this.setAlignment(quit,Pos.TOP_RIGHT);
         this.setStyle("-fx-background-color: #282828;");
 
         ctx.setFont(new Font("Ubuntu", 24));
