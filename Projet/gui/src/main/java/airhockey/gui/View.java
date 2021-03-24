@@ -61,11 +61,6 @@ public class View extends Pane {
         return v.add(new Vector(WIDTH, HEIGHT).multiply(.5));
     }
 
-    public Vector gameToScreenNoFlip(Vector v) {
-        v = v.sub(camera.position).multiply(camera.zoom);
-        return v.add(new Vector(WIDTH, HEIGHT).multiply(.5));
-    }
-
     public Vector screenToGame(Vector v){
         v = v.sub(new Vector(WIDTH, HEIGHT).multiply(.5));
         if(camera.flipX) v.setX(-v.getX());
@@ -107,8 +102,12 @@ public class View extends Pane {
     public void drawArc(Vector center, double radius, double startAngle, double arcExtent, Color col) {
         ctx.setStroke(col);
         Vector pos = center.sub(new Vector(radius, radius));
-        Vector screenPos = gameToScreenNoFlip(pos);
+        Vector screenPos = gameToScreen(pos);
         Vector size = new Vector(radius * 2 * camera.zoom, radius * camera.zoom * 2);
+        if(camera.flipX) {
+            screenPos = screenPos.sub(new Vector(size.getX(), 0));
+            arcExtent *= -1;
+        }
         ctx.strokeArc(screenPos.getX(), screenPos.getY(), size.getX(), size.getY(), startAngle, arcExtent, ArcType.OPEN);
     }
 
