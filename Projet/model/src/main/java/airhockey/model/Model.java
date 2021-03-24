@@ -4,7 +4,7 @@ public class Model {
     private Board board;
     private Player[] players;
     private boolean hasPusherMoved = false;
-    private static final int SCORE_MAX=1;
+    private static final int SCORE_MAX=7;
 
     public Model() {
         board = new Board();
