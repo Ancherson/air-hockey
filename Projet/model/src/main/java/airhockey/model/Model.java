@@ -1,5 +1,6 @@
 package airhockey.model;
 
+
 public class Model {
     private Board board;
     private Player[] players;
