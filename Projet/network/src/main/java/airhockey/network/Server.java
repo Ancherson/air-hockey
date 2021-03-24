@@ -21,6 +21,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
+        System.out.println("################### SERVEUR LANCE !!!! ###################");
         while(!socket.isClosed()) {
             try {
                 //RECEIVE PACKET
@@ -73,9 +74,9 @@ public class Server extends Thread {
     public void joinRoom(ObjectInputStream ois, int port, InetAddress address) throws IOException {
         String id = ois.readUTF();
         //IF THE ID EXIST THE CLIENT JOIN THE ROOM THAT HAS THIS ID AS ID
-        for(int i = 0; i < rooms.size(); i++) {
-            if(rooms.get(i).getId().equals(id)) {
-                rooms.get(i).join(port, address);
+        for (Room room : rooms) {
+            if (room.getId().equals(id)) {
+                room.join(port, address);
 
                 //SEND HE JOINED THE ROOM
                 byte[] buf = "yesRoom ".getBytes();
@@ -92,17 +93,17 @@ public class Server extends Thread {
     }
 
     public void sendToRoom(ObjectInputStream ois, String id, int port, InetAddress address) throws IOException, ClassNotFoundException {
-        for(int i = 0; i < rooms.size(); i++) {
-            if(rooms.get(i).getId().equals(id)) {
-                rooms.get(i).receive(ois, port, address);
+        for (Room room : rooms) {
+            if (room.getId().equals(id)) {
+                room.receive(ois, port, address);
                 return;
             }
         }
     }
 
     private boolean isIdExist(String id) {
-        for(int i = 0; i < rooms.size(); i++) {
-            if(rooms.get(i).getId().equals(id)) return true;
+        for (Room room : rooms) {
+            if (room.getId().equals(id)) return true;
         }
         return false;
     }
@@ -130,9 +131,9 @@ public class Server extends Thread {
     }
 
     private Room getPublicRoom() {
-        for(int i = 0; i < rooms.size(); i++) {
-            if(rooms.get(i).isPublic() && !rooms.get(i).isFull()) {
-                return rooms.get(i);
+        for (Room room : rooms) {
+            if (room.isPublic() && !room.isFull()) {
+                return room;
             }
         }
         return null;
