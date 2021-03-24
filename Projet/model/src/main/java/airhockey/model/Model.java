@@ -17,7 +17,11 @@ public class Model {
     }
 
     public String getScore(){
-        return players[0].getScore()+" : "+players[1].getScore();
+        return players[0].getScore()+"    "+players[1].getScore();
+    }
+
+    public int getScore(int numPlayer) {
+        return players[numPlayer].getScore();
     }
 
     public void update(double dt){

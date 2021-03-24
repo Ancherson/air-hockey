@@ -14,6 +14,7 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 
 import java.lang.management.OperatingSystemMXBean;
+import java.util.LinkedList;
 
 public class View extends Pane {
 
@@ -29,6 +30,9 @@ public class View extends Pane {
     private Camera camera;
     private Animation animation;
     private final Color bgColor = Color.rgb(40, 40, 40, .8);
+
+    private LinkedList<Vector> listPosPalet = new LinkedList<>();
+    private int maxLengthListPalet = 20;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
@@ -68,13 +72,13 @@ public class View extends Pane {
         return v.multiply(1.0/camera.zoom).add(camera.position);
     }
 
-    public void drawCircle(Circle c, Color strokeCol, Color fillColor){
+    public void drawCircle(Vector center, double radius, Color strokeCol, Color fillColor){
         ctx.setStroke(strokeCol);
         ctx.setFill(fillColor);
-        Vector pos = c.getPosition().sub(new Vector(c.getRadius(), c.getRadius()));
+        Vector pos = center.sub(new Vector(radius, radius));
         Vector screenPos = gameToScreen(pos);
 
-        Vector size = new Vector(2*c.getRadius()*camera.zoom, 2*c.getRadius()*camera.zoom);
+        Vector size = new Vector(2 * radius * camera.zoom, 2 * radius * camera.zoom);
         if(camera.flipX) screenPos = screenPos.sub(new Vector(size.getX(), 0));
         ctx.fillOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
         ctx.strokeOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
@@ -105,9 +109,7 @@ public class View extends Pane {
         Vector pos = center.sub(new Vector(radius, radius));
         Vector screenPos = gameToScreenNoFlip(pos);
         Vector size = new Vector(radius * 2 * camera.zoom, radius * camera.zoom * 2);
-        //if(camera.flipX) screenPos = screenPos.sub(new Vector(size.getX(), 0));
         ctx.strokeArc(screenPos.getX(), screenPos.getY(), size.getX(), size.getY(), startAngle, arcExtent, ArcType.OPEN);
-        //ctx.strokeArc(center.getX(), center.getY(), radius * 2, radius * 2, 0, 180, ArcType.OPEN);
     }
 
     public void drawLinesBoard() {
@@ -118,24 +120,47 @@ public class View extends Pane {
         drawArc(new Vector(Board.WIDTH, Board.HEIGHT / 2), 100, 90, 180, Color.WHITE);
     }
 
+    public void drawScore() {
+        ctx.setFill(Color.WHITE);
+        Vector pos = new Vector(3 * Board.WIDTH / 8 + 10, Board.HEIGHT / 8);
+        pos = gameToScreen(pos);
+        ctx.fillText(Integer.toString(model.getScore(0)), pos.getX(), pos.getY());
+
+        pos = new Vector(5 * Board.WIDTH / 8 + 10, Board.HEIGHT / 8);
+        pos = gameToScreen(pos);
+        ctx.fillText(Integer.toString(model.getScore(1)), pos.getX(), pos.getY());
+    }
+
+    public void drawPalet() {
+        listPosPalet.add(model.getBoard().getPalet().getPosition());
+        while(listPosPalet.size() > maxLengthListPalet) {
+            listPosPalet.removeFirst();
+        }
+        double radius = model.getBoard().getPalet().getRadius();
+        for(int i = listPosPalet.size() - 1; i >= 0; i--) {
+            drawCircle(listPosPalet.get(i), radius * i / (listPosPalet.size() - 1), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)));
+        }
+    }
 
     public void draw(){
 
         ctx.setFill(bgColor);
         ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-        ctx.setFill(Color.WHITE);
-        ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
+//        ctx.setFill(Color.WHITE);
+//        ctx.fillText(model.getScore(), (WIDTH/2)-25, 100,50);
+        drawScore();
         drawLinesBoard();
-        drawCircle(model.getBoard().getPalet(), Color.WHITE, bgColor);
-        drawCircle(model.getBoard().getPushers()[numplayer], Color.WHITE, bgColor);
-        drawCircle(model.getBoard().getPushers()[1-numplayer], Color.RED, bgColor);
+        //Palet p = model.getBoard().getPalet();
+        Pusher p1 = model.getBoard().getPushers()[numplayer];
+        Pusher p2 = model.getBoard().getPushers()[1 - numplayer];
+        drawPalet();
+        //drawCircle(p.getPosition(), p.getRadius(), Color.WHITE, Color.WHITE);
+        drawCircle(p1.getPosition(), p1.getRadius(), Color.WHITE, bgColor);
+        drawCircle(p2.getPosition(), p2.getRadius(), Color.RED, bgColor);
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, Color.WHITE);
         }
-        /*for(Wall w : model.getBoard().getInvisibleWalls()) {
-            drawWall(w, Color.GREEN);
-        }*/
     }
 
 
