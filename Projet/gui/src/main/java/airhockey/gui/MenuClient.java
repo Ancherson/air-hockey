@@ -180,7 +180,7 @@ public class MenuClient extends Application {
     }
 
     public void endRoom(boolean won){
-        close(null);
+        close();
         EndMenu end = new EndMenu(this, won);
         scene5 = new Scene(end);
         setScene(5);
@@ -194,12 +194,16 @@ public class MenuClient extends Application {
         }
     }
 
+    private void close() {
+        model = new Model();
+        close(null);
+    }
+
     private void close(WindowEvent windowEvent) {
         if(scene4 != null) ((View)(scene4.getRoot())).close();
         if(client != null) {
             try {
                 client.close();
-                model = new Model();
             } catch (IOException e) {
                 e.printStackTrace();
             }
