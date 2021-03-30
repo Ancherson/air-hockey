@@ -70,6 +70,8 @@ public class Room {
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
+        oo.writeInt(model.getScore(0));
+        oo.writeInt(model.getScore(1));
         oo.writeLong(System.nanoTime());
         oo.close();
         byte[] objectSerialized = bStream.toByteArray();

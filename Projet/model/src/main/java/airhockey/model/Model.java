@@ -7,6 +7,8 @@ public class Model {
     private boolean hasPusherMoved = false;
     private static final int SCORE_MAX=7;
 
+    private int counter = 0;
+
     public Model() {
         board = new Board();
         players = new Player[2];
@@ -18,12 +20,12 @@ public class Model {
         return board;
     }
 
-    public String getScore(){
-        return players[0].getScore()+"    "+players[1].getScore();
-    }
-
     public int getScore(int numPlayer) {
         return players[numPlayer].getScore();
+    }
+
+    public void setScore(int numPlayer, int score) {
+        players[numPlayer].setScore(score);
     }
 
     public boolean isFinished(){
@@ -37,11 +39,17 @@ public class Model {
     public void update(double dt){
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
-            int p = board.getPalet().getScoredGoal();
-            board.reset(p);
-            board.getPalet().resetScoredGoal();
-            players[1-p].setScore(players[1-p].getScore()+1);
+            counter++;
+            if(counter > 30) reset();
         }
+    }
+
+    public void reset() {
+        int p = board.getPalet().getScoredGoal();
+        board.getPalet().resetScoredGoal();
+        players[1-p].setScore(players[1-p].getScore()+1);
+        board.reset(p);
+        counter = 0;
     }
 
     public boolean hasPusherMoved() {
