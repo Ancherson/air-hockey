@@ -146,12 +146,16 @@ public class Client{
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
+        int score1 = ois.readInt();
+        int score2 = ois.readInt();
         long time = ois.readLong();
         ois.close();
         if(time > timeLastPacket) timeLastPacket = time;
         else return;
         model.getBoard().getPushers()[1-numPlayer] = p;
         model.getBoard().setPalet(pa);
+        model.setScore(0, score1);
+        model.setScore(1, score2);
     }
 
     public class Sender extends Thread{
