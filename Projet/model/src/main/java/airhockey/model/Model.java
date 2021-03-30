@@ -36,6 +36,10 @@ public class Model {
         return players[numplayer].getScore()>=SCORE_MAX;
     }
 
+    public int getCounter(){
+        return counter;
+    }
+
     public void update(double dt){
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){

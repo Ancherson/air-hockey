@@ -157,13 +157,18 @@ public class View extends BorderPane {
     }
 
     public void drawPalet() {
-        listPosPalet.add(model.getBoard().getPalet().getPosition());
+        if(model.getBoard().getPalet().getScoredGoal() == -1){
+            listPosPalet.add(model.getBoard().getPalet().getPosition());
+        } else if(!listPosPalet.isEmpty()){
+            listPosPalet.removeFirst();
+        }
+
         while(listPosPalet.size() > maxLengthListPalet) {
             listPosPalet.removeFirst();
         }
         double radius = model.getBoard().getPalet().getRadius();
         for(int i = listPosPalet.size() - 1; i >= 0; i--) {
-            drawCircle(listPosPalet.get(i), radius * i / (listPosPalet.size() - 1), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)));
+             drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)),Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)));
         }
     }
 
@@ -235,6 +240,22 @@ public class View extends BorderPane {
                     int n = 10 +(int)Math.floor(Math.random()*10);
                     for(int i = 0; i < n; i++){
                         particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
+                    }
+                }
+                if(model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                    for(int i = 0; i < 500; i++){
+                        double dirPos = Math.random()*Math.PI*2;
+                        Vector dir = new Vector(Math.cos(dirPos), Math.sin(dirPos));
+                        double dirSpd = Math.random()*Math.PI*2;
+                        Vector dir2 = new Vector(Math.cos(dirPos), Math.sin(dirSpd));
+                        //petite explosion "désagrégation"
+                        //particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir2.multiply(Math.random()*20+10), 0.5+Math.random(), 1));
+
+                        //grosse explosion "chaos"
+                        //particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir2.multiply(Math.random()*80+10), 0.5+Math.random(), 1));
+
+                        //grosse explosion "ordonnée"
+                        particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir.multiply(Math.random()*85+5), 0.5+Math.random(), 1));
                     }
                 }
                 particles.update(dt/(1e9*1.0));
