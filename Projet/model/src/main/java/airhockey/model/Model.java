@@ -45,6 +45,8 @@ public class Model {
         if(board.getPalet().getScoredGoal() != -1){
             counter++;
             if(counter > 30) reset();
+        }else {
+            counter = 0;
         }
     }
 
