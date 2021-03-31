@@ -142,6 +142,10 @@ public class MenuClient extends Application {
         setScene(4);
     }
 
+    public Model getModel(){
+        return model;
+    }
+
     public void createRoom() {
         try {
             client = new Client(model,Platform::runLater,create::setID);
