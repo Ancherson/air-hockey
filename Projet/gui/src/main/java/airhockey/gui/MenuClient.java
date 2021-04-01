@@ -131,8 +131,8 @@ public class MenuClient extends Application {
                 break;
             case 4:
 
-                primaryStage.setMinHeight(600);
-                primaryStage.setMinWidth(820);
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
                 primaryStage.setScene(scene4);
                 break;
             case 5:
@@ -149,10 +149,8 @@ public class MenuClient extends Application {
         //model = new Model();
         view = new View(this, model, numplayer);
         scene4 = new Scene(view);
-        System.out.println("AVANT");
         view.resizeCanvas(primaryStage.getWidth() - 20, -1);
         view.resizeCanvas(-1,primaryStage.getHeight() - 100);
-        System.out.println("APRES");
         setScene(4);
     }
 
