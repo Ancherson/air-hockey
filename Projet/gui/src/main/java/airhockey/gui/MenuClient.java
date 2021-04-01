@@ -147,9 +147,8 @@ public class MenuClient extends Application {
                 }).start();
                 break;
             case "game":
-
-                primaryStage.setMinHeight(600);
-                primaryStage.setMinWidth(820);
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
                 primaryStage.setScene(game);
                 break;
             case "last":
@@ -166,10 +165,8 @@ public class MenuClient extends Application {
         //model = new Model();
         view = new View(this, model, numplayer);
         game = new Scene(view);
-        System.out.println("AVANT");
         view.resizeCanvas(primaryStage.getWidth() - 20, -1);
         view.resizeCanvas(-1,primaryStage.getHeight() - 100);
-        System.out.println("APRES");
         setScene("game");
     }
 
@@ -179,7 +176,7 @@ public class MenuClient extends Application {
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
