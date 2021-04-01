@@ -150,6 +150,8 @@ public class MenuClient extends Application {
                 }).start();
                 break;
             case "game":
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 primaryStage.setScene(game);
