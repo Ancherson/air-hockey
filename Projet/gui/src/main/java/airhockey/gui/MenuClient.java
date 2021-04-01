@@ -160,7 +160,7 @@ public class MenuClient extends Application {
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
