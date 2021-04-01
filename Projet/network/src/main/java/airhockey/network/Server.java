@@ -23,30 +23,36 @@ public class Server extends Thread {
     public void run() {
         System.out.println("################### SERVEUR LANCE !!!! ###################");
         while(!socket.isClosed()) {
+            //RECEIVE PACKET
+            byte[]content = new byte[1024];
+            DatagramPacket packet = new DatagramPacket(content, content.length);
             try {
-                //RECEIVE PACKET
-                byte[]content = new byte[1024];
-                DatagramPacket packet = new DatagramPacket(content, content.length);
                 socket.receive(packet);
-                int port = packet.getPort();
-                InetAddress address = packet.getAddress();
-                ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content));
-
-                //READ THE FIRST PART OF THE MESSAGE
-                String part1 = ois.readUTF();
-
-                //EXECUTE THE RIGHT THING
-                switch (part1) {
-                    case "creer": createRoom(port, address, false);break;
-                    case "rejoindre" : joinRoom(ois, port, address);break;
-                    case "public" : joinPublicRoom(ois, port, address);break;
-                    case "close" : close(ois);break;
-                    default: sendToRoom(ois, part1, port, address);
-                }
-                ois.close();
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
+            new Thread(() -> {
+                try{
+                    int port = packet.getPort();
+                    InetAddress address = packet.getAddress();
+                    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content));
+
+                    //READ THE FIRST PART OF THE MESSAGE
+                    String part1 = ois.readUTF();
+
+                    //EXECUTE THE RIGHT THING
+                    switch (part1) {
+                        case "creer": createRoom(port, address, false);break;
+                        case "rejoindre" : joinRoom(ois, port, address);break;
+                        case "public" : joinPublicRoom(ois, port, address);break;
+                        case "close" : close(ois);break;
+                        default: sendToRoom(ois, part1, port, address);
+                    }
+                    ois.close();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
     }
 
