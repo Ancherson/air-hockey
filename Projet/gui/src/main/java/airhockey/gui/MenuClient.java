@@ -46,15 +46,12 @@ public class MenuClient extends Application {
 
 
         primaryStage.setOnHiding(this::close);
-         pane = new FirstMenu(this);
-         joinMenu = new JoinMenu(this);
-         create = new CreateMenu(this);
-         waiting = new PublicWait(this);
-
+        pane = new FirstMenu(this);
         first = new Scene(pane);
-        creation = new Scene(create);
-        join = new Scene(joinMenu);
-        wait = new Scene(waiting);
+
+        create = new CreateMenu(this);
+        waiting = new PublicWait(this);
+
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
@@ -111,6 +108,8 @@ public class MenuClient extends Application {
                 break;
 
             case "creation":
+                create = new CreateMenu(this);
+                creation = new Scene(create);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(creation);
@@ -127,6 +126,8 @@ public class MenuClient extends Application {
                 break;
 
             case "join":
+                joinMenu = new JoinMenu(this);
+                join = new Scene(joinMenu);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(join);
@@ -135,6 +136,8 @@ public class MenuClient extends Application {
                 break;
 
             case "wait":
+                waiting = new PublicWait(this);
+                wait = new Scene(waiting);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
                 primaryStage.setScene(wait);
@@ -188,7 +191,7 @@ public class MenuClient extends Application {
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -203,7 +206,7 @@ public class MenuClient extends Application {
                 setView(client.getNumPlayer());
             });
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -217,10 +220,12 @@ public class MenuClient extends Application {
     }
 
     public void closeClient()  {
-        try {
-            client.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(client!= null){
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -234,12 +239,6 @@ public class MenuClient extends Application {
             view.close();
             view = null;
         }
-        if(client != null) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        closeClient();
     }
 }

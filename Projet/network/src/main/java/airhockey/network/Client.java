@@ -200,17 +200,19 @@ public class Client{
     }
 
     public void close() throws IOException {
-        if(id != null){
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeUTF("close");
-            oo.writeUTF(id);
-            oo.close();
-            byte[] message = bStream.toByteArray();
-            DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
-            socket.send(packet);
+        if (!socket.isClosed()) {
+            if (id != null) {
+                ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+                ObjectOutput oo = new ObjectOutputStream(bStream);
+                oo.writeUTF("close");
+                oo.writeUTF(id);
+                oo.close();
+                byte[] message = bStream.toByteArray();
+                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+                socket.send(packet);
+            }
+            socket.close();
         }
-        socket.close();
     }
 
     public int getNumPlayer() {

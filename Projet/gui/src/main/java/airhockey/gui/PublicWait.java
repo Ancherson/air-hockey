@@ -18,13 +18,13 @@ public class PublicWait extends BorderPane {
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
 
-        info = new Label("Connexion au serveur");
+        info = new Label("Connexion to the server");
         info.setPrefHeight(100);
         info.setStyle("-fx-font : 28 Ubuntu;");
         info.setTextFill(WHITE);        this.setCenter(info);
 
         Button back = new Button("Back");
-        this.setAlignment(back,Pos.BASELINE_LEFT);
+        this.setAlignment(back,Pos.BASELINE_RIGHT);
         this.setBottom(back);
 
 
@@ -51,7 +51,7 @@ public class PublicWait extends BorderPane {
 
     }
     public void connected(){
-        info.setText("Connecté au serveur, attente d'un autre joueur");
+        info.setText("Connected to the server, waiting for an other player");
     }
 
 }

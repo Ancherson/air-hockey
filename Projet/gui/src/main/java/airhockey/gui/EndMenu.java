@@ -53,9 +53,9 @@ public class EndMenu extends BorderPane{
         });
 
         if(won){
-            message.setText("Vous avez gagné!");
+            message.setText("Congratulations! You won!");
         }else{
-            message.setText("Vous avez perdu au jeu! T'es nul");
+            message.setText("Bravo,You Loser, You Lost\nYou are the worst player, there is no one on this game :(");
         }
 
         this.setBottom(back);
