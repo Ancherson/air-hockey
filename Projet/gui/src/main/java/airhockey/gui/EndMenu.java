@@ -49,7 +49,7 @@ public class EndMenu extends BorderPane{
         });
         
         back.setOnAction(value->{
-            menu.setScene(1);
+            menu.setScene("first");
         });
 
         if(won){

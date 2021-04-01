@@ -59,7 +59,7 @@ public class JoinMenu extends BorderPane {
         });
 
         back.setOnAction(value -> {
-            menu.setScene(1);
+            menu.setScene("first");
             menu.closeClient();
         });
 

@@ -67,7 +67,7 @@ public class View extends BorderPane {
         });
 
         quit.setOnAction(value -> {
-            menu.setScene(1);
+            menu.setScene("first");
             menu.close();
         });
         quit.setAlignment(Pos.TOP_RIGHT);
