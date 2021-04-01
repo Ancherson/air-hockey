@@ -23,8 +23,12 @@ public class View extends BorderPane {
     private MenuClient menu;
     private Canvas canvas;
     private GraphicsContext ctx;
-    private final int WIDTH = 800;
-    private final int HEIGHT = 500;
+
+    private final double WIDTH = 800;
+    private final double HEIGHT = 500;
+    private double currentWidth = WIDTH;
+    private double currentHeight = HEIGHT;
+
     private boolean isPressed;
     private double lastDragTime;
     private Model model;
@@ -84,14 +88,28 @@ public class View extends BorderPane {
         animation.start();
     }
 
+    public void resizeCanvas(double width, double height) {
+        if(width == -1) {
+            currentHeight = height;
+            canvas.setHeight(currentHeight);
+        }
+        else if(height == -1){
+            currentWidth = width;
+            canvas.setWidth(currentWidth);
+        }
+        double zoom = Math.min(currentWidth / WIDTH, currentHeight / HEIGHT);
+        System.out.println("WIDTH = " + currentWidth + " HEIGHT = " + currentHeight + " ZOOM = " + zoom);
+        camera.zoom = zoom;
+    }
+
     public Vector gameToScreen(Vector v){
         v = v.sub(camera.position).multiply(camera.zoom);
         if(camera.flipX) v.setX(-v.getX());
-        return v.add(new Vector(WIDTH, HEIGHT).multiply(.5));
+        return v.add(new Vector(currentWidth, currentHeight).multiply(.5));
     }
 
     public Vector screenToGame(Vector v){
-        v = v.sub(new Vector(WIDTH, HEIGHT).multiply(.5));
+        v = v.sub(new Vector(currentWidth, currentHeight).multiply(.5));
         if(camera.flipX) v.setX(-v.getX());
         return v.multiply(1.0/camera.zoom).add(camera.position);
     }
@@ -177,7 +195,7 @@ public class View extends BorderPane {
     public void draw(){
 
         ctx.setFill(bgColor);
-        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        ctx.fillRect(0, 0, currentWidth, currentHeight);
         drawScore();
         drawLinesBoard();
         Pusher p1 = model.getBoard().getPushers()[numplayer];
