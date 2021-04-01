@@ -4,6 +4,7 @@ package airhockey.gui;
 import airhockey.model.*;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -12,6 +13,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+
 import java.util.LinkedList;
 
 import static javafx.scene.paint.Color.BLACK;
@@ -41,6 +44,9 @@ public class View extends BorderPane {
     private LinkedList<Vector> listPosPalet = new LinkedList<>();
     private int maxLengthListPalet = 20;
     private ParticleManager particles;
+
+    private boolean finished = false;
+    private int endCounter = 60;
 
     public View(MenuClient menu, Model model, int numplayer) {
         this.model = model;
@@ -192,8 +198,15 @@ public class View extends BorderPane {
         }
     }
 
-    public void draw(){
+    public void drawEnd() {
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
+        ctx.setFill(Color.WHITE);
+        if(model.hasWon(numplayer)) ctx.fillText("Congratulations! You won!", currentWidth / 2, currentHeight / 2);
+        else ctx.fillText("Bravo, you are the worst player in this game", currentWidth / 2, currentHeight / 2);
+    }
 
+    public void draw(){
         ctx.setFill(bgColor);
         ctx.fillRect(0, 0, currentWidth, currentHeight);
         drawScore();
@@ -211,9 +224,12 @@ public class View extends BorderPane {
             drawCircle(p.getPosition(), p.getRadius(), Color.rgb(255, 255, 255, alpha), Color.rgb(255, 255, 255, alpha));
         }
 
-        /*for(Wall w : model.getBoard().getInvisibleWalls()) {
-            drawWall(w, Color.GREEN);
-        }*/
+        if(finished) {
+            ctx.setFill(Color.rgb(40,40,40,1 - endCounter * 1.0 / 60 ));
+            ctx.fillRect(0, 0, currentWidth, currentHeight);
+            if(endCounter > 15) endCounter--;
+            else drawEnd();
+        }
     }
 
 
@@ -252,7 +268,7 @@ public class View extends BorderPane {
             frame++;
             if(frame % 2 == 0) {
                 long dt = now-lastUpdateTime;
-                model.update(dt/(1e9*1.0));
+                if(!finished) model.update(dt/(1e9*1.0));
                 if(model.getBoard().getPalet().getHasHit()){
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
@@ -268,14 +284,6 @@ public class View extends BorderPane {
                         double dirPos = Math.random()*Math.PI*2;
                         Vector dir = new Vector(Math.cos(dirPos), Math.sin(dirPos));
                         double dirSpd = Math.random()*Math.PI*2;
-                        Vector dir2 = new Vector(Math.cos(dirPos), Math.sin(dirSpd));
-                        //petite explosion "désagrégation"
-                        //particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir2.multiply(Math.random()*20+10), 0.5+Math.random(), 1));
-
-                        //grosse explosion "chaos"
-                        //particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir2.multiply(Math.random()*80+10), 0.5+Math.random(), 1));
-
-                        //grosse explosion "ordonnée"
                         particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir.multiply(Math.random()*85+5), 0.5+Math.random(), 1));
                     }
                 }
@@ -293,8 +301,11 @@ public class View extends BorderPane {
                 }
                 particles.update(dt/(1e9*1.0));
                 draw();
+                if(model.isFinished()) {
+                    finished = true;
+                    menu.closeClient();
+                }
                 lastUpdateTime = now;
-                if(model.isFinished()) menu.endRoom(model.hasWon(numplayer));
                 frame = 0;
             }
         }
