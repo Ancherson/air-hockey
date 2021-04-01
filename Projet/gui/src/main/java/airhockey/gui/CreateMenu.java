@@ -8,6 +8,8 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 
+import static javafx.scene.paint.Color.WHITE;
+import static javafx.scene.paint.Color.BLACK;
 
 
 public class CreateMenu extends BorderPane {
@@ -16,14 +18,21 @@ public class CreateMenu extends BorderPane {
 
     public CreateMenu(MenuClient menu) {
 
-        creation = new Label("creation de la room");
-        Button back = new Button("back");
+        this.setWidth(800);
+        this.setHeight(500);
+        this.setStyle("-fx-background-color: #282828;");
+
+        creation = new Label("CREATION OF THE ROOM");
+        Button back = new Button("Back");
 
         Clipboard clipboard = Clipboard.getSystemClipboard();
 
         ClipboardContent content = new ClipboardContent();
 
         creation.setPrefHeight(100);
+        creation.setStyle("-fx-font : 28 Ubuntu;");
+        creation.setTextFill(WHITE);
+
         creation.setOnMouseClicked((event) -> {
             content.putString(idRoom);
             clipboard.setContent(content);
@@ -31,6 +40,18 @@ public class CreateMenu extends BorderPane {
 
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
+        back.setStyle("-fx-background-color: #565656;");
+        back.setTextFill(WHITE);
+
+        back.setOnMouseEntered((action)->{
+            back.setStyle("-fx-background-color: #FFFFFF;");
+            back.setTextFill(BLACK);
+        });
+
+        back.setOnMouseExited((action)->{
+            back.setStyle("-fx-background-color: #565656;");
+            back.setTextFill(WHITE);
+        });
 
         back.setOnAction(value -> {
             menu.setScene(1);
