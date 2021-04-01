@@ -1,5 +1,6 @@
 package airhockey.gui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -48,6 +49,8 @@ public class PublicWait extends BorderPane {
             menu.setScene("first");
             menu.closeClient();
         });
+
+        this.setPadding(new Insets(30,50,50,50));
 
     }
     public void connected(){
