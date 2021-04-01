@@ -96,7 +96,7 @@ public class View extends BorderPane {
             canvas.setWidth(currentWidth);
         }
         double zoom = Math.min(currentWidth / WIDTH, currentHeight / HEIGHT);
-        System.out.println("WIDTH = " + currentWidth + " HEIGHT = " + currentHeight + " ZOOM = " + zoom);
+        ctx.setFont(new Font("Ubuntu", 24 * zoom));
         camera.zoom = zoom;
     }
 
