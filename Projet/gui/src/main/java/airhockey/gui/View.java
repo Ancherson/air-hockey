@@ -30,6 +30,7 @@ public class View extends BorderPane {
     private Model model;
     private int numplayer;
     private Camera camera;
+    private int shake;
     private Animation animation;
     private final Color bgColor = Color.rgb(40, 40, 40, .8);
 
@@ -45,6 +46,7 @@ public class View extends BorderPane {
         particles = new ParticleManager();
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
         canvas = new Canvas(WIDTH,HEIGHT);
+        shake = -1;
 
         Button quit = new Button("Quit");
         quit.setStyle("-fx-background-color: #565656;");
@@ -243,6 +245,7 @@ public class View extends BorderPane {
                     }
                 }
                 if(model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                    shake = 20;
                     for(int i = 0; i < 500; i++){
                         double dirPos = Math.random()*Math.PI*2;
                         Vector dir = new Vector(Math.cos(dirPos), Math.sin(dirPos));
@@ -256,6 +259,18 @@ public class View extends BorderPane {
 
                         //grosse explosion "ordonnée"
                         particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir.multiply(Math.random()*85+5), 0.5+Math.random(), 1));
+                    }
+                }
+                if(shake > 0){
+                    camera.position = new Vector(model.getBoard().getWIDTH()/2+Math.random()*2*shake-shake, model.getBoard().getHEIGHT()/2+Math.random()*2*shake-shake);
+                    shake--;
+                } else if(shake == 0){
+                    Vector c = new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2);
+                    Vector d = c.sub(camera.position);
+                    if(d.length() > 1) {
+                        camera.position = camera.position.add(d.multiply(0.4));
+                    } else {
+                        shake = -1;
                     }
                 }
                 particles.update(dt/(1e9*1.0));
