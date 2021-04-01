@@ -1,5 +1,6 @@
 package airhockey.gui;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -52,7 +53,7 @@ public class FirstMenu extends BorderPane {
             create.setTextFill(WHITE);
         });
         create.setOnAction(event -> {
-            Menu.setScene(2);
+            Menu.setScene("creation");
 
         });
 
@@ -72,7 +73,7 @@ public class FirstMenu extends BorderPane {
         });
 
         join.setOnAction(value -> {
-            Menu.setScene(3);
+            Menu.setScene("join");
         });
 
         joinPublic.setPrefSize(130,55);
@@ -91,7 +92,7 @@ public class FirstMenu extends BorderPane {
         });
 
         joinPublic.setOnAction(value ->{
-            Menu.joinPublicRoom();
+            Menu.setScene("wait");
         });
 
         training.setPrefSize(130,55);

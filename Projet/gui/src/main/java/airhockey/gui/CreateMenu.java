@@ -54,7 +54,7 @@ public class CreateMenu extends BorderPane {
         });
 
         back.setOnAction(value -> {
-            menu.setScene(1);
+            menu.setScene("first");
             menu.closeClient();
         });
 
@@ -72,7 +72,6 @@ public class CreateMenu extends BorderPane {
     public void setID(String id){
         creation.setText(id);
         idRoom = id;
-
     }
 
 

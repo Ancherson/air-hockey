@@ -21,11 +21,12 @@ public class MenuClient extends Application {
     private int HEIGHT = 500;
     private Stage primaryStage;
 
-    private Scene scene1;
-    private Scene scene2;
-    private Scene scene3;
-    private Scene scene4;
-    private Scene scene5;
+    private Scene first;
+    private Scene creation;
+    private Scene join;
+    private Scene wait;
+    private Scene game;
+    private Scene last;
 
     private Window window;
     private Model model = new Model();
@@ -36,6 +37,7 @@ public class MenuClient extends Application {
     private FirstMenu pane;
     private JoinMenu joinMenu;
     private CreateMenu create;
+    private PublicWait waiting;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -44,13 +46,12 @@ public class MenuClient extends Application {
 
 
         primaryStage.setOnHiding(this::close);
-         pane = new FirstMenu(this);
-         joinMenu = new JoinMenu(this);
-         create = new CreateMenu(this);
+        pane = new FirstMenu(this);
+        first = new Scene(pane);
 
-        scene1 = new Scene(pane);
-        scene2 = new Scene(create);
-        scene3 = new Scene(joinMenu);
+        create = new CreateMenu(this);
+        waiting = new PublicWait(this);
+
 
         primaryStage.setMinHeight(300);
         primaryStage.setMinWidth(400);
@@ -58,7 +59,7 @@ public class MenuClient extends Application {
         window.setHeight(HEIGHT);
         window.setWidth(WIDTH);
 
-        primaryStage.setScene(scene1);
+        primaryStage.setScene(first);
         primaryStage.show();
 
 
@@ -96,20 +97,22 @@ public class MenuClient extends Application {
 
     }
 
-    public void setScene(int S) {
+    public void setScene(String S) {
         switch (S) {
-            case 1:
+            case "first":
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
-                primaryStage.setScene(scene1);
+                primaryStage.setScene(first);
                 primaryStage.setMinHeight(300);
                 primaryStage.setMinWidth(400);
                 break;
 
-            case 2:
+            case "creation":
+                create = new CreateMenu(this);
+                creation = new Scene(create);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
-                primaryStage.setScene(scene2);
+                primaryStage.setScene(creation);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
 
@@ -122,23 +125,39 @@ public class MenuClient extends Application {
                 System.out.println("Ca commence !!!");
                 break;
 
-            case 3:
+            case "join":
+                joinMenu = new JoinMenu(this);
+                join = new Scene(joinMenu);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
-                primaryStage.setScene(scene3);
+                primaryStage.setScene(join);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 break;
-            case 4:
 
-                primaryStage.setMinHeight(330);
-                primaryStage.setMinWidth(400);
-                primaryStage.setScene(scene4);
-                break;
-            case 5:
+            case "wait":
+                waiting = new PublicWait(this);
+                wait = new Scene(waiting);
                 window.setHeight(primaryStage.getHeight());
                 window.setWidth(primaryStage.getWidth());
-                primaryStage.setScene(scene5);
+                primaryStage.setScene(wait);
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
+
+                System.out.println("EN ATTENTE DU SERVEUR");
+                new Thread(() -> {
+                    joinPublicRoom();
+                }).start();
+                break;
+            case "game":
+                primaryStage.setMinHeight(330);
+                primaryStage.setMinWidth(400);
+                primaryStage.setScene(game);
+                break;
+            case "last":
+                window.setHeight(primaryStage.getHeight());
+                window.setWidth(primaryStage.getWidth());
+                primaryStage.setScene(last);
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 break;
@@ -148,15 +167,15 @@ public class MenuClient extends Application {
     public void setView(int numplayer) {
         //model = new Model();
         view = new View(this, model, numplayer);
-        scene4 = new Scene(view);
+        game = new Scene(view);
         view.resizeCanvas(primaryStage.getWidth() - 20, -1);
         view.resizeCanvas(-1,primaryStage.getHeight() - 100);
-        setScene(4);
+        setScene("game");
     }
 
     public void createRoom() {
         try {
-            client = new Client(model,Platform::runLater,create::setID);
+            client = new Client(model,Platform::runLater,create::setID,waiting::connected);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -168,11 +187,11 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model, Platform::runLater, create::setID);
+            client = new Client(model, Platform::runLater, create::setID,waiting::connected);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -180,14 +199,14 @@ public class MenuClient extends Application {
 
     public void joinPublicRoom() {
         try {
-            client = new Client(model,Platform::runLater,create::setID);
+            client = new Client(model,Platform::runLater,create::setID,waiting::connected);
             client.joinRoomPublic();
             Platform.runLater(() -> {
                 System.out.println(client.getNumPlayer());
                 setView(client.getNumPlayer());
             });
         } catch (SocketException e) {
-            e.printStackTrace();
+            System.out.println("Socket closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -196,15 +215,17 @@ public class MenuClient extends Application {
     public void endRoom(boolean won){
         close();
         EndMenu end = new EndMenu(this, won);
-        scene5 = new Scene(end);
-        setScene(5);
+        last = new Scene(end);
+        setScene("last");
     }
 
     public void closeClient()  {
-        try {
-            client.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(client!= null){
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -218,12 +239,6 @@ public class MenuClient extends Application {
             view.close();
             view = null;
         }
-        if(client != null) {
-            try {
-                client.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        closeClient();
     }
 }

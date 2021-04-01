@@ -21,12 +21,14 @@ public class Client{
 
     private Consumer<Runnable> runLater;
     private Consumer<String> setID;
+    private Runnable connect;
 
-    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID) throws SocketException {
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect) throws SocketException {
         socket = new DatagramSocket();
         model = m;
         this.runLater = runlater;
         this.setID = setID;
+        this.connect = connect;
     }
 
     public void createRoom() throws IOException {
@@ -101,6 +103,8 @@ public class Client{
         id = new String(msg);
         if(id.equals("0")) numPlayer = 0;
         if(id.equals("1")) numPlayer = 1;
+
+        runLater.accept(connect);
 
         byte[] idBuff = new byte[Server.ID_LENGTH];
         packet = new DatagramPacket(idBuff, idBuff.length);
@@ -196,17 +200,19 @@ public class Client{
     }
 
     public void close() throws IOException {
-        if(id != null){
-            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-            ObjectOutput oo = new ObjectOutputStream(bStream);
-            oo.writeUTF("close");
-            oo.writeUTF(id);
-            oo.close();
-            byte[] message = bStream.toByteArray();
-            DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
-            socket.send(packet);
+        if (!socket.isClosed()) {
+            if (id != null) {
+                ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+                ObjectOutput oo = new ObjectOutputStream(bStream);
+                oo.writeUTF("close");
+                oo.writeUTF(id);
+                oo.close();
+                byte[] message = bStream.toByteArray();
+                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+                socket.send(packet);
+            }
+            socket.close();
         }
-        socket.close();
     }
 
     public int getNumPlayer() {
