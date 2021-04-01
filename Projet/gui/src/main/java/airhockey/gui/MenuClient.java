@@ -29,6 +29,7 @@ public class MenuClient extends Application {
 
     private Window window;
     private Model model = new Model();
+    private View view;
 
     private Client client;
 
@@ -61,7 +62,17 @@ public class MenuClient extends Application {
         primaryStage.show();
 
 
+        primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
+            if(view != null) {
+                view.resizeCanvas(newVal.doubleValue() - 20, -1);
+            }
+        });
 
+        primaryStage.heightProperty().addListener((obs,oldVal,newVal) ->{
+            if(view != null) {
+                view.resizeCanvas(-1, newVal.doubleValue() - 100);
+            }
+        });
         /*
             Fonction qui permet de center un Stackpane nommer "pane"
 
@@ -119,8 +130,7 @@ public class MenuClient extends Application {
                 primaryStage.setMinWidth(400);
                 break;
             case 4:
-/*                window.setHeight(600);
-                window.setWidth(820);*/
+
                 primaryStage.setMinHeight(600);
                 primaryStage.setMinWidth(820);
                 primaryStage.setScene(scene4);
@@ -137,8 +147,12 @@ public class MenuClient extends Application {
 
     public void setView(int numplayer) {
         //model = new Model();
-        View view = new View(this, model, numplayer);
+        view = new View(this, model, numplayer);
         scene4 = new Scene(view);
+        System.out.println("AVANT");
+        view.resizeCanvas(primaryStage.getWidth() - 20, -1);
+        view.resizeCanvas(-1,primaryStage.getHeight() - 100);
+        System.out.println("APRES");
         setScene(4);
     }
 
@@ -202,7 +216,10 @@ public class MenuClient extends Application {
     }
 
     public void close(WindowEvent windowEvent) {
-        if(scene4 != null) ((View)(scene4.getRoot())).close();
+        if(view != null) {
+            view.close();
+            view = null;
+        }
         if(client != null) {
             try {
                 client.close();
