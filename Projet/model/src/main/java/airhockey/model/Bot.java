@@ -3,9 +3,9 @@ package airhockey.model;
 public class Bot extends Player{
     private int score;
     private Vector speed;
-    private final double ACCELERATION = 4000;
-    private final double MAX_SPEED = 600;
-    private final double FRICTION = 0.1;
+    private final double ACCELERATION = 40000;
+    private final double MAX_SPEED = 200;
+    private final double FRICTION = 0.01;
 
     public Bot(){
         super();
@@ -100,7 +100,7 @@ public class Bot extends Player{
         //change the speed (this is where the AI will make its decisions)
         //TODO ACTUAL AI LOGIC
         Vector target = think(model);
-        if(target.sub(p.getPosition()).length() > p.getRadius() * 2) {
+        if(target.sub(p.getPosition()).length() > p.getRadius() * 1.5) {
             moveTowards(target, p, dt);
         }else {
             speed = speed.multiply(Math.pow(FRICTION, dt));
