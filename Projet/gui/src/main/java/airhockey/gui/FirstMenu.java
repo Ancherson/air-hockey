@@ -111,6 +111,7 @@ public class FirstMenu extends BorderPane {
         });
         
         training.setOnAction(value ->{
+            Menu.getModel().setBot(0);
             Menu.setView(1);
         });
 

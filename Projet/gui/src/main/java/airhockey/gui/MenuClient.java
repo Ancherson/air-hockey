@@ -166,8 +166,11 @@ public class MenuClient extends Application {
         }
     }
 
+    public Model getModel(){
+        return model;
+    }
+
     public void setView(int numplayer) {
-        //model = new Model();
         view = new View(this, model, numplayer);
         game = new Scene(view);
         view.resizeCanvas(primaryStage.getWidth() - 20, -1);

@@ -28,6 +28,10 @@ public class Model {
         players[numPlayer].setScore(score);
     }
 
+    public void setBot(int numPlayer){
+        players[numPlayer] = new Bot();
+    }
+
     public boolean isFinished(){
         return (hasWon(0) || hasWon(1));
     }
@@ -41,6 +45,11 @@ public class Model {
     }
 
     public void update(double dt){
+        for(Player p : players){
+            if(p instanceof Bot) {
+                ((Bot) p).update(this,dt);
+            }
+        }
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
             counter++;
