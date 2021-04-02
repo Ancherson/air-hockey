@@ -44,6 +44,16 @@ public class Palet extends Circle {
         return super.toString()+"\nSpeed: "+speed;
     }
 
+    public Palet copy() {
+        Palet copy = new Palet(position.copy(), getRadius());
+        copy.speed = this.speed;
+        copy.scoredGoal = this.scoredGoal;
+        copy.hasHit = this.hasHit;
+        copy.hitNormal = this.hitNormal;
+        copy.hitPosition = this.hitPosition;
+        return copy;
+    }
+
     public boolean wallCollisions(Wall[] walls){
         boolean hasCollided = false;
         for(Wall w : walls){

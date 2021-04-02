@@ -27,6 +27,10 @@ public class Vector implements Serializable {
         this.y = y;
     }
 
+    public Vector copy() {
+        return new Vector(this.x, this.y);
+    }
+
     public String toString(){
         return "x: "+this.x+", y: "+this.y;
     }
