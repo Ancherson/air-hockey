@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Server extends Thread {
     public final static int PORT = 6666;
-    public final static String HOSTNAME = "localhost";
+    public final static String HOSTNAME = "92.169.162.140";
     public static int ID_LENGTH = 10;
 
     private ArrayList<Room> rooms;
