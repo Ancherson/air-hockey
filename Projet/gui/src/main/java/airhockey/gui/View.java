@@ -269,7 +269,7 @@ public class View extends BorderPane {
             if(frame % 2 == 0) {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
-                if(model.getBoard().getPalet().getHasHit()){
+                if(!finished && model.getBoard().getPalet().getHasHit()){
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                     Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
@@ -278,7 +278,7 @@ public class View extends BorderPane {
                         particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
                     }
                 }
-                if(model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
                     shake = 20;
                     for(int i = 0; i < 500; i++){
                         double dirPos = Math.random()*Math.PI*2;
