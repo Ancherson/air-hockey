@@ -16,6 +16,11 @@ public class Pusher extends Circle implements Serializable {
         speed = new Vector(0, 0);
     }
 
+    public void actualizeSpeed (double dt) {
+        Vector speed1 = position.sub(lastPosition);
+        speed = speed1.multiply(dt * 1000);
+    }
+
     public void setSpeed(Vector s){
         speed = s;
     }

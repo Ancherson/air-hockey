@@ -84,7 +84,8 @@ public class Model {
         Pusher[] pushers = board.getPushers();
         pushers[numplayer].resetMovement();
         pushers[numplayer].moveTo(new Vector(x,y),board.getWalls(), board.getInvisibleWalls(), board.getPalet());
-        pushers[numplayer].setSpeed(pushers[numplayer].getPosition().add(pushers[numplayer].getLastPosition().multiply(-1)).normalize().multiply(1.0/dt));
+        //pushers[numplayer].setSpeed(pushers[numplayer].getPosition().add(pushers[numplayer].getLastPosition().multiply(-1)).normalize().multiply(1.0/dt));
+        pushers[numplayer].actualizeSpeed(dt);
         pushers[numplayer].wallCollisions(board.getWalls());
         pushers[numplayer].wallCollisions(board.getInvisibleWalls());
         hasPusherMoved = true;
