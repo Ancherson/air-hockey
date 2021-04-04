@@ -4,6 +4,7 @@ import java.lang.Math.*;
 
 public class Palet extends Circle {
 
+    private final int MAX_SPEED = 1000;
     private Vector speed;
     private final static double COEFF_FRICTION = 0.92;
     private int scoredGoal = -1;
@@ -26,6 +27,9 @@ public class Palet extends Circle {
 
     public void setSpeed(Vector v){
         speed = v;
+        if(speed.length() > MAX_SPEED) {
+            speed = speed.normalize().multiply(MAX_SPEED);
+        }
     }
 
     public boolean getHasHit(){
@@ -78,7 +82,9 @@ public class Palet extends Circle {
             if(isColliding(p)){
                 Vector normal = position.sub(p.position).normalize();
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
-
+                if(speed.length() > MAX_SPEED) {
+                    speed = speed.normalize().multiply(MAX_SPEED);
+                }
                 Circle newPosition = new Circle(new Vector(getPosition().getX(), getPosition().getY()), getRadius());
                 newPosition.resolveCollision(p);
                 moveTo(newPosition.getPosition(), walls);

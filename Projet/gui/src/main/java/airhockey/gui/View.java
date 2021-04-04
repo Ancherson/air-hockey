@@ -88,6 +88,8 @@ public class View extends BorderPane {
         this.setAlignment(quit,Pos.TOP_RIGHT);
         this.setStyle("-fx-background-color: #282828;");
 
+        ctx.setTextAlign(TextAlignment.CENTER);
+        ctx.setTextBaseline(VPos.CENTER);
         ctx.setFont(new Font("Ubuntu", 24));
         draw();
         animation = new Animation();
@@ -173,11 +175,11 @@ public class View extends BorderPane {
 
     public void drawScore() {
         ctx.setFill(WHITE);
-        Vector pos = new Vector(3 * Board.WIDTH / 8 + 10, Board.HEIGHT / 8);
+        Vector pos = new Vector(3 * Board.WIDTH / 8, Board.HEIGHT / 8);
         pos = gameToScreen(pos);
         ctx.fillText(Integer.toString(model.getScore(0)), pos.getX(), pos.getY());
 
-        pos = new Vector(5 * Board.WIDTH / 8 + 10, Board.HEIGHT / 8);
+        pos = new Vector(5 * Board.WIDTH / 8, Board.HEIGHT / 8);
         pos = gameToScreen(pos);
         ctx.fillText(Integer.toString(model.getScore(1)), pos.getX(), pos.getY());
     }
@@ -199,8 +201,6 @@ public class View extends BorderPane {
     }
 
     public void drawEnd() {
-        ctx.setTextAlign(TextAlignment.CENTER);
-        ctx.setTextBaseline(VPos.CENTER);
         ctx.setFill(Color.WHITE);
         if(model.hasWon(numplayer)) ctx.fillText("Congratulations! You won!", currentWidth / 2, currentHeight / 2);
         else ctx.fillText("Bravo, you are the worst player in this game", currentWidth / 2, currentHeight / 2);
