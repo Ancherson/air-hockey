@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class Pusher extends Circle implements Serializable {
 
+    private Vector lastLastPosition;
     private Vector lastPosition;
     private Vector speed;
 
@@ -18,7 +19,7 @@ public class Pusher extends Circle implements Serializable {
 
     public void actualizeSpeed (double dt) {
         Vector speed1 = position.sub(lastPosition);
-        speed = speed1.multiply(dt * 1500);
+        speed = speed1.multiply(0.2 / dt);
     }
 
     public void setSpeed(Vector s){
@@ -37,6 +38,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     public void resetMovement(){
+        lastLastPosition = lastPosition;
         lastPosition = position;
     }
     
