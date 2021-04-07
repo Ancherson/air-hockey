@@ -4,7 +4,7 @@ public class Bot extends Player{
     private int score;
     private Vector speed;
     private final double ACCELERATION = 40000;
-    private final double MAX_SPEED = 200;
+    private final double MAX_SPEED = 300;
     private final double FRICTION = 0.01;
 
     public Bot(){
@@ -46,7 +46,18 @@ public class Bot extends Player{
                 closestPos = copy.getPosition().copy();
             }
         }
-        return closestPos;
+        return aim(model, closestPos);
+    }
+
+    public Vector aim(Model model, Vector paletPos){
+        //TODO REGARDER SI LES CAGES SONT LIBRES
+        Pusher myPusher = model.getBoard().getPushers()[0];
+        Vector dirPaletGoal = new Vector(Board.WIDTH, Board.HEIGHT/2).sub(paletPos).normalize();
+        Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
+        if(dirPusherPalet.dotProduct(dirPaletGoal) < .8){
+            return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
+        }
+        return paletPos;
     }
 
     public Vector avoidAndIntercept(Pusher myPusher, Palet palet) {
