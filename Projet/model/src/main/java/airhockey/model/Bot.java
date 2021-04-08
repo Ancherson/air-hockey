@@ -1,5 +1,7 @@
 package airhockey.model;
 
+import java.util.LinkedList;
+
 public class Bot extends Player{
     private int score;
     private Vector speed;
@@ -53,6 +55,7 @@ public class Bot extends Player{
         //TODO REGARDER SI LES CAGES SONT LIBRES
         Pusher myPusher = model.getBoard().getPushers()[0];
         Vector dirPaletGoal = new Vector(Board.WIDTH, Board.HEIGHT/2).sub(paletPos).normalize();
+        model.getDEBUG_LINES().put(new Vector(Board.WIDTH, Board.HEIGHT/2), paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
         if(dirPusherPalet.dotProduct(dirPaletGoal) < .8){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
@@ -104,6 +107,9 @@ public class Bot extends Player{
     }
 
     public void update(Model model, double dt){
+        model.getDEBUG_POINTS().clear();
+        model.getDEBUG_LINES().clear();
+
         //get the pusher and save its position
         Pusher p = model.getBoard().getPushers()[0];
         Vector lastPos = new Vector(p.getPosition().getX(), p.getPosition().getY());
@@ -111,6 +117,7 @@ public class Bot extends Player{
         //change the speed (this is where the AI will make its decisions)
         //TODO ACTUAL AI LOGIC
         Vector target = think(model);
+        model.getDEBUG_POINTS().add(target);
         if(target.sub(p.getPosition()).length() > p.getRadius() * 1.5) {
             moveTowards(target, p, dt);
         }else {

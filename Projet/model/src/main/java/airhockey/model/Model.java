@@ -1,11 +1,17 @@
 package airhockey.model;
 
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 public class Model {
     private Board board;
     private Player[] players;
     private boolean hasPusherMoved = false;
     private static final int SCORE_MAX=7;
+
+    private LinkedList<Vector> DEBUG_POINTS = new LinkedList<>();
+    private HashMap<Vector, Vector> DEBUG_LINES = new HashMap<>();
 
     private int counter = 0;
 
@@ -42,6 +48,14 @@ public class Model {
 
     public int getCounter(){
         return counter;
+    }
+
+    public LinkedList<Vector> getDEBUG_POINTS() {
+        return DEBUG_POINTS;
+    }
+
+    public HashMap<Vector, Vector> getDEBUG_LINES() {
+        return DEBUG_LINES;
     }
 
     public void update(double dt){

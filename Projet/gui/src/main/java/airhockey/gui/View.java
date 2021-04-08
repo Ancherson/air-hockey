@@ -219,6 +219,15 @@ public class View extends BorderPane {
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, WHITE);
         }
+
+        for(Vector v : model.getDEBUG_POINTS()) {
+            drawCircle(v, 6, Color.GREEN, Color.GREEN);
+        }
+
+        for(var elt : model.getDEBUG_LINES().entrySet()) {
+            drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+        }
+
         for(Particle p: particles.getParticles()){
             double alpha = p.getLife()/p.getStartLife();
             drawCircle(p.getPosition(), p.getRadius(), Color.rgb(255, 255, 255, alpha), Color.rgb(255, 255, 255, alpha));
