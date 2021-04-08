@@ -34,6 +34,7 @@ public class Sound {
     }
 
     public void play(String name){
+        playlist.get(name).seek(playlist.get(name).getStartTime());
         playlist.get(name).play();
     }
 
@@ -48,7 +49,7 @@ public class Sound {
     }
 
     public void stop(String name){
-        playlist.get(name).stop();
+        playlist.get(name).setAutoPlay(false);
     }
     
 }

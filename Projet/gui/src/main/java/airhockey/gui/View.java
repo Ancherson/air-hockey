@@ -273,8 +273,9 @@ public class View extends BorderPane {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
-                    sound = new Sound();
+                    
                     sound.play("collisionRelax");
+
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                     Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
@@ -285,8 +286,9 @@ public class View extends BorderPane {
                     }
                 }
                 if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
-                    sound = new Sound();
+                    
                     sound.play("shakingRelax");
+
                     shake = 20;
                     for(int i = 0; i < 500; i++){
                         double dirPos = Math.random()*Math.PI*2;
