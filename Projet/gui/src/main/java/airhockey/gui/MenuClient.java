@@ -5,21 +5,24 @@ import airhockey.network.Client;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.media.*;
+
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.SocketException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 public class MenuClient extends Application {
     private int WIDTH = 800;
     private int HEIGHT = 500;
     private Stage primaryStage;
+    private Sound sound;
 
     private Scene first;
     private Scene creation;
@@ -59,6 +62,10 @@ public class MenuClient extends Application {
         window.setHeight(HEIGHT);
         window.setWidth(WIDTH);
 
+        sound = new Sound();
+        sound.repeat("ambianceRelax");
+
+
         primaryStage.setScene(first);
         primaryStage.show();
 
@@ -74,26 +81,7 @@ public class MenuClient extends Application {
                 view.resizeCanvas(-1, newVal.doubleValue() - 100);
             }
         });
-        /*
-            Fonction qui permet de center un Stackpane nommer "pane"
 
-            primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
-            WIDTH = newVal.intValue();
-            int heigth = HEIGHT/ 2 -60;
-            int width = newVal.intValue()/2-100;
-            if((width) <0) width =0;
-            Insets pad = new Insets(heigth,width,heigth,width);
-            pane.setPadding(pad);
-        });
-
-        primaryStage.heightProperty().addListener((obs,oldVal,newVal) ->{
-            HEIGHT = newVal.intValue();
-            int width = WIDTH/ 2 -100;
-            int heigth = newVal.intValue()/2-60;
-            if((heigth) <0) heigth =0;
-            Insets pad = new Insets(heigth,width,heigth,width);
-            pane.setPadding(pad);
-        });*/
 
     }
 
