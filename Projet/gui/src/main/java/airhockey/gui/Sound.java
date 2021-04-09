@@ -16,9 +16,9 @@ public class Sound {
     public Sound(){
         playlist = new HashMap<>();
 
-        path = "../ressources/bruit-goutte-deau.wav"; 
-        media = new Media(new File(path).toURI().toString());           
-        mediaPlayer = new MediaPlayer(media);        
+        path = "../ressources/bruit-goutte-deau.wav";
+        media = new Media(new File(path).toURI().toString());       
+        mediaPlayer = new MediaPlayer(media);
         playlist.put("collisionRelax", mediaPlayer);
 
         path = "../ressources/thunder.wav";
@@ -30,7 +30,6 @@ public class Sound {
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         playlist.put("ambianceRelax",mediaPlayer);
-
     }
 
     public void play(String name){
@@ -49,7 +48,7 @@ public class Sound {
     }
 
     public void stop(String name){
-        playlist.get(name).setAutoPlay(false);
+        playlist.get(name).stop();
     }
     
 }
