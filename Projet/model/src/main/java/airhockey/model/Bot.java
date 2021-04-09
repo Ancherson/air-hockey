@@ -6,12 +6,14 @@ public class Bot extends Player{
     private int score;
     private Vector speed;
     private final double ACCELERATION = 40000;
-    private final double MAX_SPEED = 300;
+    private final double MAX_SPEED = 3000;
     private final double FRICTION = 0.01;
+    private boolean wasShooting;
 
     public Bot(){
         super();
         speed = new Vector(0, 0);
+        wasShooting = false;
     }
 
     public int getScore(){
@@ -24,11 +26,12 @@ public class Bot extends Player{
 
     public void moveTowards(Vector p, Pusher pusher, double dt){
         Vector d = p.sub(pusher.getPosition());
-        d = d.normalize();
-        speed = speed.add(d.multiply(ACCELERATION*dt));
-        if(speed.length() > MAX_SPEED){
-            speed = speed.normalize().multiply(MAX_SPEED);
-        }
+        speed = d.multiply(5);
+        //d = d.normalize();
+        //speed = speed.add(d.multiply(ACCELERATION*dt));
+        //if(speed.length() > MAX_SPEED){
+        //    speed = speed.normalize().multiply(MAX_SPEED);
+        //}
     }
 
     public Vector toCenter() {
@@ -52,16 +55,16 @@ public class Bot extends Player{
             }
         }
         //return closestPos;
-        Vector aimUp = aim(model, closestPos, new Vector(Board.WIDTH, -Board.HEIGHT/2));
+        //Vector aimUp = aim(model, closestPos, new Vector(Board.WIDTH, -Board.HEIGHT/2));
         Vector aimMiddle = aim(model, closestPos, new Vector(Board.WIDTH, Board.HEIGHT/2));
-        Vector aimDown = aim(model, closestPos, new Vector(Board.WIDTH,3 * Board.HEIGHT/2));
+        //Vector aimDown = aim(model, closestPos, new Vector(Board.WIDTH,3 * Board.HEIGHT/2));
 
-        double distAimUp = aimUp.length();
+        //double distAimUp = aimUp.length();
         double distAimMiddle = aimMiddle.length();
-        double distAimDown = aimDown.length();
+        //double distAimDown = aimDown.length();
 
-        if(distAimUp < distAimDown && distAimUp < distAimMiddle) return aimUp;
-        if(distAimDown < distAimMiddle) return aimDown;
+        //if(distAimUp < distAimDown && distAimUp < distAimMiddle) return aimUp;
+        //if(distAimDown < distAimMiddle) return aimDown;
         return aimMiddle;
     }
 
@@ -71,9 +74,10 @@ public class Bot extends Player{
         Vector dirPaletGoal = target.sub(paletPos).normalize();
         model.getDEBUG_LINES().put(target, paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
-        if(dirPusherPalet.dotProduct(dirPaletGoal) < .8){
+        if(!wasShooting && (model.getBoard().getPalet().getPosition().sub(paletPos).length() > model.getBoard().getPalet().getRadius()*.2 || dirPusherPalet.dotProduct(dirPaletGoal) < .99)){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
         }
+        wasShooting = true;
         return myPusher.getPosition().add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
     }
 
@@ -89,21 +93,25 @@ public class Bot extends Player{
         Palet p = model.getBoard().getPalet();
         Pusher myPusher = model.getBoard().getPushers()[0];
         if((p.getSpeed().getX() >= 0 && p.getPosition().getX() > Board.WIDTH / 2)) {
+            wasShooting = false;
             return toCenter();
         }
         if(p.getSpeed().getX() < 0) {
             if(p.getPosition().getX() > myPusher.getPosition().getX()) {
                 return intercept(model);
             }else {
+                wasShooting = false;
                 return avoidAndIntercept(myPusher, p);
             }
         }
         if(p.getSpeed().getX() >= 0 && p.getPosition().getX() < Board.WIDTH / 2) {
             if(p.getSpeed().getX() > 100) return toCenter();
             else {
+                wasShooting = false;
                 return p.getPosition();
             }
         }
+        wasShooting = false;
         return p.getPosition();
         /**
          * SI PALET S'ELOIGNE ET QU IL EST DE L'AUTRE COTE
@@ -132,11 +140,11 @@ public class Bot extends Player{
         //TODO ACTUAL AI LOGIC
         Vector target = think(model);
         model.getDEBUG_POINTS().add(target);
-        if(target.sub(p.getPosition()).length() > p.getRadius() * 1.2) {
+        //if(target.sub(p.getPosition()).length() > p.getRadius() * 1.2) {
             moveTowards(target, p, dt);
-        }else {
-            speed = speed.multiply(Math.pow(FRICTION, dt));
-        }
+        //}else {
+        //    speed = speed.multiply(Math.pow(FRICTION, dt));
+        //}
 
 
 
