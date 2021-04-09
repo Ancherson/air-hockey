@@ -42,25 +42,39 @@ public class Bot extends Player{
         Vector closestPos = copy.getPosition().copy();
         for(int i = 0; i < 30; i++) { //A REGLER LE NOMBRE DE PREVISIONS !
             copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
+            //Vector aim = aim(model, copy.getPosition(), new Vector(Board.WIDTH, -Board.HEIGHT/2));
+            //double dist = aim.sub(myPusher.getPosition()).length();
             double dist = copy.getPosition().sub(myPusher.getPosition()).length();
             if(dist < minDist) {
                 minDist = dist;
+                //closestPos = aim.copy();
                 closestPos = copy.getPosition().copy();
             }
         }
-        return aim(model, closestPos);
+        //return closestPos;
+        Vector aimUp = aim(model, closestPos, new Vector(Board.WIDTH, -Board.HEIGHT/2));
+        Vector aimMiddle = aim(model, closestPos, new Vector(Board.WIDTH, Board.HEIGHT/2));
+        Vector aimDown = aim(model, closestPos, new Vector(Board.WIDTH,3 * Board.HEIGHT/2));
+
+        double distAimUp = aimUp.length();
+        double distAimMiddle = aimMiddle.length();
+        double distAimDown = aimDown.length();
+
+        if(distAimUp < distAimDown && distAimUp < distAimMiddle) return aimUp;
+        if(distAimDown < distAimMiddle) return aimDown;
+        return aimMiddle;
     }
 
-    public Vector aim(Model model, Vector paletPos){
+    public Vector aim(Model model, Vector paletPos, Vector target){
         //TODO REGARDER SI LES CAGES SONT LIBRES
         Pusher myPusher = model.getBoard().getPushers()[0];
-        Vector dirPaletGoal = new Vector(Board.WIDTH, Board.HEIGHT/2).sub(paletPos).normalize();
-        model.getDEBUG_LINES().put(new Vector(Board.WIDTH, Board.HEIGHT/2), paletPos);
+        Vector dirPaletGoal = target.sub(paletPos).normalize();
+        model.getDEBUG_LINES().put(target, paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
         if(dirPusherPalet.dotProduct(dirPaletGoal) < .8){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
         }
-        return paletPos;
+        return myPusher.getPosition().add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
     }
 
     public Vector avoidAndIntercept(Pusher myPusher, Palet palet) {
@@ -118,7 +132,7 @@ public class Bot extends Player{
         //TODO ACTUAL AI LOGIC
         Vector target = think(model);
         model.getDEBUG_POINTS().add(target);
-        if(target.sub(p.getPosition()).length() > p.getRadius() * 1.5) {
+        if(target.sub(p.getPosition()).length() > p.getRadius() * 1.2) {
             moveTowards(target, p, dt);
         }else {
             speed = speed.multiply(Math.pow(FRICTION, dt));
