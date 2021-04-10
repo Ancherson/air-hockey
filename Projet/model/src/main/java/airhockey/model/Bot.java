@@ -1,6 +1,5 @@
 package airhockey.model;
 
-import java.util.LinkedList;
 
 public class Bot extends Player{
     private int score;
@@ -9,6 +8,7 @@ public class Bot extends Player{
     private final double MAX_SPEED = 400;
     private final double MAX_SHOOTING_SPEED = 800;
     private final double FRICTION = 0.01;
+    private final Vector[] TARGETS = {new Vector(Board.WIDTH, -Board.HEIGHT/2), new Vector(Board.WIDTH, Board.HEIGHT/2), new Vector(Board.WIDTH, 3 * Board.HEIGHT/2)};
     private Vector target;
     private int wasShooting;
 
@@ -16,6 +16,7 @@ public class Bot extends Player{
         super();
         speed = new Vector(0, 0);
         wasShooting = 0;
+        target = TARGETS[1];
     }
 
     public int getScore(){
@@ -60,20 +61,30 @@ public class Bot extends Player{
         }
         //return closestPos;
         //Vector aimUp = aim(model, closestPos, new Vector(Board.WIDTH, -Board.HEIGHT/2));
-        Vector aimMiddle = aim(model, closestPos, new Vector(Board.WIDTH, Board.HEIGHT/2));
+        //Vector aimMiddle = aim(model, closestPos, new Vector(Board.WIDTH, Board.HEIGHT/2));
         //Vector aimDown = aim(model, closestPos, new Vector(Board.WIDTH,3 * Board.HEIGHT/2));
 
         //double distAimUp = aimUp.length();
-        double distAimMiddle = aimMiddle.length();
+        //double distAimMiddle = aimMiddle.length();
         //double distAimDown = aimDown.length();
 
         //if(distAimUp < distAimDown && distAimUp < distAimMiddle) return aimUp;
         //if(distAimDown < distAimMiddle) return aimDown;
-        target = new Vector(Board.WIDTH, Board.HEIGHT/2);
-        return aimMiddle;
+        //target = new Vector(Board.WIDTH, Board.HEIGHT/2);
+        //return aimMiddle;
+
+        Pusher enemy = model.getBoard().getPushers()[1];
+        if(enemy.getPosition().getY() > 2 * Board.HEIGHT / 3 && target == TARGETS[2]) {
+            target = TARGETS[(int)(Math.random() * 2)];
+        }else if(enemy.getPosition().getY() < Board.HEIGHT / 3 && target == TARGETS[0]){
+            target = TARGETS[(int)(Math.random() * 2 + 1)];
+        }else if(enemy.getPosition().getY() > Board.HEIGHT / 3 && enemy.getPosition().getY() < 2 * Board.HEIGHT / 3 && target == TARGETS[1]){
+            target = TARGETS[(int)(Math.random() * 2) * 2];
+        }
+        return aim(model, closestPos);
     }
 
-    public Vector aim(Model model, Vector paletPos, Vector target){
+    public Vector aim(Model model, Vector paletPos){
         //TODO REGARDER SI LES CAGES SONT LIBRES
         Pusher myPusher = model.getBoard().getPushers()[0];
         Vector dirPaletGoal = target.sub(paletPos).normalize();
@@ -112,7 +123,7 @@ public class Bot extends Player{
         if(p.getSpeed().getX() >= 0 && p.getPosition().getX() < Board.WIDTH / 2) {
            if(wasShooting > 0) {
                wasShooting--;
-               return aim(model, p.getPosition(), target);
+               return aim(model, p.getPosition());
            }else {
                if(p.getSpeed().getX() < 300) return p.getPosition();
                else return toCenter();
