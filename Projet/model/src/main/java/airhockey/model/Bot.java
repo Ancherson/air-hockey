@@ -5,7 +5,7 @@ public class Bot extends Player{
     private int score;
     private Vector speed;
     private final double ACCELERATION = 40000;
-    private final double MAX_SPEED = 400;
+    private final double MAX_SPEED = 300;
     private final double MAX_SHOOTING_SPEED = 800;
     private final double FRICTION = 0.01;
     private final Vector[] TARGETS = {new Vector(Board.WIDTH, -Board.HEIGHT/2), new Vector(Board.WIDTH, Board.HEIGHT/2), new Vector(Board.WIDTH, 3 * Board.HEIGHT/2)};
@@ -114,6 +114,13 @@ public class Bot extends Player{
         }
         if(p.getSpeed().getX() < 0) {
             if(p.getPosition().getX() > myPusher.getPosition().getX()) {
+                Palet copy = model.getBoard().getPalet().copy();
+                for(int i = 0; i < 5; i++) {
+                    copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
+                }
+                if(copy.getPosition().getX() < myPusher.getPosition().getX()){
+                    return p.getPosition();
+                }
                 return intercept(model);
             }else {
                 wasShooting = 0;
