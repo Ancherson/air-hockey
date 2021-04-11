@@ -16,10 +16,14 @@ import static javafx.scene.paint.Color.WHITE;
 
 public class FirstMenu extends BorderPane {
 
+    private Sound sound;
+
     public FirstMenu(MenuClient Menu){
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
+
+        sound = new Sound();
 
         Label title = new Label("AIR-HOCKEY");
         title.setStyle("-fx-font : 32 Ubuntu;");
@@ -53,6 +57,7 @@ public class FirstMenu extends BorderPane {
             create.setTextFill(WHITE);
         });
         create.setOnAction(event -> {
+            sound.play("buttonsRelax");
             Menu.setScene("creation");
 
         });
@@ -73,6 +78,7 @@ public class FirstMenu extends BorderPane {
         });
 
         join.setOnAction(value -> {
+            sound.play("buttonsRelax");
             Menu.setScene("join");
         });
 
@@ -92,6 +98,7 @@ public class FirstMenu extends BorderPane {
         });
 
         joinPublic.setOnAction(value ->{
+            sound.play("buttonsRelax");
             Menu.setScene("wait");
         });
 
@@ -111,6 +118,7 @@ public class FirstMenu extends BorderPane {
         });
         
         training.setOnAction(value ->{
+            sound.play("buttonsRelax");
             Menu.getModel().setBot(0);
             Menu.setView(1);
         });

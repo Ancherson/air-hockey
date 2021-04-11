@@ -167,7 +167,7 @@ public class Client{
         public void run() {
             while(!socket.isClosed()){
                 try {
-                    Thread.sleep(1000 / 120);
+                    Thread.sleep(1000 / 40);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

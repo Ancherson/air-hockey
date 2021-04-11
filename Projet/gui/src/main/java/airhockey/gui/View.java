@@ -3,6 +3,7 @@ package airhockey.gui;
 
 import airhockey.model.*;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -76,6 +77,7 @@ public class View extends BorderPane {
         });
 
         quit.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.close();
         });
@@ -273,9 +275,10 @@ public class View extends BorderPane {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
-                    
-                    sound.play("collisionRelax");
 
+                    Platform.runLater(()->{
+                        sound.play("collisionRelax");
+                    });
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                     Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
@@ -287,7 +290,9 @@ public class View extends BorderPane {
                 }
                 if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
                     
-                    sound.play("shakingRelax");
+                    Platform.runLater(()->{
+                        sound.play("shakingRelax");
+                    });
 
                     shake = 20;
                     for(int i = 0; i < 500; i++){

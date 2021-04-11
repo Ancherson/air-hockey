@@ -30,6 +30,11 @@ public class Sound {
         media = new Media(new File(path).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
         playlist.put("ambianceRelax",mediaPlayer);
+
+        path = "../ressources/relax_buttons.wav";
+        media = new Media(new File(path).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        playlist.put("buttonsRelax",mediaPlayer);
     }
 
     public void play(String name){
