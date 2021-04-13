@@ -276,9 +276,12 @@ public class View extends BorderPane {
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
 
-                    Platform.runLater(()->{
+//                    Platform.runLater(()->{
+//                        sound.play("collisionRelax");
+//                    });
+                    new Thread(() -> {
                         sound.play("collisionRelax");
-                    });
+                    }).start();
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                     Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());

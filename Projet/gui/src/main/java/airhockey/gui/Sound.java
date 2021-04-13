@@ -38,16 +38,12 @@ public class Sound {
     }
 
     public void play(String name){
-        playlist.get(name).seek(playlist.get(name).getStartTime());
+        playlist.get(name).seek(Duration.ZERO);
         playlist.get(name).play();
     }
 
     public void repeat(String name){
-        playlist.get(name).setOnEndOfMedia(new Runnable(){
-            public void run(){
-                playlist.get(name).seek(Duration.ZERO);
-            }
-        });
+        playlist.get(name).setOnEndOfMedia(() -> playlist.get(name).seek(Duration.ZERO));
         playlist.get(name).play();
 
     }
