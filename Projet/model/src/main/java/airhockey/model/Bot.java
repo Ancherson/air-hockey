@@ -105,6 +105,19 @@ public class Bot extends Player{
         return palet.getPosition().add(normalDist);
     }
 
+    /**
+     *
+     * 2 fonctions avoid and devie
+     *
+     * on devie si au bout d'une seconde le palet rentre dans la cage
+     * on avoid si elle vient vers le pusher
+     * on fait rien sinon
+     *
+     * avoid :
+     *    
+     *
+     */
+
     public Vector think(Model model) {
         Palet p = model.getBoard().getPalet();
         Pusher myPusher = model.getBoard().getPushers()[0];
