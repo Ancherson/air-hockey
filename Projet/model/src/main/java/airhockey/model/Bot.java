@@ -74,7 +74,7 @@ public class Bot extends Player{
         //return aimMiddle;
 
         Pusher enemy = model.getBoard().getPushers()[1];
-        if(enemy.getPosition().getY() > 2 * Board.HEIGHT / 3 && target == TARGETS[2]) {
+        if((enemy.getPosition().getY() > 2 * Board.HEIGHT / 3 && target == TARGETS[2])){
             target = TARGETS[(int)(Math.random() * 2)];
         }else if(enemy.getPosition().getY() < Board.HEIGHT / 3 && target == TARGETS[0]){
             target = TARGETS[(int)(Math.random() * 2 + 1)];
@@ -85,10 +85,21 @@ public class Bot extends Player{
     }
 
     public Vector aim(Model model, Vector paletPos){
-        //TODO REGARDER SI LES CAGES SONT LIBRES
         Pusher myPusher = model.getBoard().getPushers()[0];
         Vector dirPaletGoal = target.sub(paletPos).normalize();
         model.getDEBUG_LINES().put(target, paletPos);
+        Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
+        if(wasShooting == 0 && (model.getBoard().getPalet().getPosition().sub(paletPos).length() > model.getBoard().getPalet().getRadius()*.9 || dirPusherPalet.dotProduct(dirPaletGoal) < .80)){
+            return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
+        }
+        if(wasShooting == 0) wasShooting = 5;
+        return myPusher.getPosition().add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
+    }
+
+    public Vector aimDeviate(Model model, Vector paletPos, Vector t){
+        Pusher myPusher = model.getBoard().getPushers()[0];
+        Vector dirPaletGoal = t.sub(paletPos).normalize();
+        model.getDEBUG_LINES().put(t, paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
         if(wasShooting == 0 && (model.getBoard().getPalet().getPosition().sub(paletPos).length() > model.getBoard().getPalet().getRadius()*.9 || dirPusherPalet.dotProduct(dirPaletGoal) < .80)){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
@@ -105,9 +116,48 @@ public class Bot extends Player{
         return palet.getPosition().add(normalDist);
     }
 
+    public Vector avoid(Pusher myPusher, Palet palet){
+        Vector orth = palet.getSpeed().normalize().getOrthogonal().multiply(myPusher.getRadius()+palet.getRadius()*1.5);
+        Vector pos1 = myPusher.getPosition().add(orth);
+        /*Vector pos2 = myPusher.getPosition().sub(orth);
+        Vector middle = new Vector(Board.WIDTH/4, Board.HEIGHT/2);
+        if(pos1.sub(middle).length() < pos2.sub(middle).length()){
+            return pos1;
+        }*/
+        return pos1;
+    }
+
+    public Vector deviate(Model model, Pusher myPusher, Vector paletPos){
+        Vector corner = myPusher.getPosition().getY() > paletPos.getY() ? new Vector(Board.WIDTH/8, 0) : new Vector(Board.WIDTH/8, Board.HEIGHT);
+        return aimDeviate(model, paletPos, corner);
+    }
+
+
+    public Vector avoidAndDeviate(Model model) {
+        Pusher myPusher = model.getBoard().getPushers()[0];
+        Palet palet = model.getBoard().getPalet();
+        if(palet.getSpeed().normalize().dotProduct(myPusher.getPosition().sub(palet.getPosition()).normalize()) > 0.9){
+            return avoid(myPusher, palet);
+        }
+
+        if(palet.getSpeed().length() < 20){
+            return deviate(model, myPusher, palet.getPosition());
+        }
+
+        Palet copy = palet.copy();
+        for(int i = 0; i < 60; i++) { //A REGLER LE NOMBRE DE PREVISIONS !
+            copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
+        }
+        if(copy.getScoredGoal() != -1){
+            return deviate(model, myPusher, palet.getPosition());
+        }
+
+        return myPusher.getPosition();
+    }
+
     /**
      *
-     * 2 fonctions avoid and devie
+     * 2 fonctions avoid and deviate
      *
      * on devie si au bout d'une seconde le palet rentre dans la cage
      * on avoid si elle vient vers le pusher
@@ -125,21 +175,21 @@ public class Bot extends Player{
             wasShooting = 0;
             return toCenter();
         }
-        if(p.getSpeed().getX() < 0) {
-            if(p.getPosition().getX() > myPusher.getPosition().getX()) {
+        if(p.getPosition().getX() > myPusher.getPosition().getX()) {
+            if(p.getSpeed().getX() < 0) {
                 Palet copy = model.getBoard().getPalet().copy();
-                for(int i = 0; i < 5; i++) {
+                for (int i = 0; i < 5; i++) {
                     copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
                 }
-                if(copy.getPosition().getX() < myPusher.getPosition().getX()){
+                if (copy.getPosition().getX() < myPusher.getPosition().getX()) {
                     return p.getPosition();
                 }
                 return intercept(model);
-            }else {
-                wasShooting = 0;
-                return avoidAndIntercept(myPusher, p);
             }
+        }else {
+            return avoidAndDeviate(model);
         }
+
         if(p.getSpeed().getX() >= 0 && p.getPosition().getX() < Board.WIDTH / 2) {
            if(wasShooting > 0) {
                wasShooting--;
