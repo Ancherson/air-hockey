@@ -1,6 +1,7 @@
 package airhockey.network;
 
 import airhockey.model.Model;
+import airhockey.model.Palet;
 import airhockey.model.Pusher;
 
 import java.io.*;
@@ -60,9 +61,16 @@ public class Room {
 
     public void receive(ObjectInputStream ois, int port, InetAddress address) throws IOException, ClassNotFoundException {
         Pusher p = (Pusher)ois.readObject();
+        boolean updatePalet = (boolean) ois.readObject();
+        if(updatePalet){
+            Palet palet = (Palet) ois.readObject();
+            model.getBoard().setPalet(palet);
+        }
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
         model.getBoard().getPushers()[iClient] = p;
+        if (updatePalet){
+        }
     }
 
     public void sendPaletAndPushers() throws IOException {
@@ -102,7 +110,7 @@ public class Room {
                     e.printStackTrace();
                 }
                 try {
-                    Thread.sleep(1000/120);
+                    Thread.sleep(1000/40);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
