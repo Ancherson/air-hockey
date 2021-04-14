@@ -108,7 +108,7 @@ public class Bot extends Player{
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
         }
         if(wasShooting == 0) wasShooting = 5;
-        return myPusher.getPosition().add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
+        return paletPos.add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
     }
 
     public Vector avoidAndIntercept(Pusher myPusher, Palet palet) {
