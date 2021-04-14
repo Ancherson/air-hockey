@@ -9,7 +9,9 @@ public class Bot extends Player{
     private final double MAX_SHOOTING_SPEED = 800;
     private final double FRICTION = 0.01;
     public static final Vector[] TARGETS = {new Vector(Board.WIDTH, -Board.HEIGHT/2), new Vector(Board.WIDTH, Board.HEIGHT/2), new Vector(Board.WIDTH, 3 * Board.HEIGHT/2)};
+    private static final Vector[] DEVIATE_TARGETS = {new Vector(Board.WIDTH/8, 0) , new Vector(Board.WIDTH/8, Board.HEIGHT)};
     private Vector target;
+    private Vector deviateTarget;
     private int wasShooting;
 
     public Bot(){
@@ -17,6 +19,7 @@ public class Bot extends Player{
         speed = new Vector(0, 0);
         wasShooting = 0;
         target = TARGETS[1];
+        deviateTarget = DEVIATE_TARGETS[0];
     }
 
     public int getScore(){
@@ -128,8 +131,10 @@ public class Bot extends Player{
     }
 
     public Vector deviate(Model model, Pusher myPusher, Vector paletPos){
-        Vector corner = myPusher.getPosition().getY() > paletPos.getY() ? new Vector(Board.WIDTH/8, 0) : new Vector(Board.WIDTH/8, Board.HEIGHT);
-        return aimDeviate(model, paletPos, corner);
+        if(wasShooting == 0) {
+            deviateTarget = (myPusher.getPosition().getY() > paletPos.getY() ? DEVIATE_TARGETS[0] : DEVIATE_TARGETS[1]);
+        }
+        return aimDeviate(model, paletPos, deviateTarget);
     }
 
 
@@ -140,7 +145,7 @@ public class Bot extends Player{
             return avoid(myPusher, palet);
         }
 
-        if(palet.getSpeed().length() < 20){
+        if(Math.abs(palet.getSpeed().getX()) < 20){
             return deviate(model, myPusher, palet.getPosition());
         }
 
