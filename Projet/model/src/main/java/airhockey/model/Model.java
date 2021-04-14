@@ -75,6 +75,15 @@ public class Model {
         return false;
     }
 
+    public boolean hasPalletCollided(){
+        Palet palet = board.getPalet();
+        if(palet.collisionned) {
+            palet.collisionned = false;
+            return true;
+        }
+        return false;
+    }
+
     public void PusherReleased(int numplayer){
         this.board.getPushers()[numplayer].resetSpeed();
         hasPusherMoved = true;

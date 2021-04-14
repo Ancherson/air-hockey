@@ -17,7 +17,6 @@ public class Client{
     private Model model;
     private int numPlayer;
 
-    private long timeLastPacket = 0;
 
     private Consumer<Runnable> runLater;
     private Consumer<String> setID;
@@ -137,6 +136,20 @@ public class Client{
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeUTF(id);
         oo.writeObject(model.getBoard().getPushers()[numPlayer]);
+        oo.writeObject(false);
+        oo.close();
+        byte[] pusherSerialized = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        socket.send(packet);
+    }
+
+    public void sendPusherAndPalet() throws IOException{
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeUTF(id);
+        oo.writeObject(model.getBoard().getPushers()[numPlayer]);
+        oo.writeObject(true);
+        oo.writeObject(model.getBoard().getPalet());
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
         DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
@@ -152,10 +165,7 @@ public class Client{
         Palet pa = (Palet)ois.readObject();
         int score1 = ois.readInt();
         int score2 = ois.readInt();
-        long time = ois.readLong();
         ois.close();
-        if(time > timeLastPacket) timeLastPacket = time;
-        else return;
         model.getBoard().getPushers()[1-numPlayer] = p;
         model.getBoard().setPalet(pa);
         model.setScore(0, score1);
@@ -167,16 +177,25 @@ public class Client{
         public void run() {
             while(!socket.isClosed()){
                 try {
-                    Thread.sleep(1000 / 120);
+                    Thread.sleep(1000 / 40);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 synchronized (model) {
                     if (model.hasPusherMoved()) {
-                        try {
-                            sendPusher();
-                        } catch (IOException e) {
-                            System.out.println("Socket Closed");
+                        if(model.hasPalletCollided()){
+                            try{
+                                sendPusherAndPalet();
+                            } catch (IOException e) {
+                                System.out.println("Socket Closed");
+                            }
+                        }
+                        else {
+                            try {
+                                sendPusher();
+                            } catch (IOException e) {
+                                System.out.println("Socket Closed");
+                            }
                         }
                     }
                 }

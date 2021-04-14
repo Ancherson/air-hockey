@@ -11,6 +11,7 @@ public class Palet extends Circle {
     private boolean hasHit;
     private Vector hitPosition;
     private Vector hitNormal;
+    public boolean collisionned;
     
     public Palet(Vector position, double radius){
         super(position, radius);
@@ -91,6 +92,7 @@ public class Palet extends Circle {
 
                 speed = speed.multiply(0.96);
                 hasCollided = true;
+                collisionned = true;
             }
         }
         return hasCollided;
