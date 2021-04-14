@@ -223,9 +223,21 @@ public class View extends BorderPane {
         for(Vector v : model.getDEBUG_POINTS()) {
             drawCircle(v, 6, Color.GREEN, Color.GREEN);
         }
-
         for(var elt : model.getDEBUG_LINES().entrySet()) {
-            drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+            if(elt.getKey() == Bot.TARGETS[1]) drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+            else if(elt.getKey() == Bot.TARGETS[2]) {
+                Vector line = elt.getKey().sub(elt.getValue());
+                line = line.multiply(1.0 / line.getY() * (Board.HEIGHT - elt.getValue().getY()));
+                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+            } else {
+                Vector line = elt.getKey().sub(elt.getValue());
+                line = line.multiply(1.0 / line.getY() * -1 * (elt.getValue().getY()));
+                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+            }
+            //Vector v = new Vector((line.getY() - Board.HEIGHT) / (-1), Board.HEIGHT);
+            //drawCircle(v, 10, Color.RED, Color.RED);
         }
 
         for(Particle p: particles.getParticles()){
