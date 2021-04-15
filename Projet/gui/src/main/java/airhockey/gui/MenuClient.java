@@ -23,6 +23,7 @@ public class MenuClient extends Application {
     private int HEIGHT = 500;
     private Stage primaryStage;
     private Sound sound;
+    private boolean isPaused;
 
     private Scene first;
     private Scene creation;
@@ -64,6 +65,7 @@ public class MenuClient extends Application {
 
         sound = new Sound();
         sound.repeat("ambianceRelax");
+        isPaused = false;
 
 
         primaryStage.setScene(first);
@@ -157,6 +159,24 @@ public class MenuClient extends Application {
     public Model getModel(){
         return model;
     }
+
+    public void pauseSound(){
+        sound.pause("ambianceRelax");
+    }
+
+    public void repeatSound(){
+        sound.reload("ambianceRelax");
+        sound.repeat("ambianceRelax");
+    }
+
+    public void setIsPaused(boolean b){
+        isPaused = b;
+    }
+
+    public boolean getIsPaused(){
+        return isPaused;
+    }
+
 
     public void setView(int numplayer) {
         view = new View(this, model, numplayer);

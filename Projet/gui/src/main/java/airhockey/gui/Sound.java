@@ -48,8 +48,12 @@ public class Sound {
 
     }
 
-    public void stop(String name){
-        playlist.get(name).stop();
+    public void pause(String name){
+        playlist.get(name).pause();
+    }
+
+    public void reload(String name){
+        playlist.get(name).seek((playlist.get(name).getStartTime()));
     }
     
 }
