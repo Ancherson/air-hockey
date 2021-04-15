@@ -42,7 +42,7 @@ public class FirstMenu extends BorderPane {
 
         Image unmute = new Image(new File("../ressources/UnMuteButton.png").toURI().toString());
         Image mute = new Image(new File("../ressources/MuteButton.png").toURI().toString());     
-        Button stopSound = new Button();
+        ClickButton stopSound = new ClickButton();
 
 
         HBox boxB1 = new HBox(25.0,create,join);    
@@ -90,19 +90,7 @@ public class FirstMenu extends BorderPane {
 
         stopSound.setPrefSize(50,55);
         stopSound.setMinWidth(50);
-        stopSound.setStyle("-fx-background-color: #565656;");
-        stopSound.setTextFill(WHITE);
         stopSound.setGraphic(new ImageView(unmute));
-
-        stopSound.setOnMouseEntered((action)->{
-            stopSound.setStyle("-fx-background-color: #FFFFFF;");
-            stopSound.setTextFill(BLACK);
-        });
-
-        stopSound.setOnMouseExited((action)->{
-            stopSound.setStyle("-fx-background-color: #565656;");
-            stopSound.setTextFill(WHITE);
-        });
         
         stopSound.setOnAction(value ->{
             sound.play("buttonsRelax");
