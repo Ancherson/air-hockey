@@ -5,21 +5,25 @@ import airhockey.network.Client;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.media.*;
+
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.SocketException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 public class MenuClient extends Application {
     private int WIDTH = 800;
     private int HEIGHT = 500;
     private Stage primaryStage;
+    private Sound sound;
+    private boolean isPaused;
 
     private Scene first;
     private Scene creation;
@@ -58,6 +62,11 @@ public class MenuClient extends Application {
 
         window.setHeight(HEIGHT);
         window.setWidth(WIDTH);
+
+        sound = new Sound();
+        sound.repeat("ambianceRelax");
+        isPaused = false;
+
 
         primaryStage.setScene(first);
         primaryStage.show();
@@ -148,6 +157,24 @@ public class MenuClient extends Application {
     public Model getModel(){
         return model;
     }
+
+    public void pauseSound(){
+        sound.pause("ambianceRelax");
+    }
+
+    public void repeatSound(){
+        sound.reload("ambianceRelax");
+        sound.repeat("ambianceRelax");
+    }
+
+    public void setIsPaused(boolean b){
+        isPaused = b;
+    }
+
+    public boolean getIsPaused(){
+        return isPaused;
+    }
+
 
     public void setView(int numplayer, boolean training) {
         view = new View(this, model, numplayer, training);

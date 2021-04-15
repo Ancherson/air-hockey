@@ -13,12 +13,15 @@ import static javafx.scene.paint.Color.BLACK;
 
 public class JoinMenu extends BorderPane {
 
+    private Sound sound;
 
     public JoinMenu(MenuClient menu){
 
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
+
+        sound = new Sound();
 
         Label joinT = new Label("Enter the id");
         TextField id = new TextField();
@@ -46,6 +49,7 @@ public class JoinMenu extends BorderPane {
         back.setPrefSize(60,50);
 
         back.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.closeClient();
         });
