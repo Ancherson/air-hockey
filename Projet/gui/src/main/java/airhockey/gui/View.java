@@ -192,6 +192,7 @@ public class View extends BorderPane {
     }
 
     public void drawPalet() {
+        Palet pal = model.getBoard().getPalet();
         if(model.getBoard().getPalet().getScoredGoal() == -1){
             listPosPalet.add(model.getBoard().getPalet().getPosition());
         } else if(!listPosPalet.isEmpty()){
@@ -205,6 +206,10 @@ public class View extends BorderPane {
         for(int i = listPosPalet.size() - 1; i >= 0; i--) {
              drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)),Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)));
         }
+        Vector angulaire = new Vector(Math.cos(pal.getAngle()),Math.sin(pal.getAngle()));
+        //ctx.setLineWidth(5);
+        drawLine(pal.getPosition().add(angulaire.multiply(radius*0.4)),angulaire.multiply(radius).add(pal.getPosition()), BLACK);
+        //ctx.setLineWidth(1);
     }
 
     public void drawEnd() {

@@ -12,6 +12,8 @@ public class Palet extends Circle {
     private Vector hitPosition;
     private Vector hitNormal;
     public boolean collisionned;
+    private double angleSpeed = 0;
+    private double angle = 0;
     
     public Palet(Vector position, double radius){
         super(position, radius);
@@ -31,6 +33,21 @@ public class Palet extends Circle {
         if(speed.length() > MAX_SPEED) {
             speed = speed.normalize().multiply(MAX_SPEED);
         }
+    }
+    public double getAngle(){
+        return angle;
+    }
+
+    public void setAngle(double angle){
+        this.angle = angle;
+    }
+
+    public double getAngleSpeed(){
+        return angleSpeed;
+    }
+
+    public void setAngleSpeed(double vitesse){
+        this.angleSpeed = vitesse;
     }
 
     public boolean getHasHit(){
@@ -82,6 +99,9 @@ public class Palet extends Circle {
         for(Pusher p : pushers){
             if(isColliding(p)){
                 Vector normal = position.sub(p.position).normalize();
+                Vector orthogonal = normal.getOrthogonal();
+                double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
+                setAngleSpeed(getAngleSpeed()+angleSpeed);
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
                 if(speed.length() > MAX_SPEED) {
                     speed = speed.normalize().multiply(MAX_SPEED);
@@ -135,7 +155,8 @@ public class Palet extends Circle {
     public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
         hasHit = false;
         speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
-
+        angleSpeed = angleSpeed*Math.pow(0.6, dt);
+        angle += angleSpeed*dt;
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
         double length = v.length();
