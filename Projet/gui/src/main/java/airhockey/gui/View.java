@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
@@ -61,35 +62,34 @@ public class View extends BorderPane {
         canvas = new Canvas(WIDTH,HEIGHT);
         shake = -1;
 
-        BorderPane Pane = new BorderPane();
-        Pane.setStyle("-fx-background-color: #282828;");
-
-        ClickButton quit = new ClickButton("Quit");
-        quit.setOnAction(value -> {
-            menu.setScene("first");
-            menu.close();
-        });
-        quit.setAlignment(Pos.TOP_RIGHT);
+        HBox pane = new HBox();
+        pane.setStyle("-fx-background-color: #282828;");
 
         if(training) {
             ClickButton debug = new ClickButton("DEBUG");
             debug.setOnAction(value -> {
                 debugMode = !debugMode;
             });
-            debug.setAlignment(Pos.TOP_LEFT);
-            Pane.setLeft(debug);
-            this.setAlignment(debug, Pos.TOP_LEFT);
+            pane.getChildren().add(debug);
+
         }
+
+        ClickButton quit = new ClickButton("Quit");
+        quit.setOnAction(value -> {
+            menu.setScene("first");
+            menu.close();
+        });
+
+        pane.getChildren().add(quit);
 
         ctx = canvas.getGraphicsContext2D();
         canvas.setOnMousePressed(this::mousePressed);
         canvas.setOnMouseDragged(this::mouseDragged);
         canvas.setOnMouseReleased(this::mouseReleased);
         isPressed = false;
-        Pane.setRight(quit);
         this.setCenter(canvas);
-        this.setBottom(Pane);
-        Pane.setAlignment(quit,Pos.TOP_RIGHT);
+        pane.setAlignment(Pos.TOP_RIGHT);
+        this.setBottom(pane);
         this.setStyle("-fx-background-color: #282828;");
 
         ctx.setTextAlign(TextAlignment.CENTER);
