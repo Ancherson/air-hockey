@@ -13,12 +13,15 @@ public class EndMenu extends BorderPane{
     private Button back;
     private Label message;
 
+    private Sound sound;
     private MenuClient menu;
     private boolean won;
 
     public EndMenu(MenuClient menu, boolean won){
         this.menu = menu;
         this.won = won;
+
+        sound = new Sound();
 
         this.setWidth(800);
         this.setHeight(500);
@@ -49,6 +52,7 @@ public class EndMenu extends BorderPane{
         });
         
         back.setOnAction(value->{
+            sound.play("buttonsRelax");
             menu.setScene("first");
         });
 

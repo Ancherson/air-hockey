@@ -15,8 +15,11 @@ import static javafx.scene.paint.Color.BLACK;
 public class CreateMenu extends BorderPane {
     private Label creation;
     private String idRoom;
+    private Sound sound;
 
     public CreateMenu(MenuClient menu) {
+
+        sound = new Sound();
 
         this.setWidth(800);
         this.setHeight(500);
@@ -54,6 +57,7 @@ public class CreateMenu extends BorderPane {
         });
 
         back.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.closeClient();
         });

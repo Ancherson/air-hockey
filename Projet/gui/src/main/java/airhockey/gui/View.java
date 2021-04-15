@@ -3,6 +3,7 @@ package airhockey.gui;
 
 import airhockey.model.*;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -44,6 +45,7 @@ public class View extends BorderPane {
     private LinkedList<Vector> listPosPalet = new LinkedList<>();
     private int maxLengthListPalet = 20;
     private ParticleManager particles;
+    private Sound sound;
 
     private boolean finished = false;
     private String endMessage = "";
@@ -58,6 +60,8 @@ public class View extends BorderPane {
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
         canvas = new Canvas(WIDTH,HEIGHT);
         shake = -1;
+
+        sound = new Sound();
 
         Button quit = new Button("Quit");
         quit.setStyle("-fx-background-color: #565656;");
@@ -74,6 +78,7 @@ public class View extends BorderPane {
         });
 
         quit.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.close();
         });
@@ -298,15 +303,28 @@ public class View extends BorderPane {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
+
+//                    Platform.runLater(()->{
+//                        sound.play("collisionRelax");
+//                    });
+                    new Thread(() -> {
+                        sound.play("collisionRelax");
+                    }).start();
                     Vector hitPos = model.getBoard().getPalet().getHitPosition();
                     Vector hitNorm = model.getBoard().getPalet().getHitNormal();
                     Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
+
                     int n = 10 +(int)Math.floor(Math.random()*10);
                     for(int i = 0; i < n; i++){
                         particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
                     }
                 }
                 if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                    
+                    Platform.runLater(()->{
+                        sound.play("shakingRelax");
+                    });
+
                     shake = 20;
                     for(int i = 0; i < 500; i++){
                         double dirPos = Math.random()*Math.PI*2;
