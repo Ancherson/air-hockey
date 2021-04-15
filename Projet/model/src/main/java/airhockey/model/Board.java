@@ -14,8 +14,7 @@ public class Board {
 
 
     public Board() {
-        palet = new Palet(new Vector(100, 200), 18);
-        palet.setSpeed(new Vector(-100, 0));
+        palet = new Palet(new Vector(WIDTH/2, HEIGHT/2), 18);
 
         pushers = new Pusher[2];
         pushers[0] = new Pusher(new Vector(200, 200), 30);
