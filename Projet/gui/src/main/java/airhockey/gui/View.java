@@ -46,6 +46,7 @@ public class View extends BorderPane {
     private ParticleManager particles;
 
     private boolean finished = false;
+    private String endMessage = "";
     private int endCounter = 60;
 
     public View(MenuClient menu, Model model, int numplayer) {
@@ -108,6 +109,12 @@ public class View extends BorderPane {
         double zoom = Math.min(currentWidth / WIDTH, currentHeight / HEIGHT);
         ctx.setFont(new Font("Ubuntu", 24 * zoom));
         camera.zoom = zoom;
+    }
+
+    public void lostConnexion() {
+        endMessage = "Connexion Lost";
+        finished = true;
+        menu.closeClient();
     }
 
     public Vector gameToScreen(Vector v){
@@ -202,8 +209,7 @@ public class View extends BorderPane {
 
     public void drawEnd() {
         ctx.setFill(Color.WHITE);
-        if(model.hasWon(numplayer)) ctx.fillText("Congratulations! You won!", currentWidth / 2, currentHeight / 2);
-        else ctx.fillText("Bravo, you are the worst player in this game", currentWidth / 2, currentHeight / 2);
+        ctx.fillText(endMessage, currentWidth / 2, currentHeight / 2);
     }
 
     public void draw(){
@@ -303,6 +309,8 @@ public class View extends BorderPane {
                 draw();
                 if(model.isFinished()) {
                     finished = true;
+                    if(model.hasWon(numplayer)) endMessage = "Congratulations! You won!";
+                    else endMessage = "Bravo, you are the worst player in this game";
                     menu.closeClient();
                 }
                 lastUpdateTime = now;

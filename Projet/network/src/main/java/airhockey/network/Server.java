@@ -1,8 +1,6 @@
 package airhockey.network;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
@@ -99,6 +97,16 @@ public class Server extends Thread {
                 return;
             }
         }
+        ois.close();
+
+        //SEND NO ROOM
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeBoolean(false);
+        oo.close();
+        byte[] objectSerialized = bStream.toByteArray();
+        DatagramPacket packet = new DatagramPacket(objectSerialized, objectSerialized.length, address, port);
+        socket.send(packet);
     }
 
     private boolean isIdExist(String id) {
