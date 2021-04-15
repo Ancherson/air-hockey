@@ -70,4 +70,8 @@ public class Vector implements Serializable {
         //so subtracting 2 times this vector to this means reversing the coordinate of this along the axis that goes in the direction of n, which is effectively a reflection
         return add(n.multiply(-2*dotProduct(n)));
     }
+
+    public Vector getOrthogonal(){
+        return new Vector(-y, x);
+    }
 }

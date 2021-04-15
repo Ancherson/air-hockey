@@ -219,6 +219,28 @@ public class View extends BorderPane {
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, WHITE);
         }
+
+        for(Vector v : model.getDEBUG_POINTS()) {
+            drawCircle(v, 6, Color.GREEN, Color.GREEN);
+        }
+        for(var elt : model.getDEBUG_LINES().entrySet()) {
+            if(elt.getKey() == Bot.TARGETS[2]) {
+                Vector line = elt.getKey().sub(elt.getValue());
+                line = line.multiply(1.0 / line.getY() * (Board.HEIGHT - elt.getValue().getY()));
+                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+            } else if(elt.getKey() == Bot.TARGETS[0]){
+                Vector line = elt.getKey().sub(elt.getValue());
+                line = line.multiply(1.0 / line.getY() * -1 * (elt.getValue().getY()));
+                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+            } else {
+                drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+            }
+            //Vector v = new Vector((line.getY() - Board.HEIGHT) / (-1), Board.HEIGHT);
+            //drawCircle(v, 10, Color.RED, Color.RED);
+        }
+
         for(Particle p: particles.getParticles()){
             double alpha = p.getLife()/p.getStartLife();
             drawCircle(p.getPosition(), p.getRadius(), Color.rgb(255, 255, 255, alpha), Color.rgb(255, 255, 255, alpha));
