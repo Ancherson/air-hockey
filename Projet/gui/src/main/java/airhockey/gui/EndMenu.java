@@ -10,15 +10,18 @@ import static javafx.scene.paint.Color.BLACK;
 
 public class EndMenu extends BorderPane{
     
-    private Button back;
+    private ClickButton back;
     private Label message;
 
+    private Sound sound;
     private MenuClient menu;
     private boolean won;
 
     public EndMenu(MenuClient menu, boolean won){
         this.menu = menu;
         this.won = won;
+
+        sound = new Sound();
 
         this.setWidth(800);
         this.setHeight(500);
@@ -30,25 +33,14 @@ public class EndMenu extends BorderPane{
         message.setStyle("-fx-font : 28 Ubuntu;");
         message.setTextFill(WHITE);
 
-        back = new Button("back");
+        back = new ClickButton("back");
  
 
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
-        back.setStyle("-fx-background-color: #565656;");
-        back.setTextFill(WHITE);
-
-        back.setOnMouseEntered((action)->{
-            back.setStyle("-fx-background-color: #FFFFFF;");
-            back.setTextFill(BLACK);
-        });
-
-        back.setOnMouseExited((action)->{
-            back.setStyle("-fx-background-color: #565656;");
-            back.setTextFill(WHITE);
-        });
         
         back.setOnAction(value->{
+            sound.play("buttonsRelax");
             menu.setScene("first");
         });
 

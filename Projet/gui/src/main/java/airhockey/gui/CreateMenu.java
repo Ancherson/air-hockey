@@ -15,15 +15,18 @@ import static javafx.scene.paint.Color.BLACK;
 public class CreateMenu extends BorderPane {
     private Label creation;
     private String idRoom;
+    private Sound sound;
 
     public CreateMenu(MenuClient menu) {
+
+        sound = new Sound();
 
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
 
         creation = new Label("CREATION OF THE ROOM");
-        Button back = new Button("Back");
+        ClickButton back = new ClickButton("Back");
 
         Clipboard clipboard = Clipboard.getSystemClipboard();
 
@@ -40,20 +43,9 @@ public class CreateMenu extends BorderPane {
 
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
-        back.setStyle("-fx-background-color: #565656;");
-        back.setTextFill(WHITE);
-
-        back.setOnMouseEntered((action)->{
-            back.setStyle("-fx-background-color: #FFFFFF;");
-            back.setTextFill(BLACK);
-        });
-
-        back.setOnMouseExited((action)->{
-            back.setStyle("-fx-background-color: #565656;");
-            back.setTextFill(WHITE);
-        });
 
         back.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.closeClient();
         });

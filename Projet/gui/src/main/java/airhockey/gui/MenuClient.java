@@ -5,21 +5,25 @@ import airhockey.network.Client;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.media.*;
+
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.io.File;
 import java.net.SocketException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 public class MenuClient extends Application {
     private int WIDTH = 800;
     private int HEIGHT = 500;
     private Stage primaryStage;
+    private Sound sound;
+    private boolean isPaused;
 
     private Scene first;
     private Scene creation;
@@ -59,6 +63,11 @@ public class MenuClient extends Application {
         window.setHeight(HEIGHT);
         window.setWidth(WIDTH);
 
+        sound = new Sound();
+        sound.repeat("ambianceRelax");
+        isPaused = false;
+
+
         primaryStage.setScene(first);
         primaryStage.show();
 
@@ -74,27 +83,6 @@ public class MenuClient extends Application {
                 view.resizeCanvas(-1, newVal.doubleValue() - 100);
             }
         });
-        /*
-            Fonction qui permet de center un Stackpane nommer "pane"
-
-            primaryStage.widthProperty().addListener((obs,oldVal,newVal) ->{
-            WIDTH = newVal.intValue();
-            int heigth = HEIGHT/ 2 -60;
-            int width = newVal.intValue()/2-100;
-            if((width) <0) width =0;
-            Insets pad = new Insets(heigth,width,heigth,width);
-            pane.setPadding(pad);
-        });
-
-        primaryStage.heightProperty().addListener((obs,oldVal,newVal) ->{
-            HEIGHT = newVal.intValue();
-            int width = WIDTH/ 2 -100;
-            int heigth = newVal.intValue()/2-60;
-            if((heigth) <0) heigth =0;
-            Insets pad = new Insets(heigth,width,heigth,width);
-            pane.setPadding(pad);
-        });*/
-
     }
 
     public void setScene(String S) {
@@ -170,8 +158,26 @@ public class MenuClient extends Application {
         return model;
     }
 
-    public void setView(int numplayer) {
-        view = new View(this, model, numplayer);
+    public void pauseSound(){
+        sound.pause("ambianceRelax");
+    }
+
+    public void repeatSound(){
+        sound.reload("ambianceRelax");
+        sound.repeat("ambianceRelax");
+    }
+
+    public void setIsPaused(boolean b){
+        isPaused = b;
+    }
+
+    public boolean getIsPaused(){
+        return isPaused;
+    }
+
+
+    public void setView(int numplayer, boolean training) {
+        view = new View(this, model, numplayer, training);
         game = new Scene(view);
         view.resizeCanvas(primaryStage.getWidth() - 20, -1);
         view.resizeCanvas(-1,primaryStage.getHeight() - 100);
@@ -182,7 +188,7 @@ public class MenuClient extends Application {
         try {
             client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion);
             client.createRoom();
-            Platform.runLater(() -> setView(0));
+            Platform.runLater(() -> setView(0, false));
         } catch (SocketException e) {
             System.out.println("Socket closed");
         } catch (IOException e) {
@@ -194,7 +200,7 @@ public class MenuClient extends Application {
         try {
             client = new Client(model, Platform::runLater, create::setID,waiting::connected,this::lostConnexion);
             client.joinRoom(id);
-            setView(1);
+            setView(1, false);
         } catch (SocketException e) {
             System.out.println("Socket closed");
         } catch (IOException e) {
@@ -208,7 +214,7 @@ public class MenuClient extends Application {
             client.joinRoomPublic();
             Platform.runLater(() -> {
                 System.out.println(client.getNumPlayer());
-                setView(client.getNumPlayer());
+                setView(client.getNumPlayer(), false);
             });
         } catch (SocketException e) {
             System.out.println("Socket closed");

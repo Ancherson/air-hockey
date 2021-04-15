@@ -13,6 +13,7 @@ import static javafx.scene.paint.Color.BLACK;
 
 public class JoinMenu extends BorderPane {
 
+    private Sound sound;
 
     public JoinMenu(MenuClient menu){
 
@@ -20,9 +21,11 @@ public class JoinMenu extends BorderPane {
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
 
+        sound = new Sound();
+
         Label joinT = new Label("Enter the id");
         TextField id = new TextField();
-        Button back = new Button("Back");
+        ClickButton back = new ClickButton("Back");
 
         VBox box = new VBox(joinT,id);
         box.setAlignment(Pos.CENTER);
@@ -45,20 +48,8 @@ public class JoinMenu extends BorderPane {
         back.setMaxSize(100,50);
         back.setPrefSize(60,50);
 
-        back.setStyle("-fx-background-color: #565656;");
-        back.setTextFill(WHITE);
-
-        back.setOnMouseEntered((action)->{
-            back.setStyle("-fx-background-color: #FFFFFF;");
-            back.setTextFill(BLACK);
-        });
-
-        back.setOnMouseExited((action)->{
-            back.setStyle("-fx-background-color: #565656;");
-            back.setTextFill(WHITE);
-        });
-
         back.setOnAction(value -> {
+            sound.play("buttonsRelax");
             menu.setScene("first");
             menu.closeClient();
         });
