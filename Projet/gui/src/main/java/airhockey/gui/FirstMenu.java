@@ -35,14 +35,14 @@ public class FirstMenu extends BorderPane {
         title.setStyle("-fx-font : 32 Ubuntu;");
         title.setTextFill(WHITE);
 
-        Button create = new Button("Create room");
-        Button join = new Button("Join a room");
-        Button joinPublic = new Button("Join Public Room");
-        Button training = new Button("TRAINING MODE");
+        ClickButton create = new ClickButton("Create room");
+        ClickButton join = new ClickButton("Join a room");
+        ClickButton joinPublic = new ClickButton("Join Public Room");
+        ClickButton training = new ClickButton("TRAINING MODE");
 
         Image unmute = new Image(new File("../ressources/UnMuteButton.png").toURI().toString());
         Image mute = new Image(new File("../ressources/MuteButton.png").toURI().toString());     
-        Button stopSound = new Button();
+        ClickButton stopSound = new ClickButton();
 
 
         HBox boxB1 = new HBox(25.0,create,join);    
@@ -55,18 +55,7 @@ public class FirstMenu extends BorderPane {
 
         create.setPrefSize(130,55);
         create.setMinWidth(130);
-        create.setStyle("-fx-background-color: #565656;");
-        create.setTextFill(WHITE);
 
-        create.setOnMouseEntered((action)->{
-            create.setStyle("-fx-background-color: #FFFFFF;");
-            create.setTextFill(BLACK);
-        });
-
-        create.setOnMouseExited((action)->{
-            create.setStyle("-fx-background-color: #565656;");
-            create.setTextFill(WHITE);
-        });
         create.setOnAction(event -> {
             sound.play("buttonsRelax");
             Menu.setScene("creation");
@@ -75,18 +64,6 @@ public class FirstMenu extends BorderPane {
 
         join.setPrefSize(130,55);
         join.setMinWidth(130);
-        join.setStyle("-fx-background-color: #565656;");
-        join.setTextFill(WHITE);
-
-        join.setOnMouseEntered((action)->{
-            join.setStyle("-fx-background-color: #FFFFFF;");
-            join.setTextFill(BLACK);
-        });
-
-        join.setOnMouseExited((action)->{
-            join.setStyle("-fx-background-color: #565656;");
-            join.setTextFill(WHITE);
-        });
 
         join.setOnAction(value -> {
             sound.play("buttonsRelax");
@@ -95,18 +72,7 @@ public class FirstMenu extends BorderPane {
 
         joinPublic.setPrefSize(130,55);
         joinPublic.setMinWidth(130);
-        joinPublic.setStyle("-fx-background-color: #565656;");
-        joinPublic.setTextFill(WHITE);
 
-        joinPublic.setOnMouseEntered((action)->{
-            joinPublic.setStyle("-fx-background-color: #FFFFFF;");
-            joinPublic.setTextFill(BLACK);
-        });
-
-        joinPublic.setOnMouseExited((action)->{
-            joinPublic.setStyle("-fx-background-color: #565656;");
-            joinPublic.setTextFill(WHITE);
-        });
 
         joinPublic.setOnAction(value ->{
             sound.play("buttonsRelax");
@@ -115,40 +81,16 @@ public class FirstMenu extends BorderPane {
 
         training.setPrefSize(130,55);
         training.setMinWidth(130);
-        training.setStyle("-fx-background-color: #565656;");
-        training.setTextFill(WHITE);
-
-        training.setOnMouseEntered((action)->{
-            training.setStyle("-fx-background-color: #FFFFFF;");
-            training.setTextFill(BLACK);
-        });
-
-        training.setOnMouseExited((action)->{
-            training.setStyle("-fx-background-color: #565656;");
-            training.setTextFill(WHITE);
-        });
         
         training.setOnAction(value ->{
             sound.play("buttonsRelax");
             Menu.getModel().setBot(0);
-            Menu.setView(1);
+            Menu.setView(1, true);
         });
 
         stopSound.setPrefSize(50,55);
         stopSound.setMinWidth(50);
-        stopSound.setStyle("-fx-background-color: #565656;");
-        stopSound.setTextFill(WHITE);
         stopSound.setGraphic(new ImageView(unmute));
-
-        stopSound.setOnMouseEntered((action)->{
-            stopSound.setStyle("-fx-background-color: #FFFFFF;");
-            stopSound.setTextFill(BLACK);
-        });
-
-        stopSound.setOnMouseExited((action)->{
-            stopSound.setStyle("-fx-background-color: #565656;");
-            stopSound.setTextFill(WHITE);
-        });
         
         stopSound.setOnAction(value ->{
             sound.play("buttonsRelax");
@@ -173,8 +115,6 @@ public class FirstMenu extends BorderPane {
         this.setTop(stopSound);
 
         this.setPadding(new Insets(30,50,50,50));
-
-
 
     }
 
