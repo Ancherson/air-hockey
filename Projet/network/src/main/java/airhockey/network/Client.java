@@ -21,13 +21,15 @@ public class Client{
     private Consumer<Runnable> runLater;
     private Consumer<String> setID;
     private Runnable connect;
+    private Runnable lostConnexion;
 
-    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect) throws SocketException {
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion) throws SocketException {
         socket = new DatagramSocket();
         model = m;
         this.runLater = runlater;
         this.setID = setID;
         this.connect = connect;
+        this.lostConnexion = lostConnexion;
     }
 
     public void createRoom() throws IOException {
@@ -161,6 +163,11 @@ public class Client{
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         socket.receive(packet);
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+        boolean haveRoom = ois.readBoolean();
+        if(!haveRoom) {
+            runLater.accept(lostConnexion);
+            return;
+        }
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         int score1 = ois.readInt();

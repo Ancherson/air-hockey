@@ -76,6 +76,7 @@ public class Room {
     public void sendPaletAndPushers() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
+        oo.writeBoolean(true);
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
         oo.writeInt(model.getScore(0));

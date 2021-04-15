@@ -180,7 +180,7 @@ public class MenuClient extends Application {
 
     public void createRoom() {
         try {
-            client = new Client(model,Platform::runLater,create::setID,waiting::connected);
+            client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion);
             client.createRoom();
             Platform.runLater(() -> setView(0));
         } catch (SocketException e) {
@@ -192,7 +192,7 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model, Platform::runLater, create::setID,waiting::connected);
+            client = new Client(model, Platform::runLater, create::setID,waiting::connected,this::lostConnexion);
             client.joinRoom(id);
             setView(1);
         } catch (SocketException e) {
@@ -204,7 +204,7 @@ public class MenuClient extends Application {
 
     public void joinPublicRoom() {
         try {
-            client = new Client(model,Platform::runLater,create::setID,waiting::connected);
+            client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion);
             client.joinRoomPublic();
             Platform.runLater(() -> {
                 System.out.println(client.getNumPlayer());
@@ -222,6 +222,10 @@ public class MenuClient extends Application {
         EndMenu end = new EndMenu(this, won);
         last = new Scene(end);
         setScene("last");
+    }
+
+    public void lostConnexion() {
+        view.lostConnexion();
     }
 
     public void closeClient()  {
