@@ -24,7 +24,7 @@ public class PublicWait extends BorderPane {
         info.setStyle("-fx-font : 28 Ubuntu;");
         info.setTextFill(WHITE);        this.setCenter(info);
 
-        Button back = new Button("Back");
+        ClickButton back = new ClickButton("Back");
         this.setAlignment(back,Pos.BASELINE_RIGHT);
         this.setBottom(back);
 
@@ -32,18 +32,6 @@ public class PublicWait extends BorderPane {
 
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
-        back.setStyle("-fx-background-color: #565656;");
-        back.setTextFill(WHITE);
-
-        back.setOnMouseEntered((action)->{
-            back.setStyle("-fx-background-color: #FFFFFF;");
-            back.setTextFill(BLACK);
-        });
-
-        back.setOnMouseExited((action)->{
-            back.setStyle("-fx-background-color: #565656;");
-            back.setTextFill(WHITE);
-        });
 
         back.setOnAction(value -> {
             menu.setScene("first");

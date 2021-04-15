@@ -25,10 +25,10 @@ public class FirstMenu extends BorderPane {
         title.setStyle("-fx-font : 32 Ubuntu;");
         title.setTextFill(WHITE);
 
-        Button create = new Button("Create room");
-        Button join = new Button("Join a room");
-        Button joinPublic = new Button("Join Public Room");
-        Button training = new Button("TRAINING MODE");
+        ClickButton create = new ClickButton("Create room");
+        ClickButton join = new ClickButton("Join a room");
+        ClickButton joinPublic = new ClickButton("Join Public Room");
+        ClickButton training = new ClickButton("TRAINING MODE");
 
         HBox boxB1 = new HBox(25.0,create,join);    
         VBox boxV1 = new VBox(25.0,boxB1,joinPublic);
@@ -40,18 +40,7 @@ public class FirstMenu extends BorderPane {
 
         create.setPrefSize(130,55);
         create.setMinWidth(130);
-        create.setStyle("-fx-background-color: #565656;");
-        create.setTextFill(WHITE);
 
-        create.setOnMouseEntered((action)->{
-            create.setStyle("-fx-background-color: #FFFFFF;");
-            create.setTextFill(BLACK);
-        });
-
-        create.setOnMouseExited((action)->{
-            create.setStyle("-fx-background-color: #565656;");
-            create.setTextFill(WHITE);
-        });
         create.setOnAction(event -> {
             Menu.setScene("creation");
 
@@ -59,18 +48,6 @@ public class FirstMenu extends BorderPane {
 
         join.setPrefSize(130,55);
         join.setMinWidth(130);
-        join.setStyle("-fx-background-color: #565656;");
-        join.setTextFill(WHITE);
-
-        join.setOnMouseEntered((action)->{
-            join.setStyle("-fx-background-color: #FFFFFF;");
-            join.setTextFill(BLACK);
-        });
-
-        join.setOnMouseExited((action)->{
-            join.setStyle("-fx-background-color: #565656;");
-            join.setTextFill(WHITE);
-        });
 
         join.setOnAction(value -> {
             Menu.setScene("join");
@@ -78,18 +55,7 @@ public class FirstMenu extends BorderPane {
 
         joinPublic.setPrefSize(130,55);
         joinPublic.setMinWidth(130);
-        joinPublic.setStyle("-fx-background-color: #565656;");
-        joinPublic.setTextFill(WHITE);
 
-        joinPublic.setOnMouseEntered((action)->{
-            joinPublic.setStyle("-fx-background-color: #FFFFFF;");
-            joinPublic.setTextFill(BLACK);
-        });
-
-        joinPublic.setOnMouseExited((action)->{
-            joinPublic.setStyle("-fx-background-color: #565656;");
-            joinPublic.setTextFill(WHITE);
-        });
 
         joinPublic.setOnAction(value ->{
             Menu.setScene("wait");
@@ -97,22 +63,10 @@ public class FirstMenu extends BorderPane {
 
         training.setPrefSize(130,55);
         training.setMinWidth(130);
-        training.setStyle("-fx-background-color: #565656;");
-        training.setTextFill(WHITE);
-
-        training.setOnMouseEntered((action)->{
-            training.setStyle("-fx-background-color: #FFFFFF;");
-            training.setTextFill(BLACK);
-        });
-
-        training.setOnMouseExited((action)->{
-            training.setStyle("-fx-background-color: #565656;");
-            training.setTextFill(WHITE);
-        });
         
         training.setOnAction(value ->{
             Menu.getModel().setBot(0);
-            Menu.setView(1);
+            Menu.setView(1, true);
         });
 
         this.setAlignment(boxV2, Pos.CENTER);
@@ -122,8 +76,6 @@ public class FirstMenu extends BorderPane {
         this.setBottom(training);
 
         this.setPadding(new Insets(30,50,50,50));
-
-
 
     }
 

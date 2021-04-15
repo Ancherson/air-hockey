@@ -49,7 +49,9 @@ public class View extends BorderPane {
     private String endMessage = "";
     private int endCounter = 60;
 
-    public View(MenuClient menu, Model model, int numplayer) {
+    private boolean debugMode = false;
+
+    public View(MenuClient menu, Model model, int numplayer, boolean training) {
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
@@ -59,34 +61,35 @@ public class View extends BorderPane {
         canvas = new Canvas(WIDTH,HEIGHT);
         shake = -1;
 
-        Button quit = new Button("Quit");
-        quit.setStyle("-fx-background-color: #565656;");
-        quit.setTextFill(WHITE);
+        BorderPane Pane = new BorderPane();
+        Pane.setStyle("-fx-background-color: #282828;");
 
-        quit.setOnMouseEntered((action)->{
-            quit.setStyle("-fx-background-color: #FFFFFF;");
-            quit.setTextFill(BLACK);
-        });
-
-        quit.setOnMouseExited((action)->{
-            quit.setStyle("-fx-background-color: #565656;");
-            quit.setTextFill(WHITE);
-        });
-
+        ClickButton quit = new ClickButton("Quit");
         quit.setOnAction(value -> {
             menu.setScene("first");
             menu.close();
         });
         quit.setAlignment(Pos.TOP_RIGHT);
+
+        if(training) {
+            ClickButton debug = new ClickButton("DEBUG");
+            debug.setOnAction(value -> {
+                debugMode = !debugMode;
+            });
+            debug.setAlignment(Pos.TOP_LEFT);
+            Pane.setLeft(debug);
+            this.setAlignment(debug, Pos.TOP_LEFT);
+        }
+
         ctx = canvas.getGraphicsContext2D();
         canvas.setOnMousePressed(this::mousePressed);
         canvas.setOnMouseDragged(this::mouseDragged);
         canvas.setOnMouseReleased(this::mouseReleased);
         isPressed = false;
-
+        Pane.setRight(quit);
         this.setCenter(canvas);
-        this.setBottom(quit);
-        this.setAlignment(quit,Pos.TOP_RIGHT);
+        this.setBottom(Pane);
+        Pane.setAlignment(quit,Pos.TOP_RIGHT);
         this.setStyle("-fx-background-color: #282828;");
 
         ctx.setTextAlign(TextAlignment.CENTER);
@@ -226,25 +229,27 @@ public class View extends BorderPane {
             drawWall(w, WHITE);
         }
 
-        for(Vector v : model.getDEBUG_POINTS()) {
-            drawCircle(v, 6, Color.GREEN, Color.GREEN);
-        }
-        for(var elt : model.getDEBUG_LINES().entrySet()) {
-            if(elt.getKey() == Bot.TARGETS[2]) {
-                Vector line = elt.getKey().sub(elt.getValue());
-                line = line.multiply(1.0 / line.getY() * (Board.HEIGHT - elt.getValue().getY()));
-                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
-                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
-            } else if(elt.getKey() == Bot.TARGETS[0]){
-                Vector line = elt.getKey().sub(elt.getValue());
-                line = line.multiply(1.0 / line.getY() * -1 * (elt.getValue().getY()));
-                drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
-                drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
-            } else {
-                drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+        if(debugMode) {
+            for (Vector v : model.getDEBUG_POINTS()) {
+                drawCircle(v, 6, Color.GREEN, Color.GREEN);
             }
-            //Vector v = new Vector((line.getY() - Board.HEIGHT) / (-1), Board.HEIGHT);
-            //drawCircle(v, 10, Color.RED, Color.RED);
+            for (var elt : model.getDEBUG_LINES().entrySet()) {
+                if (elt.getKey() == Bot.TARGETS[2]) {
+                    Vector line = elt.getKey().sub(elt.getValue());
+                    line = line.multiply(1.0 / line.getY() * (Board.HEIGHT - elt.getValue().getY()));
+                    drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                    drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+                } else if (elt.getKey() == Bot.TARGETS[0]) {
+                    Vector line = elt.getKey().sub(elt.getValue());
+                    line = line.multiply(1.0 / line.getY() * -1 * (elt.getValue().getY()));
+                    drawLine(elt.getValue(), elt.getValue().add(line), Color.RED);
+                    drawLine(elt.getValue().add(line), new Vector(Board.WIDTH, Board.HEIGHT / 2), Color.RED);
+                } else {
+                    drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
+                }
+                //Vector v = new Vector((line.getY() - Board.HEIGHT) / (-1), Board.HEIGHT);
+                //drawCircle(v, 10, Color.RED, Color.RED);
+            }
         }
 
         for(Particle p: particles.getParticles()){
