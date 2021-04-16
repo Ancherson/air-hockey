@@ -90,6 +90,7 @@ public class Board {
         }
 
         palet.setSpeed(new Vector(0, 0));
+        palet.setAngleSpeed(0);
     }
 
 
