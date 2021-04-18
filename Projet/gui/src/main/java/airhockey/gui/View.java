@@ -302,6 +302,56 @@ public class View extends BorderPane {
         animation.stop();
     }
 
+    public void createParticules() {
+        new Thread(() -> {
+            sound.play("collisionRelax");
+        }).start();
+        Vector hitPos = model.getBoard().getPalet().getHitPosition();
+        Vector hitNorm = model.getBoard().getPalet().getHitNormal();
+        Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
+
+        int n = 10 +(int)Math.floor(Math.random()*10);
+        for(int i = 0; i < n; i++){
+            particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
+        }
+    }
+
+    public void explosion() {
+        Platform.runLater(()->{
+            sound.play("shakingRelax");
+        });
+
+        shake = 20;
+        for(int i = 0; i < 500; i++){
+            double dirPos = Math.random()*Math.PI*2;
+            Vector dir = new Vector(Math.cos(dirPos), Math.sin(dirPos));
+            double dirSpd = Math.random()*Math.PI*2;
+            particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir.multiply(Math.random()*85+5), 0.5+Math.random(), 1));
+        }
+    }
+
+    public void shaking() {
+        if(shake > 0){
+            camera.position = new Vector(model.getBoard().getWIDTH()/2+Math.random()*2*shake-shake, model.getBoard().getHEIGHT()/2+Math.random()*2*shake-shake);
+            shake--;
+        } else if(shake == 0){
+            Vector c = new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2);
+            Vector d = c.sub(camera.position);
+            if(d.length() > 1) {
+                camera.position = camera.position.add(d.multiply(0.4));
+            } else {
+                shake = -1;
+            }
+        }
+    }
+
+    public void endGame() {
+        finished = true;
+        if(model.hasWon(numplayer)) endMessage = "Congratulations! You won!";
+        else endMessage = "Bravo, you are the worst player in this game";
+        menu.closeClient();
+    }
+
     public class Animation extends AnimationTimer {
         private long lastUpdateTime = System.nanoTime();
         private int frame = 0;
@@ -312,55 +362,16 @@ public class View extends BorderPane {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
-
-//                    Platform.runLater(()->{
-//                        sound.play("collisionRelax");
-//                    });
-                    new Thread(() -> {
-                        sound.play("collisionRelax");
-                    }).start();
-                    Vector hitPos = model.getBoard().getPalet().getHitPosition();
-                    Vector hitNorm = model.getBoard().getPalet().getHitNormal();
-                    Vector hitOrth = new Vector(-hitNorm.getY(), hitNorm.getX());
-
-                    int n = 10 +(int)Math.floor(Math.random()*10);
-                    for(int i = 0; i < n; i++){
-                        particles.addParticle(new Particle(hitPos, hitNorm.multiply(Math.random()*35+5).add(hitOrth.multiply(Math.random()*80-40)), 0.5, 1));
-                    }
+                    createParticules();
                 }
                 if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
-                    
-                    Platform.runLater(()->{
-                        sound.play("shakingRelax");
-                    });
-
-                    shake = 20;
-                    for(int i = 0; i < 500; i++){
-                        double dirPos = Math.random()*Math.PI*2;
-                        Vector dir = new Vector(Math.cos(dirPos), Math.sin(dirPos));
-                        double dirSpd = Math.random()*Math.PI*2;
-                        particles.addParticle(new Particle(model.getBoard().getPalet().getPosition().add(dir.multiply(model.getBoard().getPalet().getRadius()*Math.random())), dir.multiply(Math.random()*85+5), 0.5+Math.random(), 1));
-                    }
+                    explosion();
                 }
-                if(shake > 0){
-                    camera.position = new Vector(model.getBoard().getWIDTH()/2+Math.random()*2*shake-shake, model.getBoard().getHEIGHT()/2+Math.random()*2*shake-shake);
-                    shake--;
-                } else if(shake == 0){
-                    Vector c = new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2);
-                    Vector d = c.sub(camera.position);
-                    if(d.length() > 1) {
-                        camera.position = camera.position.add(d.multiply(0.4));
-                    } else {
-                        shake = -1;
-                    }
-                }
+                shaking();
                 particles.update(dt/(1e9*1.0));
                 draw();
                 if(model.isFinished()) {
-                    finished = true;
-                    if(model.hasWon(numplayer)) endMessage = "Congratulations! You won!";
-                    else endMessage = "Bravo, you are the worst player in this game";
-                    menu.closeClient();
+                    endGame();
                 }
                 lastUpdateTime = now;
                 frame = 0;
