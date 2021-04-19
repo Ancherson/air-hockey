@@ -210,13 +210,21 @@ public class View extends BorderPane {
             listPosPalet.removeFirst();
         }
         double radius = model.getBoard().getPalet().getRadius();
-        for(int i = listPosPalet.size() - 1; i >= 0; i--) {
-             drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)),Color.rgb(255,255,255, i * 1.0 / (listPosPalet.size() - 1)));
+        int listSize = listPosPalet.size();
+        for(int i = 0; i < listSize; i++) {
+             if(i == listSize - 1 && model.getBoard().getPalet().getScoredGoal() == -1) {
+                 drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), BLACK, WHITE);
+                 Vector angulaire = new Vector(Math.cos(pal.getAngle()),Math.sin(pal.getAngle()));
+                 double rad = radius * i / (maxLengthListPalet - 1);
+                 //ctx.setLineWidth(5);
+                 drawLine(pal.getPosition().add(angulaire.multiply(rad*0.4)),angulaire.multiply(rad).add(pal.getPosition()), BLACK);
+                 drawLine(pal.getPosition().add(angulaire.multiply(rad*-0.4)),angulaire.multiply(-rad).add(pal.getPosition()), BLACK);
+                 drawCircle(pal.getPosition(), 0.4*rad, BLACK, WHITE);
+                 //ctx.setLineWidth(1);
+             } else {
+                 drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), Color.rgb(255,255,255, i * 1.0 / (listSize - 1)),Color.rgb(255,255,255, i * 1.0 / (listSize - 1)));
+             }
         }
-        Vector angulaire = new Vector(Math.cos(pal.getAngle()),Math.sin(pal.getAngle()));
-        //ctx.setLineWidth(5);
-        drawLine(pal.getPosition().add(angulaire.multiply(radius*0.4)),angulaire.multiply(radius).add(pal.getPosition()), BLACK);
-        //ctx.setLineWidth(1);
     }
 
     public void drawEnd() {
