@@ -86,6 +86,11 @@ public class Palet extends Circle {
 
                 resolveCollision(w);
                 speed = speed.reflection(w.getNormal(position));
+                /*Vector wallDir = w.getDirection().normalize();
+                if(wallDir.getOrthogonal().getY() < 0 || wallDir.getOrthogonal().getX() < 0){
+                    wallDir = wallDir.multiply(-1);
+                }
+                speed = speed.add(wallDir.multiply(angleSpeed*10));*/
                 speed = speed.multiply(0.94);
 
                 hasCollided = true;
