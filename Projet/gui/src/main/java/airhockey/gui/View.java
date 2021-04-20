@@ -50,6 +50,7 @@ public class View extends BorderPane {
 
     private boolean finished = false;
     private String endMessage = "";
+    private Color endColorMessage = WHITE;
     private int endCounter = 60;
 
     private boolean debugMode = false;
@@ -228,7 +229,7 @@ public class View extends BorderPane {
     }
 
     public void drawEnd() {
-        ctx.setFill(Color.WHITE);
+        ctx.setFill(endColorMessage);
         ctx.fillText(endMessage, currentWidth / 2, currentHeight / 2);
     }
 
@@ -240,8 +241,8 @@ public class View extends BorderPane {
         Pusher p1 = model.getBoard().getPushers()[numplayer];
         Pusher p2 = model.getBoard().getPushers()[1 - numplayer];
         drawPalet();
-        drawCircle(p1.getPosition(), p1.getRadius(), WHITE, bgColor);
-        drawCircle(p2.getPosition(), p2.getRadius(), Color.RED, bgColor);
+        drawCircle(p1.getPosition(), p1.getRadius(), Color.BLUE, Color.rgb(0,0,255,0.4));
+        drawCircle(p2.getPosition(), p2.getRadius(), Color.RED, Color.rgb(255, 0, 0, 0.4));
         for(Wall w : model.getBoard().getWalls()){
             drawWall(w, WHITE);
         }
@@ -355,8 +356,14 @@ public class View extends BorderPane {
 
     public void endGame() {
         finished = true;
-        if(model.hasWon(numplayer)) endMessage = "Congratulations! You won!";
-        else endMessage = "Bravo, you are the worst player in this game";
+        if(model.hasWon(numplayer)) {
+            endMessage = "Congratulations! You won!";
+            endColorMessage = Color.GREEN;
+        }
+        else {
+            endMessage = "Bravo, you are the worst player in this game";
+            endColorMessage = Color.RED;
+        }
         menu.closeClient();
     }
 
