@@ -159,12 +159,15 @@ public class Palet extends Circle {
 
     public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
         hasHit = false;
-        speed = speed.multiply(Math.pow(COEFF_FRICTION, dt));
+        double friction = Math.pow(COEFF_FRICTION, dt);
+        speed = speed.multiply(friction);
+        double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
         angleSpeed = angleSpeed*Math.pow(0.85, Math.sqrt(dt));
+        double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
         angle += angleSpeed*dt;
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
-        speed = speed.add(dir.getOrthogonal().multiply(angleSpeed*10*dt));
+        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*dt));
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
