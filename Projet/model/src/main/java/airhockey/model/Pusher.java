@@ -65,6 +65,9 @@ public class Pusher extends Circle implements Serializable {
             double angleSpeed = orthogonal.dotProduct(speed.sub(p.getSpeed()))*(-0.1);
             double coeffAngleSpeed = orthogonal.dotProduct(speed.sub(p.getSpeed()).normalize())*(-0.1);
             p.setAngleSpeed(p.getAngleSpeed()+angleSpeed);
+            if(Math.abs(p.getAngleSpeed()) > 50){
+                p.setAngleSpeed(50*p.getAngleSpeed()/Math.abs(p.getAngleSpeed()));
+            }
             p.setSpeed(normal.multiply(p.getSpeed().length()*(1 - Math.abs(coeffAngleSpeed))).add(speed));
             Circle newPaletPosition = new Circle(new Vector(p.getPosition().getX(), p.getPosition().getY()), p.getRadius());
             newPaletPosition.resolveCollision(this);

@@ -86,11 +86,11 @@ public class Palet extends Circle {
 
                 resolveCollision(w);
                 speed = speed.reflection(w.getNormal(position));
-                /*Vector wallDir = w.getDirection().normalize();
-                if(wallDir.getOrthogonal().getY() < 0 || wallDir.getOrthogonal().getX() < 0){
-                    wallDir = wallDir.multiply(-1);
-                }
-                speed = speed.add(wallDir.multiply(angleSpeed*10));*/
+                double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
+                angleSpeed *= 0.85;
+                double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
+                Vector wallDir = w.closestPoint(getPosition()).sub(getPosition()).normalize().getOrthogonal();
+                speed = speed.add(wallDir.multiply(-Math.sqrt(2*diffEnergy)*.5));
                 speed = speed.multiply(0.94);
 
                 hasCollided = true;
@@ -107,6 +107,9 @@ public class Palet extends Circle {
                 Vector orthogonal = normal.getOrthogonal();
                 double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
                 setAngleSpeed(getAngleSpeed()+angleSpeed);
+                if(Math.abs(angleSpeed) > 50){
+                    angleSpeed = 50*angleSpeed/Math.abs(angleSpeed);
+                }
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
                 if(speed.length() > MAX_SPEED) {
                     speed = speed.normalize().multiply(MAX_SPEED);
@@ -162,7 +165,7 @@ public class Palet extends Circle {
         double friction = Math.pow(COEFF_FRICTION, dt);
         speed = speed.multiply(friction);
         double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
-        angleSpeed = angleSpeed*Math.pow(0.85, Math.sqrt(dt));
+        angleSpeed *= Math.pow(0.85, Math.sqrt(dt));
         double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
         angle += angleSpeed*dt;
         Vector v = speed.multiply(dt);
