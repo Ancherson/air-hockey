@@ -170,7 +170,7 @@ public class Palet extends Circle {
         angle += angleSpeed*dt;
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
-        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*dt));
+        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*2*dt));
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
