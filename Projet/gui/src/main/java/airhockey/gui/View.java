@@ -377,6 +377,10 @@ public class View extends BorderPane {
                 long dt = now-lastUpdateTime;
                 if(!finished) model.update(dt/(1e9*1.0));
                 if(!finished && model.getBoard().getPalet().getHasHit()){
+                    new Thread(() -> {
+                        sound.setVolume("collisionRelax", (model.getBoard().getPalet().getSpeed().length()/dt)/1e-4);
+                        sound.play("collisionRelax");
+                    }).start();
                     createParticules();
                 }
                 if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){

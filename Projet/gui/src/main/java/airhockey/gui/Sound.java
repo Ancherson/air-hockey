@@ -55,5 +55,9 @@ public class Sound {
     public void reload(String name){
         playlist.get(name).seek((playlist.get(name).getStartTime()));
     }
+
+    public void setVolume(String name, double degree){
+        playlist.get(name).setVolume(degree);
+    }
     
 }
