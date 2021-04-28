@@ -11,16 +11,50 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+/**
+ * This class represents a room, a place that links two players
+ */
 public class Room {
+    /**
+     * id of the room
+     */
     private String id;
+    /**
+     * socket of the server
+     */
     private DatagramSocket serverSocket;
+    /**
+     * list of the clients port
+     */
     private ArrayList<Integer> clientPorts;
+    /**
+     * list of the client addresses
+     */
     private ArrayList<InetAddress> clientAddresses;
+    /**
+     * true if the room is full (2 players)
+     */
     private boolean full = false;
+    /**
+     * true if the room is public
+     */
     private boolean isPublic;
+    /**
+     * model of the game
+     */
     private Model model;
+    /**
+     * true the room is running
+     */
     private boolean isRunning = true;
 
+    /**
+     * Constructor of the rooms
+     * @param serverSocket socket of the server
+     * @param id id of the room
+     * @param isPublic public or not
+     * @throws SocketException
+     */
     public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
         this.id = id;
@@ -30,26 +64,49 @@ public class Room {
         this.model = new Model();
     }
 
+    /**
+     * get the id of the room
+     * @return the id of the room
+     */
     public String getId(){
         return id;
     }
 
+    /**
+     * get the isPublic of the room
+     * @return the isPublic of the oom
+     */
     public boolean isPublic() {
         return isPublic;
     }
 
+    /**
+     * get the full of the room
+     * @return the full of the room
+     */
     public boolean isFull() {
         return full;
     }
 
+    /**
+     * Function that joins a player to the this room
+     * @param port port of the client
+     * @param address address of the client
+     * @throws IOException
+     */
     public void join(int port, InetAddress address) throws IOException {
+        //IF THE ROOM IS FULL, SEND FULLROOM TO THE CLIENT
         if(clientPorts.size() == 2){
             byte[] buf = "fullRoom".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
             serverSocket.send(packet);
+            return;
         }
+        //ADD THE CLIENT TO THE ROOM
         clientPorts.add(port);
         clientAddresses.add(address);
+
+        //IF THE ROOM IS FULL, WE CAN START PLAYING
         if(clientPorts.size() == 2){
             full = true;
             byte[] buf = "start".getBytes();
@@ -59,6 +116,14 @@ public class Room {
         }
     }
 
+    /**
+     * Function that receive the message of the client
+     * @param ois message of the client
+     * @param port port of the client
+     * @param address address of the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void receive(ObjectInputStream ois, int port, InetAddress address) throws IOException, ClassNotFoundException {
         Pusher p = (Pusher)ois.readObject();
         boolean updatePalet = (boolean) ois.readObject();
@@ -73,6 +138,10 @@ public class Room {
         }
     }
 
+    /**
+     * Function that send the palet and the pusher to the clients
+     * @throws IOException
+     */
     public void sendPaletAndPushers() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -95,6 +164,9 @@ public class Room {
         serverSocket.send(packet2);
     }
 
+    /**
+     * This class is Thread that sends the model to the client
+     */
     public class Sender extends Thread {
         @Override
         public void run() {
@@ -119,6 +191,9 @@ public class Room {
         }
     }
 
+    /**
+     * Function that closes this room
+     */
     public void close() {
         isRunning = false;
     }
