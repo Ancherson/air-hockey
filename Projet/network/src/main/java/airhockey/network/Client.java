@@ -321,7 +321,7 @@ public class Client{
 
     /**
      * Function to get the numPlayer
-     * @return
+     * @return the numPlayer
      */
     public int getNumPlayer() {
         return numPlayer;

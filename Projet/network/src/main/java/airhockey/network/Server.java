@@ -4,14 +4,37 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ * This class is the Server, and manages all message received and all rooms
+ */
 public class Server extends Thread {
+    /**
+     * The port of the server
+     */
     public final static int PORT = 6666;
+    /**
+     * the name of the host
+     */
     public final static String HOSTNAME = "localhost";
+    /**
+     * Length of the rooms id
+     */
     public static int ID_LENGTH = 10;
 
+    /**
+     * List of the rooms
+     */
     private ArrayList<Room> rooms;
+    /**
+     * the socket of the server
+     */
     private DatagramSocket socket;
 
+    /**
+     * Construtor of the Server
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
     public Server() throws SocketException, UnknownHostException {
         rooms = new ArrayList<Room>();
         socket = new DatagramSocket(PORT, InetAddress.getByName(HOSTNAME));
@@ -19,7 +42,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
-        System.out.println("################### SERVEUR LANCE !!!! ###################");
+        System.out.println("################### SERVER RUNNING !!!! ###################");
         while(!socket.isClosed()) {
             try {
                 //RECEIVE PACKET
@@ -48,6 +71,13 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Function that create room
+     * @param port port of the client
+     * @param address address of the client
+     * @param isPublic boolean that says if the client wants a public room
+     * @throws IOException
+     */
     public void createRoom(int port, InetAddress address, boolean isPublic) throws IOException {
         //CREATE A RANDOM ID AND VERIFY THIS ID DOES NOT EXIST;
         String id = "";
@@ -69,6 +99,13 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
+    /**
+     * Function to join a room
+     * @param ois the rest of the client message
+     * @param port the port of the client
+     * @param address the addres of the client
+     * @throws IOException
+     */
     public void joinRoom(ObjectInputStream ois, int port, InetAddress address) throws IOException {
         String id = ois.readUTF();
         //IF THE ID EXIST THE CLIENT JOIN THE ROOM THAT HAS THIS ID AS ID
@@ -90,6 +127,15 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
+    /**
+     *
+     * @param ois this rest of the message
+     * @param id the id of the room which must receive the message
+     * @param port the port of the client
+     * @param address the address of the client
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void sendToRoom(ObjectInputStream ois, String id, int port, InetAddress address) throws IOException, ClassNotFoundException {
         for (Room room : rooms) {
             if (room.getId().equals(id)) {
@@ -109,6 +155,11 @@ public class Server extends Thread {
         socket.send(packet);
     }
 
+    /**
+     * Function to search if a room which has as id the id exists
+     * @param id id the new possible room
+     * @return if a room which has as id the id exist
+     */
     private boolean isIdExist(String id) {
         for (Room room : rooms) {
             if (room.getId().equals(id)) return true;
@@ -116,9 +167,19 @@ public class Server extends Thread {
         return false;
     }
 
+    /**
+     * Function to join a public room
+     * @param ois the rest of the message
+     * @param port the port of the client
+     * @param address the address of the client
+     * @throws IOException
+     */
     public void joinPublicRoom(ObjectInputStream ois,int port, InetAddress address) throws IOException {
+        //FIRST WE SEARCH IF A PUBLIC ROOM IS WAITING A PLAYER
         Room room = getPublicRoom();
         System.out.println(room);
+
+        //IF A PUBLIC ROOM EXISTS THE PLAYER CAN JOIN THIS ROOM
         if(room != null) {
             byte[] buf = "1".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
@@ -129,7 +190,9 @@ public class Server extends Thread {
             socket.send(packet);
 
             room.join(port,address);
-        } else {
+        }
+        //IF NO ROOM EXISTS, HE CAN CREATE ONE
+        else {
             byte[] buf = "0".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
             socket.send(packet);
@@ -138,6 +201,10 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Function that search a public room which is not full
+     * @return the first public room which is not full
+     */
     private Room getPublicRoom() {
         for (Room room : rooms) {
             if (room.isPublic() && !room.isFull()) {
@@ -147,6 +214,11 @@ public class Server extends Thread {
         return null;
     }
 
+    /**
+     * Close the room
+     * @param ois the rest of the message
+     * @throws IOException
+     */
     private void close(ObjectInputStream ois) throws IOException {
         String id = ois.readUTF();
         ois.close();
