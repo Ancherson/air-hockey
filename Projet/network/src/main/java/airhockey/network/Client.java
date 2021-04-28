@@ -16,6 +16,7 @@ public class Client{
     private DatagramSocket socket;
     private Model model;
     private int numPlayer;
+    private static String serverHostname = "localhost";
 
 
     private Consumer<Runnable> runLater;
@@ -32,6 +33,10 @@ public class Client{
         this.lostConnexion = lostConnexion;
     }
 
+    public static void setHostname(String hostname) {
+        Client.serverHostname = hostname;
+    }
+
     public void createRoom() throws IOException {
         numPlayer = 0;
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -39,7 +44,7 @@ public class Client{
         oo.writeUTF("creer");
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         byte[] idBuff = new byte[Server.ID_LENGTH];
@@ -72,7 +77,7 @@ public class Client{
         oo.writeUTF(id);
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         byte[] buff = new byte[8];
@@ -95,7 +100,7 @@ public class Client{
         oo.writeUTF("public");
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         byte[] msg = new byte[1];
@@ -141,7 +146,7 @@ public class Client{
         oo.writeObject(false);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
     }
 
@@ -154,7 +159,7 @@ public class Client{
         oo.writeObject(model.getBoard().getPalet());
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
     }
 
@@ -234,7 +239,7 @@ public class Client{
                 oo.writeUTF(id);
                 oo.close();
                 byte[] message = bStream.toByteArray();
-                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
                 socket.send(packet);
             }
             socket.close();

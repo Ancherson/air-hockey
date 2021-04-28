@@ -6,15 +6,16 @@ import java.util.ArrayList;
 
 public class Server extends Thread {
     public final static int PORT = 6666;
-    public final static String HOSTNAME = "localhost";
+    private final String hostname;
     public static int ID_LENGTH = 10;
 
     private ArrayList<Room> rooms;
     private DatagramSocket socket;
 
-    public Server() throws SocketException, UnknownHostException {
+    public Server(String hostname) throws SocketException, UnknownHostException {
+        this.hostname = hostname;
         rooms = new ArrayList<Room>();
-        socket = new DatagramSocket(PORT, InetAddress.getByName(HOSTNAME));
+        socket = new DatagramSocket(PORT, InetAddress.getByName(hostname));
     }
 
     @Override
@@ -161,6 +162,14 @@ public class Server extends Thread {
     }
 
     public static void main(String[]args) throws SocketException, UnknownHostException {
-        new Server().start();
+        if(args.length > 1) {
+            System.out.println("Too much arguments");
+            System.exit(0);
+        }
+        String name = "localhost";
+        if(args.length == 1) {
+            name = args[0];
+        }
+        new Server(name).start();
     }
 }
