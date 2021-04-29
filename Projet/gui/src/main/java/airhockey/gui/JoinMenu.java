@@ -14,6 +14,7 @@ import static javafx.scene.paint.Color.BLACK;
 public class JoinMenu extends BorderPane {
 
     private Sound sound;
+    private Label joinT;
 
     public JoinMenu(MenuClient menu){
 
@@ -23,7 +24,7 @@ public class JoinMenu extends BorderPane {
 
         sound = new Sound();
 
-        Label joinT = new Label("Enter the id");
+        joinT = new Label("Enter the id");
         TextField id = new TextField();
         ClickButton back = new ClickButton("Back");
 
@@ -61,6 +62,10 @@ public class JoinMenu extends BorderPane {
 
         this.setAlignment(back,Pos.BOTTOM_RIGHT);
         this.setBottom(back);
+    }
+
+    public void setMessage(String message) {
+        joinT.setText(message);
     }
 
 }

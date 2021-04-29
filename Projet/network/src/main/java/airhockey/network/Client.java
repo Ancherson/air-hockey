@@ -23,7 +23,17 @@ public class Client{
     private Consumer<String> setID;
     private Runnable connect;
     private Runnable lostConnexion;
+    private Consumer<String> setJoinMessage;
 
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion, Consumer<String> setJoinMessage) throws SocketException {
+        socket = new DatagramSocket();
+        model = m;
+        this.runLater = runlater;
+        this.setID = setID;
+        this.connect = connect;
+        this.lostConnexion = lostConnexion;
+        this.setJoinMessage = setJoinMessage;
+    }
     public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion) throws SocketException {
         socket = new DatagramSocket();
         model = m;
@@ -69,7 +79,7 @@ public class Client{
         }
     }
 
-    public void joinRoom(String id) throws IOException {
+    public boolean joinRoom(String id) throws IOException {
         numPlayer = 1;
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -88,10 +98,19 @@ public class Client{
             case "yesRoom ":
                 this.id = id;
                 startGame();
-                break;
-
-            //TODO HANDLE noRoom AND fullRoom
+                return true;
+            case "noRoom  ":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("Wrong ID room, no room");
+                });
+                return false;
+            case "fullRoom":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("This room is already full");
+                });
+                return false;
         }
+        return false;
     }
 
     public void joinRoomPublic() throws IOException {

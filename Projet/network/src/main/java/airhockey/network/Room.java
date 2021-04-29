@@ -47,6 +47,7 @@ public class Room {
             byte[] buf = "fullRoom".getBytes();
             DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
             serverSocket.send(packet);
+            return;
         }
         clientPorts.add(port);
         clientAddresses.add(address);
