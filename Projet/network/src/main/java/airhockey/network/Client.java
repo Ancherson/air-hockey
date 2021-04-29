@@ -22,14 +22,16 @@ public class Client{
     private Consumer<String> setID;
     private Runnable connect;
     private Runnable lostConnexion;
+    private Consumer<String> setJoinMessage;
 
-    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion) throws SocketException {
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion, Consumer<String> setJoinMessage) throws SocketException {
         socket = new DatagramSocket();
         model = m;
         this.runLater = runlater;
         this.setID = setID;
         this.connect = connect;
         this.lostConnexion = lostConnexion;
+        this.setJoinMessage = setJoinMessage;
     }
 
     public void createRoom() throws IOException {
@@ -84,8 +86,15 @@ public class Client{
                 this.id = id;
                 startGame();
                 break;
-
-            //TODO HANDLE noRoom AND fullRoom
+            case "noRoom  ":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("Wrong ID room, no room");
+                });
+                break;
+            case "fullRoom":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("This room is already full");
+                });
         }
     }
 
