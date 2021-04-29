@@ -243,8 +243,8 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                    //System.out.println("Socket Closed !");
+                   // e.printStackTrace();
+                    System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }

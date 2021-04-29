@@ -14,6 +14,7 @@ public class Model {
     private HashMap<Vector, Vector> DEBUG_LINES = new HashMap<>();
 
     private int counter = 0;
+    private int maxCount = 30;
 
     public Model() {
         board = new Board();
@@ -58,6 +59,10 @@ public class Model {
         return DEBUG_LINES;
     }
 
+    public void setMaxCount(int maxCount) {
+        this.maxCount = maxCount;
+    }
+
     public void update(double dt){
         for(Player p : players){
             if(p instanceof Bot) {
@@ -67,7 +72,7 @@ public class Model {
         board.update(dt);
         if(board.getPalet().getScoredGoal() != -1){
             counter++;
-            if(counter > 30) reset();
+            if(counter > maxCount) reset();
         }else {
             counter = 0;
         }

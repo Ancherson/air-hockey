@@ -62,6 +62,8 @@ public class View extends BorderPane {
         this.numplayer = numplayer;
         this.training = training;
 
+        if(!training) model.setMaxCount(100);
+
         particles = new ParticleManager();
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
         canvas = new Canvas(WIDTH,HEIGHT);
@@ -385,7 +387,7 @@ public class View extends BorderPane {
                     }).start();
                     createParticules();
                 }
-                if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                if(model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
                     explosion();
                 }
                 shaking();
