@@ -211,7 +211,7 @@ public class MenuClient extends Application {
 
     public void joinPublicRoom() {
         try {
-            client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion, joinMenu::setMessage);
+            client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion);
             client.joinRoomPublic();
             Platform.runLater(() -> {
                 System.out.println(client.getNumPlayer());
@@ -222,6 +222,10 @@ public class MenuClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isFinished() {
+        return client.isFinished();
     }
 
     public void endRoom(boolean won){

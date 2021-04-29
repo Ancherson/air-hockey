@@ -78,6 +78,7 @@ public class Room {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeBoolean(true);
+        oo.writeBoolean(model.isFinished());
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
         oo.writeInt(model.getScore(0));

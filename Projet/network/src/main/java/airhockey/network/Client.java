@@ -17,6 +17,7 @@ public class Client{
     private Model model;
     private int numPlayer;
     private static String serverHostname = "localhost";
+    private boolean isFinished = false;
 
 
     private Consumer<Runnable> runLater;
@@ -192,6 +193,7 @@ public class Client{
             runLater.accept(lostConnexion);
             return;
         }
+        isFinished = ois.readBoolean();
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         int score1 = ois.readInt();
@@ -241,7 +243,8 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
-                    System.out.println("Socket Closed !");
+                    e.printStackTrace();
+                    //System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -263,6 +266,10 @@ public class Client{
             }
             socket.close();
         }
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 
     public int getNumPlayer() {
