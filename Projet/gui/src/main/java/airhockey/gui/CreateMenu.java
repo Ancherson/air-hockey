@@ -25,9 +25,9 @@ public class CreateMenu extends BorderPane {
     public CreateMenu(MenuClient menu) {
 
         sound = new Sound();
-        copied = new Label ("Copied !");
+        copied = new Label ("Click on the ID !");
         copied.setTextFill(WHITE);
-        copied.setVisible(false);
+        copied.setVisible(true);
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
@@ -47,8 +47,10 @@ public class CreateMenu extends BorderPane {
             content.putString(idRoom);
             clipboard.setContent(content);
             switch (num){
+                case 0: copied.setText("Copied");
+                    break;
                 case 1: copied.setText("Double copy!");
-                break;
+                    break;
                 case 2: copied.setText("Triple copy!");
                     break;
                 case 3: copied.setText("Killing spree!");
@@ -58,6 +60,9 @@ public class CreateMenu extends BorderPane {
                 case 5: copied.setText("On fire !");
                     copied.setTextFill(RED);
                     break;
+                case 9:
+                    num = 0;
+                    copied.setTextFill(WHITE);
                 default :
                     break;
             }
