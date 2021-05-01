@@ -20,6 +20,7 @@ public class Room {
     private boolean isPublic;
     private Model model;
     private boolean isRunning = true;
+    private boolean isClosing = false;
 
     public Room(DatagramSocket serverSocket, String id, boolean isPublic) throws SocketException {
         this.serverSocket = serverSocket;
@@ -34,12 +35,20 @@ public class Room {
         return id;
     }
 
+    public Model getModel() {
+        return model;
+    }
+
     public boolean isPublic() {
         return isPublic;
     }
 
     public boolean isFull() {
         return full;
+    }
+
+    public boolean isClosing() {
+        return isClosing;
     }
 
     public void join(int port, InetAddress address) throws IOException {
@@ -78,6 +87,7 @@ public class Room {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeBoolean(true);
+        oo.writeBoolean(model.isFinished());
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
         oo.writeInt(model.getScore(0));
@@ -118,6 +128,10 @@ public class Room {
                 }
             }
         }
+    }
+
+    public void endGame() {
+        isClosing = true;
     }
 
     public void close() {

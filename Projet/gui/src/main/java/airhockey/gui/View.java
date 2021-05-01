@@ -38,6 +38,7 @@ public class View extends BorderPane {
     private double lastDragTime;
     private Model model;
     private int numplayer;
+    private boolean training;
     private Camera camera;
     private int shake;
     private Animation animation;
@@ -59,6 +60,9 @@ public class View extends BorderPane {
         this.model = model;
         this.menu = menu;
         this.numplayer = numplayer;
+        this.training = training;
+
+        if(!training) model.setMaxCount(100);
 
         particles = new ParticleManager();
         camera = new Camera(new Vector(model.getBoard().getWIDTH()/2, model.getBoard().getHEIGHT()/2), 1, true);
@@ -383,13 +387,13 @@ public class View extends BorderPane {
                     }).start();
                     createParticules();
                 }
-                if(!finished && model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
+                if(model.getBoard().getPalet().getScoredGoal() != -1 && model.getCounter() == 1){
                     explosion();
                 }
                 shaking();
                 particles.update(dt/(1e9*1.0));
                 draw();
-                if(model.isFinished()) {
+                if((training && model.isFinished()) || (!training && menu.isFinished())) {
                     endGame();
                 }
                 lastUpdateTime = now;
