@@ -15,6 +15,8 @@ cd air-hockey/Projet
 ```
 ### Run
 
+####To test on the same machine
+
 To run the server :
 ```
 ./gradlew runServer
@@ -23,4 +25,13 @@ To run the client :
 ```
 ./gradlew run
 ```
+####To test with different machines
+To run the server :
+```
+./gradlew runServer --args='IPv4 of the machine'
+```
+To run the client on a different machine :
 
+```
+./gradlew run --args='IPv4 of the machine that runs the server'
+```

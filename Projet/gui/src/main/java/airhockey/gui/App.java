@@ -3,6 +3,8 @@
  */
 package airhockey.gui;
 
+import airhockey.network.Client;
+
 public class App {
     private final int WIDTH = 800;
     private final int HEIGHT = 500;
@@ -11,6 +13,13 @@ public class App {
     }
 
     public static void main(String[] args){
+        if(args.length > 1) {
+            System.out.println("Too much arguments");
+            System.exit(0);
+        }
+        if(args.length == 1) {
+            Client.setHostname(args[0]);
+        }
         MenuClient.launch(MenuClient.class, args);
     }
 }

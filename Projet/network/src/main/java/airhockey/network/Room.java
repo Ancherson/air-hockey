@@ -47,6 +47,7 @@ public class Room {
      * true the room is running
      */
     private boolean isRunning = true;
+    private boolean isClosing = false;
 
     /**
      * Constructor of the rooms
@@ -72,6 +73,11 @@ public class Room {
         return id;
     }
 
+
+    public Model getModel() {
+        return model;
+    }
+
     /**
      * get the isPublic of the room
      * @return the isPublic of the oom
@@ -86,6 +92,10 @@ public class Room {
      */
     public boolean isFull() {
         return full;
+    }
+
+    public boolean isClosing() {
+        return isClosing;
     }
 
     /**
@@ -146,6 +156,7 @@ public class Room {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeBoolean(true);
+        oo.writeBoolean(model.isFinished());
         oo.writeObject(model.getBoard().getPushers());
         oo.writeObject(model.getBoard().getPalet());
         oo.writeInt(model.getScore(0));
@@ -189,6 +200,10 @@ public class Room {
                 }
             }
         }
+    }
+
+    public void endGame() {
+        isClosing = true;
     }
 
     /**

@@ -198,9 +198,10 @@ public class MenuClient extends Application {
 
     public void joinRoom(String id) {
         try {
-            client = new Client(model, Platform::runLater, create::setID,waiting::connected,this::lostConnexion);
-            client.joinRoom(id);
-            setView(1, false);
+            client = new Client(model, Platform::runLater, create::setID,waiting::connected,this::lostConnexion, joinMenu::setMessage);
+            if(client.joinRoom(id)) {
+                setView(1, false);
+            }
         } catch (SocketException e) {
             System.out.println("Socket closed");
         } catch (IOException e) {
@@ -221,6 +222,10 @@ public class MenuClient extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isFinished() {
+        return client.isFinished();
     }
 
     public void endRoom(boolean won){

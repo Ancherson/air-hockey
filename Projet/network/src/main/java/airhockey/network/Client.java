@@ -33,6 +33,8 @@ public class Client{
      * if you are player 0 or player 1 (left 0/right 1 on the board)
      */
     private int numPlayer;
+    private static String serverHostname = "localhost";
+    private boolean isFinished = false;
 
     /**
      * Functions of the gui
@@ -41,6 +43,17 @@ public class Client{
     private Consumer<String> setID;
     private Runnable connect;
     private Runnable lostConnexion;
+    private Consumer<String> setJoinMessage;
+
+    public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion, Consumer<String> setJoinMessage) throws SocketException {
+        socket = new DatagramSocket();
+        model = m;
+        this.runLater = runlater;
+        this.setID = setID;
+        this.connect = connect;
+        this.lostConnexion = lostConnexion;
+        this.setJoinMessage = setJoinMessage;
+    }
 
     /**
      * Constuctor of a Client
@@ -60,6 +73,10 @@ public class Client{
         this.lostConnexion = lostConnexion;
     }
 
+    public static void setHostname(String hostname) {
+        Client.serverHostname = hostname;
+    }
+
     /**
      * Function to create a room
      * @throws IOException
@@ -72,7 +89,7 @@ public class Client{
         oo.writeUTF("creer");
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         //WE RECUPE TE ID OF THE ROOM
@@ -97,13 +114,13 @@ public class Client{
             startGame();
         }
     }
-
     /**
      * Function to join a room
      * @param id the id of the room
      * @throws IOException
+     * @return if join pass correctly
      */
-    public void joinRoom(String id) throws IOException {
+    public boolean joinRoom(String id) throws IOException {
         //WE SEND A MESSAGE THAT SAYS WE WANT TO JOIN A ROOM
         numPlayer = 1;
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -112,7 +129,7 @@ public class Client{
         oo.writeUTF(id);
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         //WE WAIT A RESPONSE OF THE SERVER
@@ -126,10 +143,19 @@ public class Client{
             case "yesRoom ":
                 this.id = id;
                 startGame();
-                break;
-
-            //TODO HANDLE noRoom AND fullRoom
+                return true;
+            case "noRoom  ":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("Wrong ID room, no room");
+                });
+                return false;
+            case "fullRoom":
+                this.runLater.accept(() -> {
+                    this.setJoinMessage.accept("This room is already full");
+                });
+                return false;
         }
+        return false;
     }
 
     /**
@@ -143,7 +169,7 @@ public class Client{
         oo.writeUTF("public");
         oo.close();
         byte[] message = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
         //WE RECUPE A MESSAGE THAT SAYS IF WE ARE THE FIRST OR THE SECOND PLAYER OF THE ROOM
@@ -200,7 +226,7 @@ public class Client{
         oo.writeObject(false);
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
     }
 
@@ -217,7 +243,7 @@ public class Client{
         oo.writeObject(model.getBoard().getPalet());
         oo.close();
         byte[] pusherSerialized = bStream.toByteArray();
-        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+        DatagramPacket packet = new DatagramPacket(pusherSerialized, pusherSerialized.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
     }
 
@@ -236,6 +262,7 @@ public class Client{
             runLater.accept(lostConnexion);
             return;
         }
+        isFinished = ois.readBoolean();
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         int score1 = ois.readInt();
@@ -291,6 +318,7 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
+                   // e.printStackTrace();
                     System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -312,11 +340,15 @@ public class Client{
                 oo.writeUTF(id);
                 oo.close();
                 byte[] message = bStream.toByteArray();
-                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(Server.HOSTNAME), Server.PORT);
+                DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
                 socket.send(packet);
             }
             socket.close();
         }
+    }
+
+    public boolean isFinished() {
+        return isFinished;
     }
 
     /**

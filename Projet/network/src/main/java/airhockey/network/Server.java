@@ -16,6 +16,9 @@ public class Server extends Thread {
      * the name of the host
      */
     public final static String HOSTNAME = "localhost";
+
+    private final String hostname;
+
     /**
      * Length of the rooms id
      */
@@ -35,9 +38,10 @@ public class Server extends Thread {
      * @throws SocketException
      * @throws UnknownHostException
      */
-    public Server() throws SocketException, UnknownHostException {
+    public Server(String hostname) throws SocketException, UnknownHostException {
+        this.hostname = hostname;
         rooms = new ArrayList<Room>();
-        socket = new DatagramSocket(PORT, InetAddress.getByName(HOSTNAME));
+        socket = new DatagramSocket(PORT, InetAddress.getByName(hostname));
     }
 
     @Override
@@ -225,14 +229,26 @@ public class Server extends Thread {
         for(int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
             if(room.getId().equals(id)) {
-                room.close();
-                rooms.remove(i);
+                if(room.getModel().isFinished() && !room.isClosing()) {
+                    room.endGame();
+                }else {
+                    room.close();
+                    rooms.remove(i);
+                }
                 return;
             }
         }
     }
 
     public static void main(String[]args) throws SocketException, UnknownHostException {
-        new Server().start();
+        if(args.length > 1) {
+            System.out.println("Too much arguments");
+            System.exit(0);
+        }
+        String name = "localhost";
+        if(args.length == 1) {
+            name = args[0];
+        }
+        new Server(name).start();
     }
 }
