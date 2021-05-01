@@ -63,6 +63,8 @@ public class CreateMenu extends BorderPane {
                 case 9:
                     num = 0;
                     copied.setTextFill(WHITE);
+                    copied.setText("Click on the ID !");
+                    copied.setVisible(true);
                 default :
                     break;
             }
@@ -70,8 +72,11 @@ public class CreateMenu extends BorderPane {
             PauseTransition visiblePause = new PauseTransition(
                     Duration.seconds(1.5)
             );
-            visiblePause.setOnFinished(
-                    event -> copied.setVisible(false)
+            visiblePause.setOnFinished(event -> {
+                    if (!copied.getText().equals("Click on the ID !")) {
+                        copied.setVisible(false);
+                    }
+                }
             );
             visiblePause.play();
             num++;
