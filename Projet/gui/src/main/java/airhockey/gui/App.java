@@ -6,12 +6,27 @@ package airhockey.gui;
 import airhockey.network.Client;
 
 public class App {
+    /**
+     * The width of the app initialized at 800
+     */
     private final int WIDTH = 800;
+
+    /**
+     * The height of the app initialized at 500
+     */
     private final int HEIGHT = 500;
+
+    /**
+     * @return String
+     */
     public String getGreeting() {
         return "Hello World!";
     }
 
+    /**
+     * Main of our project
+     * @param args an array of String written in the terminal
+     */
     public static void main(String[] args){
         if(args.length > 1) {
             System.out.println("Too much arguments");
