@@ -47,6 +47,9 @@ public class Room {
      * true the room is running
      */
     private boolean isRunning = true;
+    /**
+     * if the room is closing
+     */
     private boolean isClosing = false;
 
     /**
@@ -73,7 +76,10 @@ public class Room {
         return id;
     }
 
-
+    /**
+     * return the model
+     * @return the model
+     */
     public Model getModel() {
         return model;
     }
@@ -94,6 +100,10 @@ public class Room {
         return full;
     }
 
+    /**
+     * Return if the room is closing
+     * @return if the room is closing
+     */
     public boolean isClosing() {
         return isClosing;
     }
@@ -202,6 +212,9 @@ public class Room {
         }
     }
 
+    /**
+     * Function to close a room when the game is finished
+     */
     public void endGame() {
         isClosing = true;
     }
