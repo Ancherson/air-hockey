@@ -15,8 +15,6 @@ public class Server extends Thread {
     /**
      * the name of the host
      */
-    public final static String HOSTNAME = "localhost";
-
     private final String hostname;
 
     /**
@@ -35,6 +33,7 @@ public class Server extends Thread {
 
     /**
      * Construtor of the Server
+     * @param hostname name of the host
      * @throws SocketException
      * @throws UnknownHostException
      */

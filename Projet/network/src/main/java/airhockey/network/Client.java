@@ -33,7 +33,14 @@ public class Client{
      * if you are player 0 or player 1 (left 0/right 1 on the board)
      */
     private int numPlayer;
+    /**
+     * Hostname of the server
+     */
     private static String serverHostname = "localhost";
+
+    /**
+     * if the game is finished
+     */
     private boolean isFinished = false;
 
     /**
@@ -45,6 +52,17 @@ public class Client{
     private Runnable lostConnexion;
     private Consumer<String> setJoinMessage;
 
+    /**
+     *
+     * Constuctor of a Client
+     * @param m the model of the gamr
+     * @param runlater function Platform.runLater(Runnable) of javafx
+     * @param setID function to change the ID on the CreateMenu
+     * @param connect function to change the message on the PublicWait menu
+     * @param lostConnexion function to print that the connexion is lost (the other player is gone)
+     * @param setJoinMessage function to set the message in the join room
+     * @throws SocketException
+     */
     public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion, Consumer<String> setJoinMessage) throws SocketException {
         socket = new DatagramSocket();
         model = m;
@@ -73,6 +91,10 @@ public class Client{
         this.lostConnexion = lostConnexion;
     }
 
+    /**
+     * set the hostname
+     * @param hostname
+     */
     public static void setHostname(String hostname) {
         Client.serverHostname = hostname;
     }
@@ -347,6 +369,10 @@ public class Client{
         }
     }
 
+    /**
+     * return if the game is finished
+     * @return
+     */
     public boolean isFinished() {
         return isFinished;
     }
