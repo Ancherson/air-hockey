@@ -25,23 +25,51 @@ public class CreateMenu extends BorderPane {
     public CreateMenu(MenuClient menu) {
 
         sound = new Sound();
-        copied = new Label ("Click on the ID !");
-        copied.setTextFill(WHITE);
-        copied.setVisible(true);
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
 
         creation = new Label("CREATION OF THE ROOM");
+        creation.setPrefHeight(50);
+        creation.setStyle("-fx-font : 28 Ubuntu;");
+        creation.setTextFill(LIGHTGRAY);
         ClickButton back = new ClickButton("Back");
+
+        copied = new Label ();
+        copied.setTextFill(WHITE);
+        copied.setVisible(true);
+
+        back.setMaxSize(100, 60);
+        back.setPrefSize(60, 50);
+
+        back.setOnAction(value -> {
+            sound.play("buttonsRelax");
+            menu.setScene("first");
+            menu.closeClient();
+        });
+
+        VBox box = new VBox(0,creation,copied);
+        box.setAlignment(Pos.CENTER);
+        this.setCenter(box);
+        this.setAlignment(box, Pos.CENTER);
+
+        this.setBottom(back);
+        this.setAlignment(back,Pos.BASELINE_RIGHT);
+
+        this.setPadding(new Insets(30,50,50,50));
+
+    }
+
+    public void setID(String id){
+        creation.setText(id);
+        idRoom = id;
+
+        copied.setText("Click on the ID !");
 
         Clipboard clipboard = Clipboard.getSystemClipboard();
 
         ClipboardContent content = new ClipboardContent();
 
-        creation.setPrefHeight(50);
-        creation.setStyle("-fx-font : 28 Ubuntu;");
-        creation.setTextFill(LIGHTGRAY);
 
         creation.setOnMouseClicked((ActionEvent) -> {
             content.putString(idRoom);
@@ -73,39 +101,14 @@ public class CreateMenu extends BorderPane {
                     Duration.seconds(1.5)
             );
             visiblePause.setOnFinished(event -> {
-                    if (!copied.getText().equals("Click on the ID !")) {
-                        copied.setVisible(false);
+                        if (!copied.getText().equals("Click on the ID !")) {
+                            copied.setVisible(false);
+                        }
                     }
-                }
             );
             visiblePause.play();
             num++;
         } );
-
-        back.setMaxSize(100, 60);
-        back.setPrefSize(60, 50);
-
-        back.setOnAction(value -> {
-            sound.play("buttonsRelax");
-            menu.setScene("first");
-            menu.closeClient();
-        });
-
-        VBox box = new VBox(0,creation,copied);
-        box.setAlignment(Pos.CENTER);
-        this.setCenter(box);
-        this.setAlignment(box, Pos.CENTER);
-
-        this.setBottom(back);
-        this.setAlignment(back,Pos.BASELINE_RIGHT);
-
-        this.setPadding(new Insets(30,50,50,50));
-
-    }
-
-    public void setID(String id){
-        creation.setText(id);
-        idRoom = id;
     }
 
 
