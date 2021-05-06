@@ -35,7 +35,6 @@ public class MenuClient extends Application {
     private Scene join;
     private Scene wait;
     private Scene game;
-    private Scene last;
 
     private Window window;
     private Model model = new Model();
@@ -51,10 +50,9 @@ public class MenuClient extends Application {
     /**
      * Function equivalent to the constructor. It launches the Javafx Thread
      * @param primaryStage The stage that will contain every elements of the GUI
-     * @throws Exception an exception is thrown because when you launch a Thread you can have multiples different errors
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         window = (Window) primaryStage;
 
@@ -157,13 +155,6 @@ public class MenuClient extends Application {
                 primaryStage.setMinHeight(330);
                 primaryStage.setMinWidth(400);
                 primaryStage.setScene(game);
-                break;
-            case "last":
-                window.setHeight(primaryStage.getHeight());
-                window.setWidth(primaryStage.getWidth());
-                primaryStage.setScene(last);
-                primaryStage.setMinHeight(330);
-                primaryStage.setMinWidth(400);
                 break;
         }
     }
