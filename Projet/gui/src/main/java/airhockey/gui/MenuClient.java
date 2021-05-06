@@ -279,13 +279,6 @@ public class MenuClient extends Application {
         return client.isFinished();
     }
 
-    public void endRoom(boolean won){
-        close();
-        EndMenu end = new EndMenu(this, won);
-        last = new Scene(end);
-        setScene("last");
-    }
-
     /**
      * Function that launch the function lostConnexion of View
      */
