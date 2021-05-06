@@ -11,11 +11,19 @@ import javafx.scene.layout.VBox;
 import static javafx.scene.paint.Color.WHITE;
 import static javafx.scene.paint.Color.BLACK;
 
+/**
+ * This class the page shown when you try to join a room in the GUI
+ */
+
 public class JoinMenu extends BorderPane {
 
     private Sound sound;
     private Label joinT;
 
+    /**
+     *  Constructor of the page JoinMenu
+     * @param menu is the main Pane of the gui that allows to navigate to different page
+     */
     public JoinMenu(MenuClient menu){
 
         this.setWidth(800);
@@ -64,6 +72,11 @@ public class JoinMenu extends BorderPane {
         this.setBottom(back);
     }
 
+    /**
+     * Function that set the message of the Label that allows to show different message
+     * like room full, bad ID and so on
+     * @param message String that will be shown in the Label
+     */
     public void setMessage(String message) {
         joinT.setText(message);
     }
