@@ -158,7 +158,7 @@ public class Board {
     }
 
     /**
-     * Updates the position of the palet and the two pushers relating to the time dt
+     * Updates the position of the palet relating to the time dt
      * @param dt double of the time
      */
     public void update(double dt){
