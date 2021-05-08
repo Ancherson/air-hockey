@@ -154,8 +154,6 @@ public class Room {
         ois.close();
         int iClient = (port == clientPorts.get(0) && address.equals(clientAddresses.get(0))) ? 0 : 1;
         model.getBoard().getPushers()[iClient] = p;
-        if (updatePalet){
-        }
     }
 
     /**
@@ -171,7 +169,6 @@ public class Room {
         oo.writeObject(model.getBoard().getPalet());
         oo.writeInt(model.getScore(0));
         oo.writeInt(model.getScore(1));
-        oo.writeLong(System.nanoTime());
         oo.close();
         byte[] objectSerialized = bStream.toByteArray();
         int port = clientPorts.get(0);
