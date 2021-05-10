@@ -4,6 +4,12 @@
 package airhockey.gui;
 
 import airhockey.network.Client;
+import airhockey.network.Server;
+
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class App {
     private final int WIDTH = 800;
@@ -18,6 +24,21 @@ public class App {
             System.exit(0);
         }
         if(args.length == 1) {
+            try {
+                InetAddress add = InetAddress.getByName(args[0]);
+                try {
+                    if(!add.isReachable(5000)) {
+                        System.out.println("This host is not reachable");
+                        System.exit(0);
+                    }
+                } catch (IOException e) {
+                    System.out.println("This host is not reachable");
+                    System.exit(0);
+                }
+            }catch (UnknownHostException e) {
+                System.out.println("This host doesn't not exist");
+                System.exit(0);
+            }
             Client.setHostname(args[0]);
         }
         MenuClient.launch(MenuClient.class, args);

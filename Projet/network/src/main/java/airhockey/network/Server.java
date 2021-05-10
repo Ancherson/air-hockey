@@ -173,6 +173,21 @@ public class Server extends Thread {
         String name = "localhost";
         if(args.length == 1) {
             name = args[0];
+            try {
+                InetAddress add = InetAddress.getByName(name);
+                try {
+                    if(!add.isReachable(5000)) {
+                        System.out.println("This host is not reachable");
+                        System.exit(0);
+                    }
+                } catch (IOException e) {
+                    System.out.println("This host is not reachable");
+                    System.exit(0);
+                }
+            }catch (UnknownHostException e) {
+                System.out.println("This host doesn't not exist");
+                System.exit(0);
+            }
         }
         new Server(name).start();
     }
