@@ -7,6 +7,7 @@ public class Palet extends Circle {
     private final int MAX_SPEED = 1000;
     private Vector speed;
     private final static double COEFF_FRICTION = 0.92;
+    private final static double MAX_ANGLE_SPEED = 500;
     private int scoredGoal = -1;
     private boolean hasHit;
     private Vector hitPosition;
@@ -107,8 +108,8 @@ public class Palet extends Circle {
                 Vector orthogonal = normal.getOrthogonal();
                 double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
                 setAngleSpeed(getAngleSpeed()+angleSpeed);
-                if(Math.abs(angleSpeed) > 50){
-                    angleSpeed = 50*angleSpeed/Math.abs(angleSpeed);
+                if(Math.abs(this.angleSpeed) > MAX_ANGLE_SPEED){
+                    this.angleSpeed = MAX_ANGLE_SPEED*this.angleSpeed/Math.abs(this.angleSpeed);
                 }
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
                 if(speed.length() > MAX_SPEED) {
@@ -170,7 +171,7 @@ public class Palet extends Circle {
         angle += angleSpeed*dt;
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
-        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*2*dt));
+        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(6*diffEnergy)*2*dt));
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
