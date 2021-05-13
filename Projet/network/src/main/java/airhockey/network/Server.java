@@ -174,18 +174,16 @@ public class Server extends Thread {
         if(args.length == 1) {
             name = args[0];
             try {
-                InetAddress add = InetAddress.getByName(name);
+                InetAddress add = InetAddress.getByName(args[0]);
                 try {
-                    if(!add.isReachable(5000)) {
-                        System.out.println("This host is not reachable");
-                        System.exit(0);
-                    }
-                } catch (IOException e) {
-                    System.out.println("This host is not reachable");
+                    DatagramSocket test = new DatagramSocket(6666,add);
+                    test.close();
+                } catch (SocketException e) {
+                    System.out.println("Can not connect with this hostname");
                     System.exit(0);
                 }
-            }catch (UnknownHostException e) {
-                System.out.println("This host doesn't not exist");
+            }catch(UnknownHostException e) {
+                System.out.println("This hostname doesn't exist !");
                 System.exit(0);
             }
         }

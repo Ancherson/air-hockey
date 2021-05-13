@@ -9,6 +9,7 @@ import airhockey.network.Server;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class App {
@@ -27,16 +28,14 @@ public class App {
             try {
                 InetAddress add = InetAddress.getByName(args[0]);
                 try {
-                    if(!add.isReachable(5000)) {
-                        System.out.println("This host is not reachable");
-                        System.exit(0);
-                    }
-                } catch (IOException e) {
-                    System.out.println("This host is not reachable");
+                    DatagramSocket test = new DatagramSocket(0, add);
+                    test.close();
+                } catch (SocketException e) {
+                    System.out.println("Can not connect with this hostname");
                     System.exit(0);
                 }
-            }catch (UnknownHostException e) {
-                System.out.println("This host doesn't not exist");
+            }catch(UnknownHostException e) {
+                System.out.println("This hostname doesn't exist !");
                 System.exit(0);
             }
             Client.setHostname(args[0]);
