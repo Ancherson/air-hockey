@@ -33,52 +33,19 @@ public class CreateMenu extends BorderPane {
     public CreateMenu(MenuClient menu) {
 
         sound = new Sound();
-        copied = new Label ("Copied !");
-        copied.setTextFill(WHITE);
-        copied.setVisible(false);
         this.setWidth(800);
         this.setHeight(500);
         this.setStyle("-fx-background-color: #282828;");
 
         creation = new Label("CREATION OF THE ROOM");
-        ClickButton back = new ClickButton("Back");
-
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-
-        ClipboardContent content = new ClipboardContent();
-
         creation.setPrefHeight(50);
         creation.setStyle("-fx-font : 28 Ubuntu;");
         creation.setTextFill(LIGHTGRAY);
+        ClickButton back = new ClickButton("Back");
 
-        creation.setOnMouseClicked((ActionEvent) -> {
-            content.putString(idRoom);
-            clipboard.setContent(content);
-            switch (num){
-                case 1: copied.setText("Double copy!");
-                break;
-                case 2: copied.setText("Triple copy!");
-                    break;
-                case 3: copied.setText("Killing spree!");
-                    break;
-                case 4: copied.setText("Domination!");
-                    break;
-                case 5: copied.setText("On fire !");
-                    copied.setTextFill(RED);
-                    break;
-                default :
-                    break;
-            }
-            copied.setVisible(true);
-            PauseTransition visiblePause = new PauseTransition(
-                    Duration.seconds(1.5)
-            );
-            visiblePause.setOnFinished(
-                    event -> copied.setVisible(false)
-            );
-            visiblePause.play();
-            num++;
-        } );
+        copied = new Label ();
+        copied.setTextFill(WHITE);
+        copied.setVisible(true);
 
         back.setMaxSize(100, 60);
         back.setPrefSize(60, 50);
@@ -108,6 +75,52 @@ public class CreateMenu extends BorderPane {
     public void setID(String id){
         creation.setText(id);
         idRoom = id;
+
+        copied.setText("Click on the ID !");
+
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+
+        ClipboardContent content = new ClipboardContent();
+
+
+        creation.setOnMouseClicked((ActionEvent) -> {
+            content.putString(idRoom);
+            clipboard.setContent(content);
+            switch (num){
+                case 0: copied.setText("Copied");
+                    break;
+                case 1: copied.setText("Double copy!");
+                    break;
+                case 2: copied.setText("Triple copy!");
+                    break;
+                case 3: copied.setText("Killing spree!");
+                    break;
+                case 4: copied.setText("Domination!");
+                    break;
+                case 5: copied.setText("On fire !");
+                    copied.setTextFill(RED);
+                    break;
+                case 9:
+                    num = 0;
+                    copied.setTextFill(WHITE);
+                    copied.setText("Click on the ID !");
+                    copied.setVisible(true);
+                default :
+                    break;
+            }
+            copied.setVisible(true);
+            PauseTransition visiblePause = new PauseTransition(
+                    Duration.seconds(1.5)
+            );
+            visiblePause.setOnFinished(event -> {
+                        if (!copied.getText().equals("Click on the ID !")) {
+                            copied.setVisible(false);
+                        }
+                    }
+            );
+            visiblePause.play();
+            num++;
+        } );
     }
 
 
