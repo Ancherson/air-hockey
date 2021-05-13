@@ -25,26 +25,50 @@ public class Vector implements Serializable {
         this.y = y;
     }
 
+    /**
+     * Returns the x coordinate of the vector
+     * @return the x coordinate of the vector
+     */
     public double getX(){
         return x;
     }
 
+    /**
+     * Returns the y coordinate of the vector
+     * @return the y coordinate of the vector
+     */
     public double getY(){
         return y;
     }
 
+    /**
+     * Sets the x coordinate of the vector
+     * @param x the new x coordinate of the vector
+     */
     public void setX(double x){
         this.x = x;
     }
 
+    /**
+     * Sets the y coordinate of the vector
+     * @param y the new y coordinate of the vector
+     */
     public void setY(double y){
         this.y = y;
     }
 
+    /**
+     * Returns a copy of the vector
+     * @return a copy of the vector
+     */
     public Vector copy() {
         return new Vector(this.x, this.y);
     }
 
+    /**
+     * Returns the vector's information as a String
+     * @return the vector's information as a String
+     */
     public String toString(){
         return "x: "+this.x+", y: "+this.y;
     }

@@ -22,40 +22,125 @@ import java.util.LinkedList;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
-
+/**
+ * This class represents the graphical view of the game
+ */
 public class View extends BorderPane {
 
+    /**
+     * The main GUI class that manages the different screens
+     */
     private MenuClient menu;
+    /**
+     * The canvas onto which the game is drawn
+     */
     private Canvas canvas;
+    /**
+     * The context of the canvas
+     */
     private GraphicsContext ctx;
-
+    /**
+     * The initial width of the canvas
+     */
     private final double WIDTH = 800;
+    /**
+     * The initial height of the canvas
+     */
     private final double HEIGHT = 500;
+    /**
+     * The current width of the canvas
+     */
     private double currentWidth = WIDTH;
+    /**
+     * The current height of the canvas
+     */
     private double currentHeight = HEIGHT;
 
+    /**
+     * True if the mouse has been pressed on the pusher
+     */
     private boolean isPressed;
+    /**
+     * The time elapsed since the last drag event
+     */
     private double lastDragTime;
+    /**
+     * The model containing and managing all the information about the game: the board, the score...
+     */
     private Model model;
+    /**
+     * The id of the player running this view (either 1 or 0)
+     */
     private int numplayer;
+    /**
+     * True if the current game is in training mode (against the AI)
+     */
     private boolean training;
+    /**
+     * A camera that allows flexible rendering of the game: allows to translate and zoom the view of the game
+     * Is used for the shaking screen effect and when resizing the canvas
+     */
     private Camera camera;
+    /**
+     * The number of frames of screenshake left, -1 if there is no screenshake
+     */
     private int shake;
+    /**
+     * The AnimationTimer that handles the continuous updating and drawing of the game
+     */
     private Animation animation;
+    /**
+     * The background color
+     */
     private final Color bgColor = Color.rgb(40, 40, 40, .8);
 
+    /**
+     * The list of the last positions of the palet.
+     * Is used for the trail
+     */
     private LinkedList<Vector> listPosPalet = new LinkedList<>();
+    /**
+     * The maximum length of the listPosPalet list
+     */
     private int maxLengthListPalet = 20;
+    /**
+     * The class that manages all the particles
+     */
     private ParticleManager particles;
+    /**
+     * The class that manages the audio output of the game
+     */
     private Sound sound;
 
+    /**
+     * True if the game is finished
+     */
     private boolean finished = false;
+    /**
+     * The message drawn on the screen at the end of the game
+     */
     private String endMessage = "";
+    /**
+     * The color of the end message
+     */
     private Color endColorMessage = WHITE;
+    /**
+     * A counter used to change the opacity gradually at the end
+     */
     private int endCounter = 60;
-
+    /**
+     * True if the debug mode for the AI is on
+     * If true, some lines and points will be displayed to see the reasoning of the AI
+     */
     private boolean debugMode = false;
 
+    /**
+     * The constructor of the class
+     * @param menu The main GUI class that manages the different screens
+     * @param model The model containing and managing all the information about the game: the board, the score...
+     * @param numplayer The id of the player running this view (either 1 or 0)
+     * @param training True if the current game is in training mode (against the AI)
+     */
     public View(MenuClient menu, Model model, int numplayer, boolean training) {
         this.model = model;
         this.menu = menu;
@@ -109,6 +194,11 @@ public class View extends BorderPane {
         animation.start();
     }
 
+    /**
+     * Resizes the canvas and increases the font size and camera zoom to match the new canvas size
+     * @param width the new width of the canvas
+     * @param height the new height of the canvas
+     */
     public void resizeCanvas(double width, double height) {
         if(width == -1) {
             currentHeight = height;
@@ -123,24 +213,45 @@ public class View extends BorderPane {
         camera.zoom = zoom;
     }
 
+    /**
+     * Called when the connexion is lost.
+     * Ends the game and displays a "connexion lost" message
+     */
     public void lostConnexion() {
         endMessage = "Connexion Lost";
         finished = true;
         menu.closeClient();
     }
 
+    /**
+     * Converts a position in the game space to a position on the screen (canvas) according to the camera
+     * @param v the position in the game
+     * @return the position on the screen
+     */
     public Vector gameToScreen(Vector v){
         v = v.sub(camera.position).multiply(camera.zoom);
         if(camera.flipX) v.setX(-v.getX());
         return v.add(new Vector(currentWidth, currentHeight).multiply(.5));
     }
 
+    /**
+     * Converts a position on the screen (canvas) to a position in the game according to the camera
+     * @param v the position on the screen
+     * @return the position in the game
+     */
     public Vector screenToGame(Vector v){
         v = v.sub(new Vector(currentWidth, currentHeight).multiply(.5));
         if(camera.flipX) v.setX(-v.getX());
         return v.multiply(1.0/camera.zoom).add(camera.position);
     }
 
+    /**
+     * Draws a circle
+     * @param center the position of the center of the circle (in the game space)
+     * @param radius the radius of the circle (in the game space)
+     * @param strokeCol the color of the outline of the circle
+     * @param fillColor the color of the inside of the circle
+     */
     public void drawCircle(Vector center, double radius, Color strokeCol, Color fillColor){
         ctx.setStroke(strokeCol);
         ctx.setFill(fillColor);
@@ -152,6 +263,11 @@ public class View extends BorderPane {
         ctx.strokeOval(screenPos.getX(), screenPos.getY(), size.getX(), size.getY());
     }
 
+    /**
+     * Draws a wall
+     * @param w the wall
+     * @param col the color of the wall
+     */
     public void drawWall(Wall w, Color col){
         ctx.setStroke(col);
         ctx.beginPath();
@@ -162,6 +278,12 @@ public class View extends BorderPane {
         ctx.stroke();
     }
 
+    /**
+     * Draws a line
+     * @param start the start point of the line
+     * @param end the end point of the line
+     * @param col the color of the line
+     */
     public void drawLine(Vector start, Vector end, Color col) {
         ctx.setStroke(col);
         ctx.beginPath();
@@ -172,6 +294,14 @@ public class View extends BorderPane {
         ctx.stroke();
     }
 
+    /**
+     * Draws an arc (part of a circle)
+     * @param center the position of the center of the arc
+     * @param radius the radius of the arc
+     * @param startAngle the starting angle of the arc in degrees
+     * @param arcExtent the angular extent of the arc in degrees
+     * @param col the color of the arc
+     */
     public void drawArc(Vector center, double radius, double startAngle, double arcExtent, Color col) {
         ctx.setStroke(col);
         Vector pos = center.sub(new Vector(radius, radius));
@@ -184,6 +314,9 @@ public class View extends BorderPane {
         ctx.strokeArc(screenPos.getX(), screenPos.getY(), size.getX(), size.getY(), startAngle, arcExtent, ArcType.OPEN);
     }
 
+    /**
+     * Draws the background lines of the board
+     */
     public void drawLinesBoard() {
         drawLine(new Vector(Board.WIDTH / 2, 0), new Vector(Board.WIDTH / 2, Board.HEIGHT), WHITE);
         drawLine(new Vector(Board.WIDTH / 4, 0), new Vector(Board.WIDTH / 4, Board.HEIGHT), WHITE);
@@ -192,6 +325,9 @@ public class View extends BorderPane {
         drawArc(new Vector(Board.WIDTH, Board.HEIGHT / 2), 100, 90, 180, WHITE);
     }
 
+    /**
+     * Draws the score
+     */
     public void drawScore() {
         ctx.setFill(WHITE);
         Vector pos = new Vector(3 * Board.WIDTH / 8, Board.HEIGHT / 8);
@@ -203,6 +339,9 @@ public class View extends BorderPane {
         ctx.fillText(Integer.toString(model.getScore(1)), pos.getX(), pos.getY());
     }
 
+    /**
+     * Draws the palet and its trail
+     */
     public void drawPalet() {
         Palet pal = model.getBoard().getPalet();
         if(model.getBoard().getPalet().getScoredGoal() == -1){
@@ -221,22 +360,26 @@ public class View extends BorderPane {
                  drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), BLACK, WHITE);
                  Vector angulaire = new Vector(Math.cos(pal.getAngle()),Math.sin(pal.getAngle()));
                  double rad = radius * i / (maxLengthListPalet - 1);
-                 //ctx.setLineWidth(5);
                  drawLine(pal.getPosition().add(angulaire.multiply(rad*0.4)),angulaire.multiply(rad).add(pal.getPosition()), BLACK);
                  drawLine(pal.getPosition().add(angulaire.multiply(rad*-0.4)),angulaire.multiply(-rad).add(pal.getPosition()), BLACK);
                  drawCircle(pal.getPosition(), 0.4*rad, BLACK, WHITE);
-                 //ctx.setLineWidth(1);
              } else {
                  drawCircle(listPosPalet.get(i), radius * i / (maxLengthListPalet - 1), Color.rgb(255,255,255, i * 1.0 / (listSize - 1)),Color.rgb(255,255,255, i * 1.0 / (listSize - 1)));
              }
         }
     }
 
+    /**
+     * Draws the ending message. Is called when the game has ended
+     */
     public void drawEnd() {
         ctx.setFill(endColorMessage);
         ctx.fillText(endMessage, currentWidth / 2, currentHeight / 2);
     }
 
+    /**
+     * The main draw function which draws the entirety of what needs to be drawn on the canvas
+     */
     public void draw(){
         ctx.setFill(bgColor);
         ctx.fillRect(0, 0, currentWidth, currentHeight);
@@ -269,8 +412,6 @@ public class View extends BorderPane {
                 } else {
                     drawLine(elt.getKey(), elt.getValue(), Color.BLUE);
                 }
-                //Vector v = new Vector((line.getY() - Board.HEIGHT) / (-1), Board.HEIGHT);
-                //drawCircle(v, 10, Color.RED, Color.RED);
             }
         }
 
@@ -287,7 +428,10 @@ public class View extends BorderPane {
         }
     }
 
-
+    /**
+     * Is called when the mouse is pressed and detects if the mouse position is in the pusher of the player numplayer
+     * @param event the MouseEvent that contains the information about the event
+     */
     public void mousePressed(MouseEvent event) {
         Vector gamePos = screenToGame(new Vector(event.getX(), event.getY()));
         if(model.isInPusher(gamePos.getX(), gamePos.getY(), numplayer)) {
@@ -296,6 +440,10 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * Is called when the mouse is dragged. If the mouse has previously been pressed on the pusher, the pusher's position and speed are updated
+     * @param event the MouseEvent that contains the information about the event
+     */
     public void mouseDragged(MouseEvent event) {
         if(isPressed) {
             double time = System.nanoTime();
@@ -306,15 +454,25 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * Is called when the mouse is released. Releases the pusher
+     * @param event the MouseEvent that contains the information about the event
+     */
     public void mouseReleased(MouseEvent event) {
         model.PusherReleased(numplayer);
         isPressed = false;
     }
 
+    /**
+     * Stops the animation
+     */
     public void close() {
         animation.stop();
     }
 
+    /**
+     * Is called when a collision between the palet and a wall occurs. Creates some random particles in the direction of the normal vector of the collision, and plays the collision sound
+     */
     public void createParticules() {
         new Thread(() -> {
             sound.play("collisionRelax");
@@ -329,6 +487,9 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * Is called when a goal is scored. Plays the explosion sound, starts the shaking screen and creates an explosion effect with particles
+     */
     public void explosion() {
         Platform.runLater(()->{
             sound.play("shakingRelax");
@@ -343,6 +504,9 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * Moves the camera randomly to do a shaking screen effect, and moves it back to the center at the end
+     */
     public void shaking() {
         if(shake > 0){
             camera.position = new Vector(model.getBoard().getWIDTH()/2+Math.random()*2*shake-shake, model.getBoard().getHEIGHT()/2+Math.random()*2*shake-shake);
@@ -358,6 +522,9 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * Is called when the game has ended, sets the ending message
+     */
     public void endGame() {
         finished = true;
         if(model.hasWon(numplayer)) {
@@ -371,9 +538,23 @@ public class View extends BorderPane {
         menu.closeClient();
     }
 
+    /**
+     * The AnimationTimer that handles the continuous updating and drawing of the game
+     */
     public class Animation extends AnimationTimer {
+        /**
+         * The time since the game was last updated
+         */
         private long lastUpdateTime = System.nanoTime();
+        /**
+         * The current frame count
+         */
         private int frame = 0;
+
+        /**
+         * Updates and draws the game
+         * @param now the current time
+         */
         @Override
         public void handle(long now){
             frame++;
@@ -402,10 +583,30 @@ public class View extends BorderPane {
         }
     }
 
+    /**
+     * This class allows flexible rendering of the game: it allows to translate and zoom the view of the game
+     * Is used for the shaking screen effect and when resizing the canvas
+     */
     class Camera{
+        /**
+         * The position of the camera
+         */
         private Vector position;
+        /**
+         * The zoom of the camera
+         */
         private double zoom;
+        /**
+         * If true, the display is mirrored on the x axis
+         */
         private boolean flipX;
+
+        /**
+         * The constructor of the class
+         * @param p the position of the camera
+         * @param z the zoom of the camera
+         * @param fx if true, the display is mirrored on the x axis
+         */
         public Camera(Vector p, double z, boolean fx){
             position = p;
             zoom = z;
