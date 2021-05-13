@@ -7,10 +7,6 @@ import java.io.Serializable;
 
 public class Pusher extends Circle implements Serializable {
 
-    /**
-     * The last position of the last position of the pusher
-     */
-    private Vector lastLastPosition;
    
     /**
      * The last position of the pusher
@@ -78,11 +74,9 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
-     * Changes the last last position of the pusher with its last position
      * Changes the last position of the pusher with its position
      */
     public void resetMovement(){
-        lastLastPosition = lastPosition;
         lastPosition = position;
     }
     
@@ -110,7 +104,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
-     * Changes the position and the speed of the pusher if it's colliding with a palet
+     * Changes the position and the speed of the palet if it's colliding with a palet
      * @param p Palet
      * @param walls an array of Wall
      * @return if the pusher is colliding with the palet
@@ -118,19 +112,32 @@ public class Pusher extends Circle implements Serializable {
     public boolean paletCollision(Palet p, Wall[] walls){
         boolean hasCollided = false;
         if(isColliding(p)){
+            /*
+            The angle speed of the palet is calculated by the interraction between it and the pusher,
+            its angle speed is limited to (+/-)50
+            */
             Vector normal = p.getPosition().sub(position).normalize();
             Vector orthogonal = normal.getOrthogonal();
             double angleSpeed = orthogonal.dotProduct(speed.sub(p.getSpeed()))*(-0.1);
             double coeffAngleSpeed = orthogonal.dotProduct(speed.sub(p.getSpeed()).normalize())*(-0.1);
             p.setAngleSpeed(p.getAngleSpeed()+angleSpeed);
+
             if(Math.abs(p.getAngleSpeed()) > 50){
                 p.setAngleSpeed(50*p.getAngleSpeed()/Math.abs(p.getAngleSpeed()));
             }
+
+            /* 
+            Calculates the new speed of the palet with its new angle speed
+            */
             p.setSpeed(normal.multiply(p.getSpeed().length()*(1 - Math.abs(coeffAngleSpeed))).add(speed));
+
+            /* 
+            Calculates the new position of tthe palet
+            */
             Circle newPaletPosition = new Circle(new Vector(p.getPosition().getX(), p.getPosition().getY()), p.getRadius());
             newPaletPosition.resolveCollision(this);
             p.moveTo(newPaletPosition.getPosition(), walls);
-            //p.setSpeed(p.getSpeed().multiply(0.96));
+
             hasCollided = true;
         }
         return hasCollided;
@@ -144,13 +151,19 @@ public class Pusher extends Circle implements Serializable {
      * @param p Palet
      */
     public void moveTo(Vector arrival, Wall[] walls, Wall[] invisibleWalls,Palet p){
+        /*
+        Calculates the trajectory of the pusher
+        */
         Vector distance = arrival.add(position.multiply(-1));
         Vector dir = distance.normalize();
         double length = distance.length();
         double step = getRadius()*0.5;
-
         Vector p0 = new Vector(position.getX(), position.getY());
 
+        /*
+        Checks from the original position of the pusher to the arrival, step by step, 
+        if there is an object on the trajectory of the pusher
+        */
         for(double l=step; l < length+step; l+=step){
             position = p0.add(dir.multiply(Math.min(l,length)));
             if(paletCollision(p, walls)||wallCollisions(walls)||wallCollisions(invisibleWalls)){
