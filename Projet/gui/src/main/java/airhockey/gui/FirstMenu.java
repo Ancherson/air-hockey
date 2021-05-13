@@ -19,11 +19,17 @@ import java.io.File;
 
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
+/**
+ * This class represents the main page of the GUI, sort of the Main Menu
+ */
 
 public class FirstMenu extends BorderPane {
 
     private Sound sound;
-
+    /**
+     * Constructor of the first page
+     * @param Menu is the main Pane of the gui that allows to navigate to different page
+     */
     public FirstMenu(MenuClient Menu){
         this.setWidth(800);
         this.setHeight(500);
