@@ -26,7 +26,13 @@ public class Palet extends Circle {
     /**
      * Checks in which goal the palet has been scored, is initialized at -1
      */
+
     private int scoredGoal = -1;
+    
+    /** 
+     *A constant of the max angle speed 
+     */
+    private final static double MAX_ANGLE_SPEED = 500;
 
     /**
      * Checks if the palet has been in collision with a wall
@@ -205,15 +211,16 @@ public class Palet extends Circle {
             if(isColliding(p)){
                 /*
                 The angle speed of the palet is calculated by the interraction between it and the pusher,
-                its angle speed is limited to (+/-)50
+                its angle speed is limited to (+/-)MAX_ANGLE_SPEED
                 */
                 Vector normal = position.sub(p.position).normalize();
                 Vector orthogonal = normal.getOrthogonal();
                 double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
                 setAngleSpeed(getAngleSpeed()+angleSpeed);
-                
-                if(Math.abs(angleSpeed) > 50){
-                    angleSpeed = 50*angleSpeed/Math.abs(angleSpeed);
+
+                if(Math.abs(this.angleSpeed) > MAX_ANGLE_SPEED){
+                    this.angleSpeed = MAX_ANGLE_SPEED*this.angleSpeed/Math.abs(this.angleSpeed);
+
                 }
                 /* 
                 The speed of the palet is calculated in this part
@@ -327,11 +334,10 @@ public class Palet extends Circle {
         */
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
-        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*2*dt));
-
         /* 
         Calculates the trajectory of the palet
         */
+        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(6*diffEnergy)*2*dt));
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
