@@ -75,5 +75,5 @@ The game ends when one of the players has 7 points
 
 ## Documentation
 
-![Serveur/UDP Protocole](doc_server.md)
+see documentation of [Serveur/UDP Protocole](doc_server.md)
 
