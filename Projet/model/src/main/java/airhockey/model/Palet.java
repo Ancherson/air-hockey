@@ -167,11 +167,17 @@ public class Palet extends Circle {
         boolean hasCollided = false;
         for(Wall w : walls){
             if(isColliding(w)){
+                //Calculates the new position of the palet if it has colllided a wall
                 hasHit = true;
                 hitPosition = w.closestPoint(position);
-                hitNormal = position.sub(hitPosition).normalize();//w.getNormal(hitPosition);
-
+                hitNormal = position.sub(hitPosition).normalize();
                 resolveCollision(w);
+
+                /*Calculates the new speed of the palet
+                The angle speed of the palet is lowered by 15%
+                The energy of the palet is given by the difference between its old energy and its new energy
+                Its new speed is calculated from the wall direction and multiply by its energy
+                */
                 speed = speed.reflection(w.getNormal(position));
                 double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
                 angleSpeed *= 0.85;
@@ -197,17 +203,32 @@ public class Palet extends Circle {
         boolean hasCollided = false;
         for(Pusher p : pushers){
             if(isColliding(p)){
+                /*
+                The angle speed of the palet is calculated by the interraction between it and the pusher,
+                its angle speed is limited to (+/-)50
+                */
                 Vector normal = position.sub(p.position).normalize();
                 Vector orthogonal = normal.getOrthogonal();
                 double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
                 setAngleSpeed(getAngleSpeed()+angleSpeed);
+                
                 if(Math.abs(angleSpeed) > 50){
                     angleSpeed = 50*angleSpeed/Math.abs(angleSpeed);
                 }
+                /* 
+                The speed of the palet is calculated in this part
+                The speed is limited by the coefficient MAX_SPEED
+                */
                 speed = normal.multiply(speed.length()).add(p.getSpeed());
+                
                 if(speed.length() > MAX_SPEED) {
                     speed = speed.normalize().multiply(MAX_SPEED);
                 }
+                
+                /* 
+                The new position of the palet is calculated in this part
+                The speed is reduced by 4% with the friction
+                */
                 Circle newPosition = new Circle(new Vector(getPosition().getX(), getPosition().getY()), getRadius());
                 newPosition.resolveCollision(p);
                 moveTo(newPosition.getPosition(), walls);
@@ -255,13 +276,19 @@ public class Palet extends Circle {
      * @param walls an array of Walls
      */
     public void moveTo(Vector p, Wall[] walls){
+        /*
+        Calculates the trajectory of the pusher
+        */
         Vector distance = p.add(position.multiply(-1));
         Vector dir = distance.normalize();
         double length = distance.length();
         double step = getRadius()*0.5;
-
         Vector p0 = new Vector(position.getX(), position.getY());
 
+        /* 
+        Checks from the original position of the palet to the arrival, step by step, 
+        if there is an object on the trajectory of the palet        
+        */
         for(double l=step; l < length+step; l+=step){
             position = p0.add(dir.multiply(Math.min(l,length)));
             if(wallCollisions(walls)){
@@ -279,19 +306,40 @@ public class Palet extends Circle {
      */
     public void update(double dt, Wall[] walls, Pusher[] pushers, Goal[] goals){
         hasHit = false;
+
+        /* 
+        Applies the friction on the speed of the palet
+        */
         double friction = Math.pow(COEFF_FRICTION, dt);
         speed = speed.multiply(friction);
+
+       /*Calculates the new angle speed
+        The angle speed of the palet is lowered by 0.85^dt in order to have an angle speed time depedent
+        The energy of the palet is given by the difference between its old energy and its new energy
+        */
         double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
         angleSpeed *= Math.pow(0.85, Math.sqrt(dt));
         double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
         angle += angleSpeed*dt;
+
+        /*
+        Calculates the new speed of the palet which is time depedent and adds to it the transmission of energy
+        */
         Vector v = speed.multiply(dt);
         Vector dir = v.normalize();
         speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(2*diffEnergy)*2*dt));
+
+        /* 
+        Calculates the trajectory of the palet
+        */
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
-
+        
+        /* 
+        Checks from the original position of the palet to the arrival, step by step, 
+        if there is an object on the trajectory of the palet        
+        */
         for(double l = step; l <= length+step; l += step){
             position = p0.add(dir.multiply(Math.min(l, length)));
             if(goalCollisions(goals) || wallCollisions(walls) || pusherCollisions(pushers, walls, dt)){
