@@ -9,11 +9,18 @@ import javafx.scene.layout.BorderPane;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
+/**
+ * Class of the page shown when you want to join a public room
+ */
 public class PublicWait extends BorderPane {
 
     private Label info;
 
-
+    /**
+     * Constructor of PublicWait
+     * @param menu is the main Pane of the gui that allows to navigate
+     *             to different pages
+     */
     public PublicWait(MenuClient menu){
         this.setWidth(800);
         this.setHeight(500);
@@ -41,6 +48,11 @@ public class PublicWait extends BorderPane {
         this.setPadding(new Insets(30,50,50,50));
 
     }
+
+    /**
+     * Function that set a message signaling that the player is inside a room
+     * and is waiting for an other player
+     */
     public void connected(){
         info.setText("Connected to the server, waiting for an other player");
     }

@@ -11,20 +11,58 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.function.Consumer;
 
+/**
+ * This class represents all the network part of the client's side
+ * This is where the client is linked to the server
+ */
+
 public class Client{
+    /**
+     * id of the room
+     */
     private String id;
+    /**
+     * socket of the client
+     */
     private DatagramSocket socket;
+    /**
+     * model of the game
+     */
     private Model model;
+    /**
+     * if you are player 0 or player 1 (left 0/right 1 on the board)
+     */
     private int numPlayer;
+    /**
+     * Hostname of the server
+     */
     private static String serverHostname = "localhost";
 
+    /**
+     * if the game is finished
+     */
+    private boolean isFinished = false;
 
+    /**
+     * Functions of the gui
+     */
     private Consumer<Runnable> runLater;
     private Consumer<String> setID;
     private Runnable connect;
     private Runnable lostConnexion;
     private Consumer<String> setJoinMessage;
 
+    /**
+     *
+     * Constuctor of a Client
+     * @param m the model of the gamr
+     * @param runlater function Platform.runLater(Runnable) of javafx
+     * @param setID function to change the ID on the CreateMenu
+     * @param connect function to change the message on the PublicWait menu
+     * @param lostConnexion function to print that the connexion is lost (the other player is gone)
+     * @param setJoinMessage function to set the message in the join room
+     * @throws SocketException
+     */
     public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion, Consumer<String> setJoinMessage) throws SocketException {
         socket = new DatagramSocket();
         model = m;
@@ -34,6 +72,16 @@ public class Client{
         this.lostConnexion = lostConnexion;
         this.setJoinMessage = setJoinMessage;
     }
+
+    /**
+     * Constuctor of a Client
+     * @param m the model of the gamr
+     * @param runlater function Platform.runLater(Runnable) of javafx
+     * @param setID function to change the ID on the CreateMenu
+     * @param connect function to change the message on the PublicWait menu
+     * @param lostConnexion function to print that the connexion is lost (the other player is gone)
+     * @throws SocketException
+     */
     public Client(Model m, Consumer<Runnable> runlater, Consumer<String> setID, Runnable connect, Runnable lostConnexion) throws SocketException {
         socket = new DatagramSocket();
         model = m;
@@ -43,11 +91,20 @@ public class Client{
         this.lostConnexion = lostConnexion;
     }
 
+    /**
+     * set the hostname
+     * @param hostname
+     */
     public static void setHostname(String hostname) {
         Client.serverHostname = hostname;
     }
 
+    /**
+     * Function to create a room
+     * @throws IOException
+     */
     public void createRoom() throws IOException {
+        //SEND THAT WE WANT TO CREATE A ROMM
         numPlayer = 0;
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -57,18 +114,19 @@ public class Client{
         DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
+        //WE RECUPE TE ID OF THE ROOM
         byte[] idBuff = new byte[Server.ID_LENGTH];
         packet = new DatagramPacket(idBuff, idBuff.length);
         socket.receive(packet);
         id = new String(idBuff);
 
+        //WE CHANGE THE ID ON THE CREATE-MENU
         runLater.accept(() -> {
             setID.accept(id);
         });
         System.out.println(id);
 
-        /****************************************/
-
+        //WE WAIT THAT AN OTHER PLAYER
         byte[] buff = new byte[5];
         packet = new DatagramPacket(buff, buff.length);
         socket.receive(packet);
@@ -78,8 +136,14 @@ public class Client{
             startGame();
         }
     }
-
+    /**
+     * Function to join a room
+     * @param id the id of the room
+     * @throws IOException
+     * @return if join pass correctly
+     */
     public boolean joinRoom(String id) throws IOException {
+        //WE SEND A MESSAGE THAT SAYS WE WANT TO JOIN A ROOM
         numPlayer = 1;
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -90,6 +154,9 @@ public class Client{
         DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
+        //WE WAIT A RESPONSE OF THE SERVER
+        //IF yesRoom WE START THE GAME
+        //ELSE WE PRINT DIFFERENT MESSAGE
         byte[] buff = new byte[8];
         packet = new DatagramPacket(buff, buff.length);
         socket.receive(packet);
@@ -113,7 +180,12 @@ public class Client{
         return false;
     }
 
+    /**
+     * Function to join a public room
+     * @throws IOException
+     */
     public void joinRoomPublic() throws IOException {
+        //WE SEND THAT WE WANT TO JOIN A PUBLIC ROOM
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
         oo.writeUTF("public");
@@ -122,6 +194,7 @@ public class Client{
         DatagramPacket packet = new DatagramPacket(message, message.length, InetAddress.getByName(serverHostname), Server.PORT);
         socket.send(packet);
 
+        //WE RECUPE A MESSAGE THAT SAYS IF WE ARE THE FIRST OR THE SECOND PLAYER OF THE ROOM
         byte[] msg = new byte[1];
         packet = new DatagramPacket(msg, msg.length);
         socket.receive(packet);
@@ -131,16 +204,19 @@ public class Client{
 
         runLater.accept(connect);
 
+
         byte[] idBuff = new byte[Server.ID_LENGTH];
         packet = new DatagramPacket(idBuff, idBuff.length);
         socket.receive(packet);
         id = new String(idBuff);
 
+        //IF WE ARE THE SECOND PLAYER, WE CAN START
         if(numPlayer == 1) {
             startGame();
             return;
         }
 
+        //WE WAIT THE SECOND PLAYER TO START
         byte[] buff = new byte[5];
         packet = new DatagramPacket(buff, buff.length);
         socket.receive(packet);
@@ -152,11 +228,18 @@ public class Client{
 
     }
 
+    /**
+     * Function that start the two threads (Sender and Receiver)
+     */
     public void startGame(){
         new Sender().start();
         new Receiver().start();
     }
 
+    /**
+     * Function that send our pusher to the server
+     * @throws IOException
+     */
     public void sendPusher() throws IOException {
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -169,6 +252,10 @@ public class Client{
         socket.send(packet);
     }
 
+    /**
+     * Function that send the pusher and the the palet to the server
+     * @throws IOException
+     */
     public void sendPusherAndPalet() throws IOException{
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(bStream);
@@ -182,6 +269,11 @@ public class Client{
         socket.send(packet);
     }
 
+    /**
+     * Function that receive the model of the server
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public void receiveModel() throws IOException, ClassNotFoundException {
         byte[]buf = new byte[1024];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
@@ -192,6 +284,7 @@ public class Client{
             runLater.accept(lostConnexion);
             return;
         }
+        isFinished = ois.readBoolean();
         Pusher p = ((Pusher[])ois.readObject())[1-numPlayer];
         Palet pa = (Palet)ois.readObject();
         int score1 = ois.readInt();
@@ -203,6 +296,9 @@ public class Client{
         model.setScore(1, score2);
     }
 
+    /**
+     * This class is a thread that send our model to the server
+     */
     public class Sender extends Thread{
         @Override
         public void run() {
@@ -234,6 +330,9 @@ public class Client{
         }
     }
 
+    /**
+     * This class is a thread tha receive the model of the server
+     */
     public class Receiver extends Thread{
         @Override
         public void run() {
@@ -241,6 +340,7 @@ public class Client{
                 try {
                     receiveModel();
                 } catch (IOException e) {
+                   // e.printStackTrace();
                     System.out.println("Socket Closed !");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -249,6 +349,10 @@ public class Client{
         }
     }
 
+    /**
+     * Function that close the socket and the two threads (Sender and Receiver)
+     * @throws IOException
+     */
     public void close() throws IOException {
         if (!socket.isClosed()) {
             if (id != null) {
@@ -265,6 +369,18 @@ public class Client{
         }
     }
 
+    /**
+     * return if the game is finished
+     * @return
+     */
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    /**
+     * Function to get the numPlayer
+     * @return the numPlayer
+     */
     public int getNumPlayer() {
         return numPlayer;
     }

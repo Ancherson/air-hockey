@@ -1,19 +1,46 @@
 package airhockey.model;
 
-
+/**
+ * This class represents the AI, during the training mode
+ */
 public class Bot extends Player{
+    /**
+     * His score
+     */
     private int score;
+    /**
+     * speed of the Bot
+     */
     private Vector speed;
+
+    /**
+     * Constants that are used to move the Bot
+     */
     private final double ACCELERATION = 40000;
     private final double MAX_SPEED = 300;
     private final double MAX_SHOOTING_SPEED = 800;
     private final double FRICTION = 0.01;
+
+    /**
+     * This is the targets of the AI when The AI is in attack mode
+     */
     public static final Vector[] TARGETS = {new Vector(Board.WIDTH, -Board.HEIGHT/2), new Vector(Board.WIDTH, Board.HEIGHT/2), new Vector(Board.WIDTH, 3 * Board.HEIGHT/2)};
     private static final Vector[] DEVIATE_TARGETS = {new Vector(Board.WIDTH/8, 0) , new Vector(Board.WIDTH/8, Board.HEIGHT)};
+
+    /**
+     * To store the current target
+     */
     private Vector target;
     private Vector deviateTarget;
+
+    /**
+     * If he is in shooting mode
+     */
     private int wasShooting;
 
+    /**
+     * Constructor
+     */
     public Bot(){
         super();
         speed = new Vector(0, 0);
@@ -22,17 +49,30 @@ public class Bot extends Player{
         deviateTarget = DEVIATE_TARGETS[0];
     }
 
+    /**
+     * return the score
+     * @return the score
+     */
     public int getScore(){
         return score;
     }
 
+    /**
+     * modify the score
+     * @param s the new score
+     */
     public void setScore(int s){
         score=s;
     }
 
+    /**
+     * The bot move in the direction of the point p
+     * @param p the point that the Bot wants to target
+     * @param pusher AI's pusher
+     * @param dt delta time
+     */
     public void moveTowards(Vector p, Pusher pusher, double dt){
         Vector d = p.sub(pusher.getPosition());
-        //speed = d.multiply(5);
         d = d.normalize();
         speed = speed.add(d.multiply(ACCELERATION*dt));
         if(wasShooting == 0 && speed.length() > MAX_SPEED){
@@ -42,40 +82,35 @@ public class Bot extends Player{
         }
     }
 
+    /**
+     * Function to target the center of his board part
+     * @return the position of the center
+     */
     public Vector toCenter() {
         return new Vector(Board.WIDTH * 1.5 / 8, Board.HEIGHT / 2);
     }
 
+    /**
+     * Function that allows the AI to intercept the palet
+     * @param model of the game
+     * @return the point to target
+     */
     public Vector intercept(Model model) {
+        //Calcule the closest position of the palet during 30 steps
         Pusher myPusher = model.getBoard().getPushers()[0];
         Palet copy = model.getBoard().getPalet().copy();
         double minDist = Double.POSITIVE_INFINITY;
         Vector closestPos = copy.getPosition().copy();
-        for(int i = 0; i < 30; i++) { //A REGLER LE NOMBRE DE PREVISIONS !
+        for(int i = 0; i < 30; i++) {
             copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
-            //Vector aim = aim(model, copy.getPosition(), new Vector(Board.WIDTH, -Board.HEIGHT/2));
-            //double dist = aim.sub(myPusher.getPosition()).length();
             double dist = copy.getPosition().sub(myPusher.getPosition()).length();
             if(dist < minDist) {
                 minDist = dist;
-                //closestPos = aim.copy();
                 closestPos = copy.getPosition().copy();
             }
         }
-        //return closestPos;
-        //Vector aimUp = aim(model, closestPos, new Vector(Board.WIDTH, -Board.HEIGHT/2));
-        //Vector aimMiddle = aim(model, closestPos, new Vector(Board.WIDTH, Board.HEIGHT/2));
-        //Vector aimDown = aim(model, closestPos, new Vector(Board.WIDTH,3 * Board.HEIGHT/2));
 
-        //double distAimUp = aimUp.length();
-        //double distAimMiddle = aimMiddle.length();
-        //double distAimDown = aimDown.length();
-
-        //if(distAimUp < distAimDown && distAimUp < distAimMiddle) return aimUp;
-        //if(distAimDown < distAimMiddle) return aimDown;
-        //target = new Vector(Board.WIDTH, Board.HEIGHT/2);
-        //return aimMiddle;
-
+        //Based on the position of the enemy pusher, we decide which target to target
         Pusher enemy = model.getBoard().getPushers()[1];
         if((enemy.getPosition().getY() > 2 * Board.HEIGHT / 3 && target == TARGETS[2])){
             target = TARGETS[(int)(Math.random() * 2)];
@@ -84,52 +119,70 @@ public class Bot extends Player{
         }else if(enemy.getPosition().getY() > Board.HEIGHT / 3 && enemy.getPosition().getY() < 2 * Board.HEIGHT / 3 && target == TARGETS[1]){
             target = TARGETS[(int)(Math.random() * 2) * 2];
         }
+        //return the point to target
         return aim(model, closestPos);
     }
 
+    /**
+     * Function that returns the best point to target to shoot the palet
+     * @param model of the game
+     * @param paletPos the palet position
+     * @return the point to target
+     */
     public Vector aim(Model model, Vector paletPos){
+
         Pusher myPusher = model.getBoard().getPushers()[0];
         Vector dirPaletGoal = target.sub(paletPos).normalize();
         model.getDEBUG_LINES().put(target, paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
+        //If the Bot is not aligned in the direction of the target, and the AI is not close enough, AI targets a point behind paletPos
         if(wasShooting == 0 && (model.getBoard().getPalet().getPosition().sub(paletPos).length() > model.getBoard().getPalet().getRadius()*.9 || dirPusherPalet.dotProduct(dirPaletGoal) < .80)){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
         }
+        //Shoot the pusher
         if(wasShooting == 0) wasShooting = 5;
         return myPusher.getPosition().add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
     }
 
+    /**
+     * Function that returns the best point to target to deviate the palet
+     * @param model of the game
+     * @param paletPos position of the palet
+     * @param t deviate target
+     * @return return the point to target
+     */
     public Vector aimDeviate(Model model, Vector paletPos, Vector t){
         Pusher myPusher = model.getBoard().getPushers()[0];
         Vector dirPaletGoal = t.sub(paletPos).normalize();
         model.getDEBUG_LINES().put(t, paletPos);
         Vector dirPusherPalet = paletPos.sub(myPusher.getPosition()).normalize();
+        //If the Bot is not aligned in the direction of the target, and the AI is not close enough, AI targets a point behind paletPos
         if(wasShooting == 0 && (model.getBoard().getPalet().getPosition().sub(paletPos).length() > model.getBoard().getPalet().getRadius()*.9 || dirPusherPalet.dotProduct(dirPaletGoal) < .80)){
             return paletPos.sub(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
         }
+        //Shoot the palet
         if(wasShooting == 0) wasShooting = 5;
         return paletPos.add(dirPaletGoal.multiply(model.getBoard().getPalet().getRadius() + myPusher.getRadius()*2));
     }
 
-    public Vector avoidAndIntercept(Pusher myPusher, Palet palet) {
-        Vector dist = palet.getPosition().sub(myPusher.getPosition());
-        Vector normalDist = new Vector(-dist.getY(), dist.getX());
-        if(normalDist.getX() > 0) normalDist.multiply(-1);
-        normalDist = normalDist.normalize().multiply(myPusher.getRadius() + palet.getRadius());
-        return palet.getPosition().add(normalDist);
-    }
-
+    /**
+     * Function that allows the Bot to avoid the palet
+     * @param myPusher AI's pusher
+     * @param palet of the game
+     * @return the point to target to avoid the palet
+     */
     public Vector avoid(Pusher myPusher, Palet palet){
         Vector orth = palet.getSpeed().normalize().getOrthogonal().multiply(myPusher.getRadius()+palet.getRadius()*1.5);
-        Vector pos1 = myPusher.getPosition().add(orth);
-        /*Vector pos2 = myPusher.getPosition().sub(orth);
-        Vector middle = new Vector(Board.WIDTH/4, Board.HEIGHT/2);
-        if(pos1.sub(middle).length() < pos2.sub(middle).length()){
-            return pos1;
-        }*/
-        return pos1;
+        return myPusher.getPosition().add(orth);
     }
 
+    /**
+     * Function that returns the point to deviate the palet
+     * @param model of the game
+     * @param myPusher AI's pusher
+     * @param paletPos position of the palet
+     * @return the point to target
+     */
     public Vector deviate(Model model, Pusher myPusher, Vector paletPos){
         if(wasShooting == 0) {
             deviateTarget = (myPusher.getPosition().getY() > paletPos.getY() ? DEVIATE_TARGETS[0] : DEVIATE_TARGETS[1]);
@@ -138,48 +191,52 @@ public class Bot extends Player{
     }
 
 
+    /**
+     * return the point to target to avoid or deviate the palet
+     * @param model of the game
+     * @return the point to target
+     */
     public Vector avoidAndDeviate(Model model) {
         Pusher myPusher = model.getBoard().getPushers()[0];
         Palet palet = model.getBoard().getPalet();
+        //If the palet goes to the pusher, AI needs to avoid it
         if(palet.getSpeed().normalize().dotProduct(myPusher.getPosition().sub(palet.getPosition()).normalize()) > 0.9){
             return avoid(myPusher, palet);
         }
 
+        //If the palet is slow, AI deviate it
         if(Math.abs(palet.getSpeed().getX()) < 20){
             return deviate(model, myPusher, palet.getPosition());
         }
 
+        //If in a near future, the palet goes to the goal, AI needs to deviate it
         Palet copy = palet.copy();
-        for(int i = 0; i < 60; i++) { //A REGLER LE NOMBRE DE PREVISIONS !
+        for(int i = 0; i < 60; i++) {
             copy.update(1.0 / 30, model.getBoard().getWalls(), model.getBoard().getPushers(), model.getBoard().getGoals());
         }
         if(copy.getScoredGoal() != -1){
             return deviate(model, myPusher, palet.getPosition());
         }
-
+        //Otherwise AI must not move
         return myPusher.getPosition();
     }
 
     /**
-     *
-     * 2 fonctions avoid and deviate
-     *
-     * on devie si au bout d'une seconde le palet rentre dans la cage
-     * on avoid si elle vient vers le pusher
-     * on fait rien sinon
-     *
-     * avoid :
-     *    
-     *
+     * This is where the AI make his decision, this is where the AI choose the point to target
+     * @param model of the game
+     * @return the point to target
      */
-
     public Vector think(Model model) {
         Palet p = model.getBoard().getPalet();
         Pusher myPusher = model.getBoard().getPushers()[0];
+        //IF the palet moves in the direction of the enemy goal in the enemy's board part
+        //AI goes to the center of his board part
         if((p.getSpeed().getX() >= 0 && p.getPosition().getX() > Board.WIDTH / 2)) {
             wasShooting = 0;
             return toCenter();
         }
+        //If the palet is in front of his pusher and the palet is going to the AI's board part
+        //AI needs to intercept the palet
         if(p.getPosition().getX() > myPusher.getPosition().getX()) {
             if(p.getSpeed().getX() < 0) {
                 Palet copy = model.getBoard().getPalet().copy();
@@ -191,36 +248,37 @@ public class Bot extends Player{
                 }
                 return intercept(model);
             }
-        }else {
+        }
+        //If the palet is behind the AI's pusher we need to :
+        //- deviate the palet if in a near future, the palet enters the goal
+        //- just avoid the palet otherwise
+        else {
             return avoidAndDeviate(model);
         }
 
+        //If the palet is going to the enemy's board part and the palet is in the AI's board part
         if(p.getSpeed().getX() >= 0 && p.getPosition().getX() < Board.WIDTH / 2) {
-           if(wasShooting > 0) {
+            //If the AI is in shooting mode, we continue to shoot
+            if(wasShooting > 0) {
                wasShooting--;
                return aim(model, p.getPosition());
-           }else {
+           }
+            //Else, we look the speed of the palet,
+            // if the palet is slow, AI targets the palet, else AI targets the center of his board part
+            else {
                if(p.getSpeed().getX() < 300) return p.getPosition();
                else return toCenter();
            }
         }
         wasShooting = 0;
         return p.getPosition();
-        /**
-         * SI PALET S'ELOIGNE ET QU IL EST DE L'AUTRE COTE
-         *        ON SE CENTRE
-         * SI IL VIENT :
-         *         SOIT IL EST A GAUCHE -> ON L'INTERCEPTE
-         *         SOIT IL EST A DROITE -> ON SE RAMENE AU CAGE EN EVITANT LA TRAJECTOIRE DU PALET
-         *
-         * SI IL S'ELOIGNE ET QU IL EST DANS LE CAMPS:
-         *          SI SA VITESSE EST SUPERIEUR A UNE CONSTANTE(le palet va assez vite vers le camps adverse)
-         *                   ON SE RECENTRE
-         *          SINON LE TAPPE EN VISANT DE UNE ZONE LIBRE
-         */
-
     }
 
+    /**
+     * Function that updates position of the AI
+     * @param model of the game
+     * @param dt delta time
+     */
     public void update(Model model, double dt){
         model.getDEBUG_POINTS().clear();
         model.getDEBUG_LINES().clear();
@@ -230,9 +288,11 @@ public class Bot extends Player{
         Vector lastPos = new Vector(p.getPosition().getX(), p.getPosition().getY());
 
         //change the speed (this is where the AI will make its decisions)
-        //TODO ACTUAL AI LOGIC
+        //Choose a point to target
         Vector v = think(model);
         model.getDEBUG_POINTS().add(v);
+
+        //And move in direction of this point
         if(v.sub(p.getPosition()).length() > p.getRadius() * 1.2) {
             moveTowards(v, p, dt);
         }else {
