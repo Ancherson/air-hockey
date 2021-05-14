@@ -69,7 +69,7 @@ public class Room {
     }
 
     /**
-     * get the id of the room
+     * Returns the id of the room
      * @return the id of the room
      */
     public String getId(){
@@ -77,7 +77,7 @@ public class Room {
     }
 
     /**
-     * return the model
+     * Returns the model
      * @return the model
      */
     public Model getModel() {
@@ -85,7 +85,7 @@ public class Room {
     }
 
     /**
-     * get the isPublic of the room
+     * Returns the isPublic of the room
      * @return the isPublic of the oom
      */
     public boolean isPublic() {
@@ -93,7 +93,7 @@ public class Room {
     }
 
     /**
-     * get the full of the room
+     * Checks if the room if full
      * @return the full of the room
      */
     public boolean isFull() {
@@ -101,7 +101,7 @@ public class Room {
     }
 
     /**
-     * Return if the room is closing
+     * Checks if the room is closing
      * @return if the room is closing
      */
     public boolean isClosing() {
@@ -137,7 +137,7 @@ public class Room {
     }
 
     /**
-     * Function that receive the message of the client
+     * Function that receives the message of the client
      * @param ois message of the client
      * @param port port of the client
      * @param address address of the client
@@ -157,7 +157,7 @@ public class Room {
     }
 
     /**
-     * Function that send the palet and the pusher to the clients
+     * Function that sends the palet and the pusher to the clients
      * @throws IOException
      */
     public void sendPaletAndPushers() throws IOException {
@@ -210,14 +210,14 @@ public class Room {
     }
 
     /**
-     * Function to close a room when the game is finished
+     * Closes a room when the game is finished
      */
     public void endGame() {
         isClosing = true;
     }
 
     /**
-     * Function that closes this room
+     * Closes this room
      */
     public void close() {
         isRunning = false;

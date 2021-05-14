@@ -75,7 +75,7 @@ public class Server extends Thread {
     }
 
     /**
-     * Function that create room
+     * Function that creates room
      * @param port port of the client
      * @param address address of the client
      * @param isPublic boolean that says if the client wants a public room
@@ -131,7 +131,7 @@ public class Server extends Thread {
     }
 
     /**
-     *
+     * Function that sends the message to the room
      * @param ois this rest of the message
      * @param id the id of the room which must receive the message
      * @param port the port of the client
@@ -159,7 +159,7 @@ public class Server extends Thread {
     }
 
     /**
-     * Function to search if a room which has as id the id exists
+     * Checks if a room has the id in param
      * @param id id the new possible room
      * @return if a room which has as id the id exist
      */
@@ -205,7 +205,7 @@ public class Server extends Thread {
     }
 
     /**
-     * Function that search a public room which is not full
+     * Function that searchs a public room which is not full
      * @return the first public room which is not full
      */
     private Room getPublicRoom() {
@@ -218,7 +218,7 @@ public class Server extends Thread {
     }
 
     /**
-     * Close the room
+     * Closes the room
      * @param ois the rest of the message
      * @throws IOException
      */
@@ -239,6 +239,12 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Main of the Server
+     * @param args
+     * @throws SocketException
+     * @throws UnknownHostException
+     */
     public static void main(String[]args) throws SocketException, UnknownHostException {
         if(args.length > 1) {
             System.out.println("Too much arguments");

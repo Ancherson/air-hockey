@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 /**
  * This class represents all the network part of the client's side
- * This is where the client is linked to the server
+ * <br>This is where the client is linked to the server
  */
 
 public class Client{
@@ -92,7 +92,7 @@ public class Client{
     }
 
     /**
-     * set the hostname
+     * Sets the hostname
      * @param hostname
      */
     public static void setHostname(String hostname) {
@@ -229,7 +229,7 @@ public class Client{
     }
 
     /**
-     * Function that start the two threads (Sender and Receiver)
+     * Function that starts the two threads (Sender and Receiver)
      */
     public void startGame(){
         new Sender().start();
@@ -237,7 +237,7 @@ public class Client{
     }
 
     /**
-     * Function that send our pusher to the server
+     * Function that sends the pusher to the server
      * @throws IOException
      */
     public void sendPusher() throws IOException {
@@ -253,7 +253,7 @@ public class Client{
     }
 
     /**
-     * Function that send the pusher and the the palet to the server
+     * Function that sends the pusher and the the palet to the server
      * @throws IOException
      */
     public void sendPusherAndPalet() throws IOException{
@@ -297,7 +297,7 @@ public class Client{
     }
 
     /**
-     * This class is a thread that send our model to the server
+     * This class is a thread that sends our model to the server
      */
     public class Sender extends Thread{
         @Override
@@ -331,7 +331,7 @@ public class Client{
     }
 
     /**
-     * This class is a thread tha receive the model of the server
+     * This class is a thread that receives the model of the server
      */
     public class Receiver extends Thread{
         @Override
@@ -350,7 +350,7 @@ public class Client{
     }
 
     /**
-     * Function that close the socket and the two threads (Sender and Receiver)
+     *Closes the socket and the two threads (Sender and Receiver)
      * @throws IOException
      */
     public void close() throws IOException {
@@ -370,7 +370,7 @@ public class Client{
     }
 
     /**
-     * return if the game is finished
+     * Checks if the game is finished
      * @return
      */
     public boolean isFinished() {
@@ -378,7 +378,7 @@ public class Client{
     }
 
     /**
-     * Function to get the numPlayer
+     * Returns the numPlayer
      * @return the numPlayer
      */
     public int getNumPlayer() {
