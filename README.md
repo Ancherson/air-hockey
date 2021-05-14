@@ -2,8 +2,15 @@
 
 ## Presentation
 
-It's a video-game inspired by the real air-hockey !
+Inspired by the real air hockey game our game is a multiplayer air hockey.
 
+Featuring a realistic physics engine managing not only collisions speed and acceleration but also rotation effects on the puck with angular speed that allows you to spin the puck and use effects to beat your opponent.
+
+It is a multiplayer game which means that you can play with your friends even if they are far or play with unknown players all around the world.
+
+There is also a trainning mode were you can discover the game and set-up against an AI that might give you some hard time.
+
+And last but not the least you have a nice and tidy game design and interface with custom-made music, sounds and visuals.
 ## Usage
 
 ### Build
