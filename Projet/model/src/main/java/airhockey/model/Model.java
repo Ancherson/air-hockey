@@ -60,6 +60,7 @@ public class Model {
     }
 
     /**
+     * Returns the board of the game
      * @return Board of the game
      */
     public Board getBoard(){
@@ -67,6 +68,7 @@ public class Model {
     }
 
     /**
+     * Returns the score of the player's number in parameter
      * @param numPlayer the number of the player
      * @return the score of the player
      */
@@ -75,7 +77,7 @@ public class Model {
     }
 
     /**
-     * Changes the score of the player with a new one
+     * Sets the score of the player with a new one
      * @param numPlayer the number of the player
      * @param score the new score of the player
      */
@@ -84,7 +86,7 @@ public class Model {
     }
 
     /**
-     * Changes the player to a bot
+     * Sets the player to a bot
      * @param numPlayer the number of the player
      */
     public void setBot(int numPlayer){
@@ -92,6 +94,7 @@ public class Model {
     }
 
     /**
+     * Checks if the game is finished
      * @return if the game is finished
      */
     public boolean isFinished(){
@@ -108,6 +111,7 @@ public class Model {
     }
 
     /**
+     * Returns the counter
      * @return the counter
      */
     public int getCounter(){
@@ -115,6 +119,7 @@ public class Model {
     }
 
     /**
+     * Returns the debug points
      * @return the debug points
      */
     public LinkedList<Vector> getDEBUG_POINTS() {
@@ -122,6 +127,7 @@ public class Model {
     }
 
     /**
+     * Returns the debug lines
      * @return the debug lines
      */
     public HashMap<Vector, Vector> getDEBUG_LINES() {
@@ -129,6 +135,7 @@ public class Model {
     }
 
     /**
+     * Sets a new max count
      * @param maxCount the new value of max count
      */
     public void setMaxCount(int maxCount) {
@@ -156,7 +163,7 @@ public class Model {
     }
 
     /**
-     * Reset the board and add a point to the player that scored a goal
+     * Resets the board and add a point to the player that scored a goal
      */
     public void reset() {
         int p = board.getPalet().getScoredGoal();
@@ -167,7 +174,8 @@ public class Model {
     }
 
     /**
-     * @return if the pusher has moved
+     * Checks if a pusher has moved
+     * @return if a pusher has moved
      */
     public boolean hasPusherMoved() {
         if(hasPusherMoved) {
@@ -178,6 +186,7 @@ public class Model {
     }
 
     /**
+     * Checks if the palet has collided
      * @return if the palet has collided
      */
     public boolean hasPalletCollided(){

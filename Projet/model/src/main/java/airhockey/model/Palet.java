@@ -79,6 +79,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns the speed of the palet
      * @return the speed of the palet
      */
     public Vector getSpeed(){
@@ -86,6 +87,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Sets a new speed to the palet
      * @param v Vector of the new speed of the palet
      */
     public void setSpeed(Vector v){
@@ -96,6 +98,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns the angle of the palet
      * @return the angle of the palet
      */
     public double getAngle(){
@@ -103,6 +106,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Sets a new angle to the palet
      * @param angle double of the new angle of the palet
      */
     public void setAngle(double angle){
@@ -110,6 +114,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns the angle speed of the palet
      * @return the angle speed of the palet
      */
     public double getAngleSpeed(){
@@ -117,6 +122,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Sets a new angle speed to the palet
      * @param vitesse double of the new angle speed of the palet
      */
     public void setAngleSpeed(double vitesse){
@@ -124,6 +130,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns hasHit of the palet
      * @return hasHit of the palet
      */
     public boolean getHasHit(){
@@ -131,6 +138,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns hitPosition of the palet
      * @return hitPosition of the palet
      */
     public Vector getHitPosition(){
@@ -138,6 +146,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns hitNormal of the palet
      * @return hitNomal of the palet
      */
     public Vector getHitNormal(){
@@ -145,6 +154,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns a description of the palet
      * @return a description of the palet : its position, radius and speed
      */
     public String toString(){
@@ -152,6 +162,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns a copy of the palet
      * @return a copy of the palet
      */
     public Palet copy() {
@@ -256,6 +267,7 @@ public class Palet extends Circle {
     }
 
     /**
+     * Returns scoredGoal
      * @return scoredGoal of the palet
      */
     public int getScoredGoal(){

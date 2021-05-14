@@ -50,7 +50,7 @@ public class Bot extends Player{
     }
 
     /**
-     * return the score
+     * Returns the score
      * @return the score
      */
     public int getScore(){
@@ -58,7 +58,7 @@ public class Bot extends Player{
     }
 
     /**
-     * modify the score
+     * Modifies the score
      * @param s the new score
      */
     public void setScore(int s){
@@ -66,7 +66,7 @@ public class Bot extends Player{
     }
 
     /**
-     * The bot move in the direction of the point p
+     * The bot moves in the direction of the point p
      * @param p the point that the Bot wants to target
      * @param pusher AI's pusher
      * @param dt delta time
@@ -192,7 +192,7 @@ public class Bot extends Player{
 
 
     /**
-     * return the point to target to avoid or deviate the palet
+     * Returns the point to target to avoid or deviate the palet
      * @param model of the game
      * @return the point to target
      */
@@ -222,7 +222,7 @@ public class Bot extends Player{
     }
 
     /**
-     * This is where the AI make his decision, this is where the AI choose the point to target
+     * This is where the AI make his decision, this is where the AI chooses the point to target
      * @param model of the game
      * @return the point to target
      */

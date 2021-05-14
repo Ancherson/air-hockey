@@ -17,7 +17,7 @@ public class Player {
     }
 
     /**
-     * return the score of the player
+     * Returns the score of the player
      * @return the score of the player
      */
     public int getScore(){
@@ -25,7 +25,7 @@ public class Player {
     }
 
     /**
-     * modify the score of the player
+     * Modifies the score of the player
      * @param s the new score
      */
     public void setScore(int s){

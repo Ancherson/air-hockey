@@ -46,8 +46,8 @@ public class Board {
 
 
     /**
-     * Constructor of the board
-     * Contains one palet, two pushers, 6 walls, 3 invisble walls and 2 goals
+     * Constructor of the board,
+     * contains one palet, two pushers, 6 walls, 3 invisble walls and 2 goals
      */
     public Board() {
         palet = new Palet(new Vector(WIDTH/2, HEIGHT/2), 18);
@@ -75,6 +75,7 @@ public class Board {
     }
 
     /**
+     * Returns the WIDTH of the board
      * @return int of the WIDTH of the board
      */
     public int getWIDTH(){
@@ -82,6 +83,7 @@ public class Board {
     }
 
     /**
+     * Returns the HEIGHT of the board
      * @return int of the HEIGHT of the board
      */
     public int getHEIGHT(){
@@ -89,6 +91,7 @@ public class Board {
     }
 
     /**
+     * Returns the pushers of the board
      * @return an array of the two pushers
      */
     public Pusher[] getPushers() {
@@ -96,6 +99,7 @@ public class Board {
     }
 
     /**
+     * Returns the walls of the board
      * @return an array of Wall
      */
     public Wall[] getWalls() {
@@ -103,6 +107,7 @@ public class Board {
     }
 
     /**
+     * Returns the invisible walls of the board
      * @return an array of invisible Wall
      */
     public Wall[] getInvisibleWalls() {
@@ -110,6 +115,7 @@ public class Board {
     }
 
     /**
+     * Returns the goals of the board
      * @return an array of the two goals
      */
     public Goal[] getGoals(){
@@ -117,6 +123,7 @@ public class Board {
     }
 
     /**
+     * Returns the palet of the board
      * @return the Palet
      */
     public Palet getPalet() {
@@ -124,6 +131,7 @@ public class Board {
     }
 
     /**
+     * Sets a new palet
      * @param p Palet of the new palet in the board
      */
     public void setPalet(Palet p){
@@ -132,8 +140,8 @@ public class Board {
 
     /**
      * Resets the position of the palet, its speed and its angle speed
-     * At the center of the board at the start of the game
-     * At the side of the goal has been scored
+     * <br>On the center of the board at the start of the game
+     * <br>On the side of the goal which has been scored
      * @param numPlayer the number of the player to know in which he's located
      */
     public void reset(int numPlayer){

@@ -32,6 +32,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Returns the position of the circle
      * @return the position of the circle
      */
     public Vector getPosition(){
@@ -39,6 +40,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Sets a new position
      * @param v Vector of the new position of the circle
      */
     public void setPosition(Vector v){
@@ -46,6 +48,7 @@ public class Circle implements Serializable {
     }    
 
     /**
+     * Returns the radisu of the circle
      * @return the radius of the circle
      */
     public double getRadius(){
@@ -53,6 +56,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Returns a description of the circle
      * @return a the description of a circle : its position and its radius
      */
     public String toString(){
@@ -73,6 +77,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Checks if the circle is colliding with the circle in parameter
      * @param c a Circle
      * @return if the circle is colliding with the Circle c 
      */
@@ -81,6 +86,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Checks if the circle is colliding with the wall in parameter
      * @param w a Wall
      * @return if the circle is colliding with the Wall w
      */
@@ -89,6 +95,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Resolves the collision with the circle in parameter
      * @param c a Circle with whom the collision is resolved
      */
     public void resolveCollision(Circle c){
@@ -96,6 +103,7 @@ public class Circle implements Serializable {
     }
 
     /**
+     * Resolves the collision with the wall in parameter
      * @param w a Wall with whom the collision is resolved
      */
     public void resolveCollision(Wall w){

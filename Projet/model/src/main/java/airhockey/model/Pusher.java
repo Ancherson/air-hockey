@@ -2,8 +2,10 @@ package airhockey.model;
 
 import java.io.Serializable;
 
-/* This class represents a pusher
- */
+/**
+ * This class represents a pusher  
+ */ 
+
 
 public class Pusher extends Circle implements Serializable {
 
@@ -30,7 +32,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
-     * Actualize the speed of the pusher
+     * Actualizes the speed of the pusher
      * @param dt double of the time
      */
     public void actualizeSpeed (double dt) {
@@ -46,13 +48,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
-     * @param s Vector of the new speed of the pusher
-     */
-    public void setSpeed(Vector s){
-        speed = s;
-    }
-
-    /**
+     * Returns the speed of the pusher
      * @return the speed of the pusher
      */
     public Vector getSpeed(){
@@ -60,6 +56,15 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
+     * Sets a new speed to the pusher
+     * @param s Vector of the new speed of the pusher
+     */
+    public void setSpeed(Vector s){
+        speed = s;
+    }
+
+    /**
+     * Returns the last position of the pusher
      * @return the last position of the pusher
      */
     public Vector getLastPosition(){
@@ -67,6 +72,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
+     * Sets the last position of the pusher
      * @param p Vector of the new last position of the pusher
      */
     public void setLastPosition(Vector p){
@@ -81,7 +87,8 @@ public class Pusher extends Circle implements Serializable {
     }
     
     /**
-     * @return the descritpion of the pusher : its position, radius and last position
+     * Returns the description of the pusher
+     * @return the description of the pusher : its position, radius and last position
      */
     public String toString(){
         return super.toString()+"\nLastPosition: "+lastPosition;
@@ -144,7 +151,7 @@ public class Pusher extends Circle implements Serializable {
     }
 
     /**
-     * Stop the direction taken of the pusher is it's colliding
+     * Stops the direction taken of the pusher is it's colliding
      * @param arrival position of where the pusher is supposed to stop
      * @param walls an array of Wall
      * @param invisibleWalls an array of Wall

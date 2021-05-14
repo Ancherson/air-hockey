@@ -35,18 +35,26 @@ public class Wall {
         direction = new Vector(dx, dy);
     }
 
+    /**
+     * Returns the position of the wall
+     * @return Vector of the position of the wall
+     */
     public Vector getPosition(){
         return position;
     }
 
+    /**
+     * Returns the direction of the wall
+     * @return Vector of the position of the wall
+     */
     public Vector getDirection(){
         return direction;
     }
 
     /**
-     * Returns the closest point to p on the wall
+     * Returns the closest point from p on the wall
      * @param p a vector representing any point on the plane
-     * @return the closest point to p on the wall
+     * @return the closest point from p on the wall
      */
     public Vector closestPoint(Vector p){
         //lambda is in [0, 1], lambda = 0 means that the closest point is on the start point of the wall, lambda = 1 means that the closest point is the end point of the wall
@@ -66,6 +74,10 @@ public class Wall {
         return p.sub(cp).normalize();
     }
 
+    /**
+     * Returns the description of the wall
+     * @return String of the description of the wall : its position and its direction
+     */
     public String toString(){
         return "Position: "+position+ "\nDirection: "+direction;
     }
