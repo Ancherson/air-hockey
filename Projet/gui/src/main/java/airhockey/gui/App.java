@@ -20,15 +20,7 @@ public class App {
     private final int HEIGHT = 500;
 
     /**
-     * Returns greetings
-     * @return String
-     */
-    public String getGreeting() {
-        return "Hello World!";
-    }
-
-    /**
-     * Main of our project
+     * Main of the project
      * @param args an array of String written in the terminal
      */
     public static void main(String[] args){
