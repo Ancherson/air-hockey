@@ -75,5 +75,25 @@ The game ends when one of the players has 7 points
 
 ## Documentation
 
-see documentation of [Serveur/UDP Protocole](doc_server.md)
+See documentation of [Serveur/UDP Protocole](doc_server.md)
 
+## Contribution
+
+* Alexandre LEYMARIE:
+    * model: the physics of the game, the creation of the board and the model, and the AI
+    * gui: the particles
+    * network: à completer
+
+* Etienne NEDJAI:
+    * model: the physics of the game, the creation of the board and the model, and the architecture of the AI
+    * gui: the sound and harmonize the theme on the differents menu
+
+* Jules CHERION:
+    * model: à completer
+    * gui: the main architecture of the menus and the main function in the menus
+    * network: à completer
+
+* Yoan ROUGEOLLE:
+    * model: the AI and the upgrade of the physics with the angle speed
+    * gui: à compléter
+    * network: the main architecture of the network
