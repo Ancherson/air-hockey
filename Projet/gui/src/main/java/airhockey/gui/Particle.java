@@ -35,10 +35,18 @@ public class Particle extends Circle{
         life = l;
     }
 
+    /**
+     * Returns startLife of the particle
+     * @return double startLife of the particle
+     */
     public double getStartLife(){
         return startLife;
     }
 
+    /**
+     * Returns the life of the particle
+     * @return double of the life of the particle
+     */
     public double getLife(){
         return life;
     }

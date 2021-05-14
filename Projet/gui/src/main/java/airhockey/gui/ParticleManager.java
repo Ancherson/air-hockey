@@ -41,6 +41,10 @@ public class ParticleManager {
         }
     }
 
+    /**
+     * Returns the particles of the particle manager
+     * @return an ArrayList of particles of the particle manager
+     */
     public ArrayList<Particle> getParticles(){
         return particles;
     }

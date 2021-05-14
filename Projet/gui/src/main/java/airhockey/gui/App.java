@@ -5,6 +5,9 @@ package airhockey.gui;
 
 import airhockey.network.Client;
 
+/**
+ * This class contains the main of the project
+ */
 public class App {
     /**
      * The width of the app initialized at 800
@@ -17,6 +20,7 @@ public class App {
     private final int HEIGHT = 500;
 
     /**
+     * Returns greetings
      * @return String
      */
     public String getGreeting() {

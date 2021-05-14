@@ -10,7 +10,7 @@ import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.WHITE;
 
 /**
- * Class of the page shown when you want to join a public room
+ * This class represents the page shown when someones wants to join a public room
  */
 public class PublicWait extends BorderPane {
 
@@ -50,7 +50,7 @@ public class PublicWait extends BorderPane {
     }
 
     /**
-     * Function that set a message signaling that the player is inside a room
+     * Function that sets a message signaling that the player is inside a room
      * and is waiting for an other player
      */
     public void connected(){

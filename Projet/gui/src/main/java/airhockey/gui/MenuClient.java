@@ -20,8 +20,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * This Class is the main class of the GUI.
- * It contains all the different pages and multiple function of the GUI
+ * This class is the main class of the GUI
+ * <br>It contains all the different pages and multiple function of the GUI
  */
 public class MenuClient extends Application {
     private int WIDTH = 800;
@@ -160,7 +160,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that returns the model of the game used by the GUI
+     * Returns the model of the game used by the GUI
      * @return a model
      */
     public Model getModel(){
@@ -199,7 +199,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that will swap the vision of the game and lanch the game
+     * Function that will swap the view of the game and lanch the game
      * @param numplayer
      * @param training
      */
@@ -212,9 +212,10 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that will ask the creation of a room to the server by creating a Client and that swap to the creation page
+     * Function that creates a room will and swaps to the creation page
      */
     public void createRoom() {
+        //It asks the server, the creation of a room by creating a Client and swaps to the creation page
         try {
             client = new Client(model,Platform::runLater,create::setID,waiting::connected,this::lostConnexion);
             client.createRoom();
@@ -227,9 +228,9 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that will ask to join the room that correspond to the id to the server by creating a Client
-     * and that will swap to the join page
-     * @param id is the String that le player typed referring to the id of the room that he wants to join
+     * Function that asks the server to join the room of the id in parameter by creating a Client
+     * and swaps to the join page
+     * @param id is the String that the player typed referring to the id of the room that he wants to join
      */
     public void joinRoom(String id) {
         try {
@@ -245,7 +246,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that create a Client then launch the Function joinRoomPublic that create a public room or join one
+     * Function that creates a Client then launches the function joinRoomPublic, which creates a public room or join one
      */
     public void joinPublicRoom() {
         try {
@@ -263,7 +264,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that return the boolean isFinished of Client
+     * Returns the boolean isFinished of Client
      * @return the boolean isFinished of Client
      */
     public boolean isFinished() {
@@ -271,14 +272,14 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that launch the function lostConnexion of View
+     * Function that launches the function lostConnexion in View
      */
     public void lostConnexion() {
         view.lostConnexion();
     }
 
     /**
-     * Function that close the client
+     * Closes the client
      */
     public void closeClient()  {
         if(client!= null){
@@ -291,7 +292,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that close the running game
+     * Closes the running game
      */
     public void close() {
         model = new Model();
@@ -299,7 +300,7 @@ public class MenuClient extends Application {
     }
 
     /**
-     * Function that close the Thread animation of View
+     * Closes the Thread animation of View
      * @param windowEvent Event that should be the close of the window or null if called by close()
      */
     public void close(WindowEvent windowEvent) {

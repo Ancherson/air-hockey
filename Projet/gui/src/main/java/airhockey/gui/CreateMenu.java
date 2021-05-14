@@ -15,7 +15,7 @@ import javafx.util.Duration;
 import static javafx.scene.paint.Color.*;
 
 /**
- * This class the page shown when you create a room in the GUI
+ * This class represents the page shown, when a room is created in the GUI
  */
 
 public class CreateMenu extends BorderPane {
@@ -69,7 +69,7 @@ public class CreateMenu extends BorderPane {
     }
 
     /**
-     * A function that sets the text of the Label
+     * Sets the text of the Label
      * @param id is the text shown in the Label which is the ID of the room created
      */
     public void setID(String id){

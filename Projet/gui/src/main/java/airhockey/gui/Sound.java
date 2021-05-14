@@ -7,7 +7,7 @@ import javafx.scene.media.*;
 import javafx.util.Duration;
 
 /**
- * This class is used to play sound in the GUI
+ * This class represents the sound played in the GUI
  */
 public class Sound {
 
@@ -33,7 +33,7 @@ public class Sound {
 
     /**
      * Constructor of sounds
-     * It saves all media in a playlist
+     * <br>It saves all media in a playlist
      */
     public Sound(){
         playlist = new HashMap<>();
@@ -60,8 +60,8 @@ public class Sound {
     }
 
     /**
-     * Plays the media of the name given in param
-     * @param name of the media in the playlist
+     * Plays the media of the name given in parameter
+     * @param name String of the name of the media in the playlist
      */
     public void play(String name){
         playlist.get(name).seek(Duration.ZERO);
@@ -69,8 +69,8 @@ public class Sound {
     }
 
     /**
-     * Plays in loop the media of the name given in param
-     * @param name of the media in the playlist
+     * Plays in loop the media of the name given in parameter
+     * @param name String of the name of the media in the playlist
      */
     public void repeat(String name){
         playlist.get(name).setOnEndOfMedia(() -> playlist.get(name).seek(Duration.ZERO));
@@ -79,24 +79,24 @@ public class Sound {
     }
 
     /**
-     * Stops the media of the name given in param
-     * @param name of the media in the playlist
+     * Stops the media of the name given in parameter
+     * @param name String of the name of the media in the playlist
      */
     public void pause(String name){
         playlist.get(name).pause();
     }
 
     /**
-     * Reloads the media of the name given in param
-     * @param name of the media in the playlist
+     * Reloads the media of the name given in parameter
+     * @param name String of the name of the media in the playlist
      */
     public void reload(String name){
         playlist.get(name).seek((playlist.get(name).getStartTime()));
     }
 
     /**
-     * Modifies the volume of the media of the name given in param
-     * @param name of the media in the playlist
+     * Modifies the volume of the media of the name given in parameter
+     * @param name String of the name of the media in the playlist
      * @param degree double of the new volume
      */
     public void setVolume(String name, double degree){

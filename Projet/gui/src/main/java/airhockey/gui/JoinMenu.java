@@ -12,7 +12,7 @@ import static javafx.scene.paint.Color.WHITE;
 import static javafx.scene.paint.Color.BLACK;
 
 /**
- * This class the page shown when you try to join a room in the GUI
+ * This class represents the page shown, when someone tries to join a room in the GUI
  */
 
 public class JoinMenu extends BorderPane {
@@ -21,7 +21,7 @@ public class JoinMenu extends BorderPane {
     private Label joinT;
 
     /**
-     *  Constructor of the page JoinMenu
+     * Constructor of the page JoinMenu
      * @param menu is the main Pane of the gui that allows to navigate to different page
      */
     public JoinMenu(MenuClient menu){
@@ -73,7 +73,7 @@ public class JoinMenu extends BorderPane {
     }
 
     /**
-     * Function that set the message of the Label that allows to show different message
+     * Sets the message of the Label that allows to show different message
      * like room full, bad ID and so on
      * @param message String that will be shown in the Label
      */
