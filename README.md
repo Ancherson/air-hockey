@@ -85,5 +85,29 @@ The game ends when one of the players has 7 points
 
 ## Documentation
 
-see documentation of [Serveur/UDP Protocole](doc_server.md)
+See documentation of [Serveur/UDP Protocole](doc_server.md)
 
+## Contribution
+
+For more precise details, checks commits in gitlab.
+
+* Alexandre LEYMARIE:
+    * model: the **physics** of the game, the **board** and the **model**, and the **AI**
+    * gui: the **particles**, the **camera** and the **shaking screen**
+    * network: the **room** class
+
+* Etienne NEDJAI:
+    * model: the **physics of the game**, the **board** and the **model**, and the **architecture of the AI**
+    * gui: the **sound** and harmonization of the **theme** on the different menus
+
+* Jules CHERION:
+    * model: the implementation of the **angle speed** in the physics
+    * gui: the **main architecture of the menus**, the **link between the network and the GUI** and **main design** of the different menus
+    * network: **prototype** of the **client**, better **coherence between client's model** and **server's model**
+
+* Yoan ROUGEOLLE:
+    * model: the **AI** and the upgrade of the physics with the **angle speed**
+    * gui: the **view**, the **animation** of the **elements of the model**, the **closing** of the **threads**
+    * network: the main **architecture of the network**, the **client**, the **server**, **public room**, the **management of the rooms**
+
+This is just a summary of what each do on the project, but there were still mutual help between the members on differents parts of the project.
