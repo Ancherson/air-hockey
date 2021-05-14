@@ -6,11 +6,14 @@ Inspired by the real air hockey game our game is a multiplayer air hockey.
 
 Featuring a realistic physics engine managing not only collisions, speed and acceleration but also rotation effects on the puck with angular speed that allows you to spin the puck and use effects to beat your opponent.
 
-It is a multiplayer game which means that you can play with your friends even if they are far or play with unknown players all around the world.
+You can play with your friends even if they are far or play with unknown players all around the world.
 
-There is also a trainning mode were you can discover the game and step-up against an AI that might give you some hard time.
+There is also a training mode were you can discover the game and step-up against an AI that might give you some hard time.
 
 And last but not the least you have a nice and tidy game design and interface with custom-made music, sounds and visuals.
+
+![](Projet/ressources/ressources-readme/video-air-hockey.mp4)
+
 ## Usage
 
 ### Build
@@ -75,10 +78,10 @@ To play alone, against the AI, you have to click on the button **Training Mode**
 
 ### In Game :
 
-The goal is to send the puck into the opposing goal with your blue pusher
+The goal is to send the puck into the opposing goal with your pusher.
+
 The game ends when one of the players has 7 points
 
-![](Projet/ressources/ressources-readme/video-air-hockey.mp4)
 
 ## Documentation
 
