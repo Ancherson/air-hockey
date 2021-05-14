@@ -53,6 +53,7 @@ double angleSpeed = orthogonal.dotProduct(p.getSpeed().sub(speed))*(-0.1);
 setAngleSpeed(getAngleSpeed()+angleSpeed);
 ```
 ![Angular speed](Projet/ressources/ressources-doc-physics/angularSpeed.png)
+
 The angular speed added is equal to the dot product of s and o, where s is the relative speed between the pusher and the palet, and o is the orthogonal vector of the direction from the pusher to the palet. This formula has the consequence of: if the pusher shoots straight at the palet, the dot product will be 0 and the angular speed won't change, and if the pusher shoots in the direction of o, the dot product will be 1 and the angular speed change will be maximal.
 
 Then, the angular speed decreases with friction, and is converted into speed to modify the movement of the palet:
