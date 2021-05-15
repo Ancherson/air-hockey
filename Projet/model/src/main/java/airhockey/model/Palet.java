@@ -14,25 +14,34 @@ public class Palet extends Circle {
     private final int MAX_SPEED = 1000;
 
     /**
-     * Speed of the palet
-     */
-    private Vector speed;
-
-    /**
      * A constant of the friction of the palet on the table
      */
     private final static double COEFF_FRICTION = 0.92;
 
     /**
-     * Checks in which goal the palet has been scored, is initialized at -1
-     */
-
-    private int scoredGoal = -1;
-    
-    /** 
-     *A constant of the max angle speed 
+     *A constant of the max angle speed
      */
     private final static double MAX_ANGLE_SPEED = 500;
+
+    /**
+     * A constant of the friction of the angle speed
+     */
+    private final static double COEFF_FRICTION_ANGLE = 0.9;
+
+    /**
+     * A constant, the bigger it is, the more the trajectory is curved
+     */
+    private final static double COEFF_CURVE = 6;
+
+    /**
+     * Speed of the palet
+     */
+    private Vector speed;
+
+    /**
+     * Checks in which goal the palet has been scored, is initialized at -1
+     */
+    private int scoredGoal = -1;
 
     /**
      * Checks if the palet has been in collision with a wall
@@ -197,7 +206,7 @@ public class Palet extends Circle {
                 */
                 speed = speed.reflection(w.getNormal(position));
                 double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
-                angleSpeed *= 0.85;
+                angleSpeed *= 0.5;
                 double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
                 Vector wallDir = w.closestPoint(getPosition()).sub(getPosition()).normalize().getOrthogonal();
                 speed = speed.add(wallDir.multiply(-Math.sqrt(2*diffEnergy)*.5));
@@ -337,7 +346,7 @@ public class Palet extends Circle {
         The energy of the palet is given by the difference between its old energy and its new energy
         */
         double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
-        angleSpeed *= Math.pow(0.85, Math.sqrt(dt));
+        angleSpeed *= Math.pow(COEFF_FRICTION_ANGLE, Math.sqrt(dt));
         double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
         angle += angleSpeed*dt;
 
@@ -349,7 +358,10 @@ public class Palet extends Circle {
         /* 
         Calculates the trajectory of the palet
         */
-        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(6*diffEnergy)*2*dt));
+        speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(COEFF_CURVE*diffEnergy)*2*dt));
+        if(speed.length() > MAX_SPEED ) {
+            speed = speed.normalize().multiply(MAX_SPEED);
+        }
         double length = v.length();
         double step = getRadius()*0.5;
         Vector p0 = new Vector(position.getX(), position.getY());
