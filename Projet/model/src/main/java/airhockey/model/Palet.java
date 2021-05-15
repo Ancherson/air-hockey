@@ -26,7 +26,7 @@ public class Palet extends Circle {
     /**
      * A constant of the friction of the angle speed
      */
-    private final static double COEFF_FRICTION_ANGLE = 0.85;
+    private final static double COEFF_FRICTION_ANGLE = 0.9;
 
     /**
      * A constant, the bigger it is, the more the trajectory is curved
@@ -195,7 +195,7 @@ public class Palet extends Circle {
                 */
                 speed = speed.reflection(w.getNormal(position));
                 double oldEnergy = angleSpeed * angleSpeed * getRadius() * getRadius();
-                angleSpeed *= 0.85;
+                angleSpeed *= 0.5;
                 double diffEnergy = oldEnergy - angleSpeed * angleSpeed * getRadius() * getRadius();
                 Vector wallDir = w.closestPoint(getPosition()).sub(getPosition()).normalize().getOrthogonal();
                 speed = speed.add(wallDir.multiply(-Math.sqrt(2*diffEnergy)*.5));
@@ -347,8 +347,8 @@ public class Palet extends Circle {
         Calculates the trajectory of the palet
         */
         speed = speed.add(dir.getOrthogonal().multiply(Math.sqrt(COEFF_CURVE*diffEnergy)*2*dt));
-        if(speed.length() > MAX_SPEED * 2) {
-            speed = speed.normalize().multiply(MAX_SPEED * 2);
+        if(speed.length() > MAX_SPEED ) {
+            speed = speed.normalize().multiply(MAX_SPEED);
         }
         double length = v.length();
         double step = getRadius()*0.5;
