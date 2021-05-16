@@ -107,11 +107,10 @@ The game ends when one of the players has 7 points
 ## Documentation
 
 Link for a thorough documentation : 
-```
-[Serveur / UDP Protocole](doc_server.md) 
+>[Serveur / UDP Protocole](doc_server.md) 
 
-[Physics](doc_physics.md)
-```
+>[Physics](doc_physics.md)
+
 ## Contribution
 
 For more precise details, checks commits in gitlab.
