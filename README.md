@@ -36,17 +36,37 @@ To run the client :
 ./gradlew run
 ```
 #### To test with different machines
+
+##### LAN (connected to the same network)
+
+Here the IPV4 is the **private IPV4** (the local one)
+
 To run the server :
 ```
-./gradlew runServer --args='IPv4 of the machine'
+./gradlew runServer --args='IPv4'
 ```
 To run the client on a different machine :
 
 ```
-./gradlew run --args='IPv4 of the machine that runs the server'
-```
+./gradlew run --args='IPv4'
+``` 
 
-### Play Online
+##### Online (connected to different network)
+To run the server :
+```
+./gradlew runServer --args='IPv4'
+```
+the IPv4 here is the private IPv4 of the machine.
+However, to play online you'll need to open a socket 
+on your internet device. (socket 6666, UDP type)
+
+To run the client on a different machine :
+```
+./gradlew run --args='Public IPv4'
+``` 
+Here the IPv4 is the public IPv4 of the machine running the server.
+
+### How to launch a game
 
 #### Private Game :
 
@@ -85,7 +105,11 @@ The game ends when one of the players has 7 points
 
 ## Documentation
 
-See documentation of [Serveur/UDP Protocole](doc_server.md)
+Link for a thorough documentation : 
+
+[Serveur / UDP Protocole](doc_server.md) 
+
+[Physics](doc_physics.md)
 
 ## Contribution
 
