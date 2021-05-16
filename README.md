@@ -25,6 +25,8 @@ cd air-hockey/Projet
 ```
 ### Run
 
+__Everything must be done inside *'Projet'* directory__
+
 #### To test on the same machine
 
 To run the server :
