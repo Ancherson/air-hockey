@@ -2,7 +2,7 @@
 
 ## Presentation
 
-Inspired by the real air hockey game our game is a multiplayer air hockey.
+Inspired by the real air hockey game, our game is a multiplayer air hockey.
 
 Featuring a realistic physics engine managing not only collisions, speed and acceleration but also rotation effects on the puck with angular speed that allows you to spin the puck and use effects to beat your opponent.
 
@@ -58,8 +58,8 @@ To run the server :
 ```
 the IPv4 here is the **private IPv4** of the machine.
 
-**However**, to play online you'll need to open a socket 
-on your internet device. (socket 6666, UDP type)
+**However**, to play online you'll need to open a port 
+on your internet device. (port 6666, UDP type)
 
 To run the client on a different machine :
 ```
