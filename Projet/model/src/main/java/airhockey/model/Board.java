@@ -53,8 +53,8 @@ public class Board {
         palet = new Palet(new Vector(WIDTH/2, HEIGHT/2), 18);
 
         pushers = new Pusher[2];
-        pushers[0] = new Pusher(new Vector(200, 200), 30); //left player pusher
-        pushers[1] = new Pusher(new Vector(600, 200), 30); //right player pusher
+        pushers[0] = new Pusher(new Vector(100, 200), 30); //left player pusher
+        pushers[1] = new Pusher(new Vector(WIDTH - 100, 200), 30); //right player pusher
 
         walls = new Wall[6];
         walls[0] = new Wall(0, 0, WIDTH, 0); //top wall
