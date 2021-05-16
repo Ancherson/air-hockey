@@ -56,15 +56,16 @@ To run the server :
 ```
 ./gradlew runServer --args='IPv4'
 ```
-the IPv4 here is the private IPv4 of the machine.
-However, to play online you'll need to open a socket 
+the IPv4 here is the **private IPv4** of the machine.
+
+**However**, to play online you'll need to open a socket 
 on your internet device. (socket 6666, UDP type)
 
 To run the client on a different machine :
 ```
 ./gradlew run --args='Public IPv4'
 ``` 
-Here the IPv4 is the public IPv4 of the machine running the server.
+Here the IPv4 is the **public IPv4** of the machine running the server.
 
 ### How to launch a game
 
